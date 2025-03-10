@@ -1,0 +1,16 @@
+.info {
+    display: flex;
+    flex-direction: column;
+    padding: .5em;
+}
+
+.button {
+    font-size: 4em;
+    margin: .25em;
+    transition: cubic-bezier(0.075, 0.82, 0.165, 1);
+    border: 0;
+}
+
+.button:active {
+    transform: scale(.9);
+}

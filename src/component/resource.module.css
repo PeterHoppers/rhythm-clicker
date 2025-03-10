@@ -1,0 +1,31 @@
+.holder {
+    padding: .5em;
+    border: 1px solid black;
+}
+
+.info {
+    display: flex;
+}
+
+.icon {
+    font-size: 2em;
+}
+
+.stats {
+    display: flex;
+    flex-direction: column;
+    padding: .5em;
+}
+
+.bar {
+    position: relative;
+}
+
+.label {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    font-size: .65em;
+    bottom: 0;
+}

@@ -1,0 +1,8 @@
+.button {    
+    font-size: 1.5em;
+    transition: cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.button:active {
+    transform: scale(.9);
+}
