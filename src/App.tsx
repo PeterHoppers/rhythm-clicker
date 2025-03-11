@@ -9,20 +9,26 @@ import ResourceNode from './component/ResourceNode';
 import UpgradeNode from './component/UpgradeNode';
 
 const NOTES_PER_BAR = 16;
-const TICK_CHECK = 250;
+const TICK_CHECK = 25;
+const BEAT_LENGTH = .25;
+const RHYTHM_LENIENCY = .1;
+const INPUT_DELAY = .05;
+const TEMPO = 100; //TODO: be able to change this
+
+let sampleSfx : AudioBuffer;
 
 interface AppState {
   resources: ResourceData[],
   upgrades: Upgrade[],
   audioContext: AudioContext,
-  currentBeat: BeatInfo
+  scheduledBeat: BeatInfo
 }
 
 const initalState : AppState = {
   resources : createInitialResources(),
   upgrades : createUpgrades(), 
   audioContext: new AudioContext(),
-  currentBeat: {time: 0, noteNumber: 0}
+  scheduledBeat: {time: 0, noteNumber: 0}
 }
 
 function createInitialResources() : ResourceData[] {
@@ -85,15 +91,20 @@ function performUpgrade(info: ResourceInfo, upgrade: UpgradeType, modifier: numb
 function resourceReducer(state : AppState, action : ResourceAction) {
   switch (action.type) {
     case ActionType.TimePass: {
-      let beat = state.currentBeat;
-      if (beat && beat.time >= state.audioContext.currentTime) {
-        playNote(beat); 
-        beat = createNextNote(60, beat);
+      if (state.audioContext.state === "suspended") {
+        state.audioContext.resume();
+        return state;
+      }
+
+      let beat = state.scheduledBeat;
+      if (beat && beat.time <= state.audioContext.currentTime && sampleSfx) {
+        playNote(state.audioContext, sampleSfx, beat); 
+        beat = createNextNote(TEMPO, beat);
       }
 
       return {
         ...state,
-        currentBeat: beat
+        scheduledBeat: beat,
       };
     }
     case ActionType.Upgrade: {
@@ -114,6 +125,7 @@ function resourceReducer(state : AppState, action : ResourceAction) {
       };
     }
     case ActionType.OnCollectResource: {
+      const isOnBeat = isClickOnPattern(state.audioContext.currentTime, state.scheduledBeat);
       const updatedResources = state.resources.map(resourceData => {
         if (resourceData.resource.isMatchingResourceType(action.resourceAction)) {
           const newAmount = resourceData.resource.performCollection(resourceData.currentAmount);
@@ -149,8 +161,54 @@ function resourceReducer(state : AppState, action : ResourceAction) {
   }
 }
 
-function playNote(note: BeatInfo) {
-  console.log(note);    
+function isClickOnPattern(clickTime: number, upcomingBeat: BeatInfo) : boolean {
+  const pressTime = clickTime - INPUT_DELAY;
+  const previousBeat : BeatInfo = {
+    time: upcomingBeat.time - getGapToNextTime(TEMPO),
+    noteNumber: upcomingBeat.noteNumber - 1
+  }
+
+  const closerBeat = (upcomingBeat.time - pressTime < pressTime - previousBeat.time) ? upcomingBeat : previousBeat;
+
+  const isOnBeat =  (Math.abs(closerBeat.time - pressTime) <= RHYTHM_LENIENCY);
+  
+  console.log(pressTime, closerBeat.time, isOnBeat);
+  return isOnBeat;
+}
+
+function playNote(audioContext : AudioContext, audioBuffer: AudioBuffer, note: BeatInfo) {
+  if (audioContext.state === "suspended") {
+    audioContext.resume();
+  }
+
+  if (note.noteNumber % 4 == 0) {
+    playSample(audioContext, audioBuffer, note.time);  
+  }
+}
+
+function playSample(audioContext : AudioContext, audioBuffer: AudioBuffer, time : number) {
+  const sampleSource = new AudioBufferSourceNode(audioContext, {
+    buffer: audioBuffer,
+    playbackRate: 1,
+  });
+  sampleSource.connect(audioContext.destination);
+  sampleSource.start(time);
+  return sampleSource;
+}
+
+async function setupSample(audioContext : AudioContext) {
+  const filePath = "Kick_Not Weird.wav";
+  // Here we're waiting for the load of the file
+  // To be able to use this keyword we need to be within an `async` function
+  const sample = await getFile(audioContext, filePath);
+  return sample;
+}
+
+async function getFile(audioContext : AudioContext, filepath : string) {
+  const response = await fetch(filepath);
+  const arrayBuffer = await response.arrayBuffer();
+  const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+  return audioBuffer;
 }
 
 function App() {
@@ -161,6 +219,13 @@ function App() {
       type: ActionType.TimePass
     });   
   }, TICK_CHECK);
+
+  useEffect(() => {
+    setupSample(gameData.audioContext).then((sample) => {
+      sampleSfx = sample;
+    });
+    
+  }, [gameData.audioContext])
 
   //render each of the resources on the top, the currency info in the middle, and the upgrades at the bottom
   return (
@@ -180,7 +245,7 @@ function App() {
           <h2>Resource Field</h2>
           <div className='currency-section__holder'>
             {gameData.resources.map((data) => {
-              return <ResourceNode resourceData={data} onClickCallback = {() => {
+              return <ResourceNode key={data.resource.resourceInfo.resourceType} resourceData={data} onClickCallback = {() => {
                 dispatch({
                   type: ActionType.OnCollectResource,
                   resourceAction: data.resource.resourceInfo.resourceType
@@ -204,16 +269,20 @@ function App() {
 }
 
 function createNextNote(tempo : number, currentBeat: BeatInfo) : BeatInfo {
-  // Advance current note and time by a 16th note...
-  const secondsPerBeat = 60.0 / tempo;    // Notice this picks up the CURRENT 
-      // tempo value to calculate beat length.
-  const nextNoteTime = (0.25 * secondsPerBeat) + currentBeat.time;   // Add beat length to last beat time
+  const nextNoteTime = getGapToNextTime(tempo) + currentBeat.time;
   const note = (currentBeat.noteNumber + 1) % NOTES_PER_BAR;
 
   return {
     noteNumber: note,
     time: nextNoteTime
   }
+}
+
+function getGapToNextTime(tempo: number) {
+  // Advance current note and time by a 16th note...
+  const secondsPerBeat = 60.0 / tempo;    // Notice this picks up the CURRENT 
+  // tempo value to calculate beat length.
+  return (BEAT_LENGTH * secondsPerBeat);   // Add beat length to last beat time
 }
 
 interface BeatInfo {
