@@ -1,4 +1,4 @@
-import { useReducer } from 'react'
+import { useEffect, useReducer, useState } from 'react'
 import { ResourceLibrary, MoneyInfo } from './data/resourceLibrary';
 import { UpgradeLibrary } from './data/upgradeLibrary';
 import './App.css'
@@ -8,9 +8,22 @@ import { useInterval } from './lib/useInterval';
 import CurrencyNode from './component/CurrencyNode';
 import UpgradeNode from './component/UpgradeNode';
 
-// create the basics of the state by using the information found in the data libraries
-const initResources = createInitialResources();
-const upgrades = createUpgrades();
+const NOTES_PER_BAR = 16;
+const TICK_CHECK = 250;
+
+interface AppState {
+  resources: ResourceData[],
+  upgrades: Upgrade[],
+  audioContext: AudioContext,
+  currentBeat: BeatInfo
+}
+
+const initalState : AppState = {
+  resources : createInitialResources(),
+  upgrades : createUpgrades(), 
+  audioContext: new AudioContext(),
+  currentBeat: {time: 0, noteNumber: 0}
+}
 
 function createInitialResources() : ResourceData[] {
   const resources : ResourceData[] = [];
@@ -69,20 +82,22 @@ function performUpgrade(info: ResourceInfo, upgrade: UpgradeType, modifier: numb
  * @param action 
  * @returns 
  */
-function resourceReducer(state : ResourceData[], action : ResourceAction) {
+function resourceReducer(state : AppState, action : ResourceAction) {
   switch (action.type) {
     case ActionType.TimePass: {
-      return state.map(resourceData => {
-        if (!resourceData.resource.isCurrency()) {
-          const newAmount = resourceData.resource.performCollection(resourceData.currentAmount);
-          resourceData.currentAmount = newAmount;
-        }
-        
-        return resourceData;
-      });
+      let beat = state.currentBeat;
+      if (beat && beat.time >= state.audioContext.currentTime) {
+        playNote(beat); 
+        beat = createNextNote(60, beat);
+      }
+
+      return {
+        ...state,
+        currentBeat: beat
+      };
     }
     case ActionType.Upgrade: {
-      return state.map(resourceData => {
+      const updatedResources = state.resources.map(resourceData => {
         if (resourceData.resource.isMatchingResourceType(action.payload?.resourceType)) {
           const upgradeType = action.payload?.upgradeType;
           if (upgradeType !== undefined) {
@@ -92,9 +107,14 @@ function resourceReducer(state : ResourceData[], action : ResourceAction) {
 
         return resourceData;
       });
+
+      return {
+        ...state,
+        resources: updatedResources
+      };
     }
-    case ActionType.OnCollectMoney: {
-      return state.map(resourceData => {
+    case ActionType.OnCollectResource: {
+      const updatedResources = state.resources.map(resourceData => {
         if (resourceData.resource.isCurrency()) {
           const newAmount = resourceData.resource.performCollection(resourceData.currentAmount);
           resourceData.currentAmount = newAmount;
@@ -102,15 +122,24 @@ function resourceReducer(state : ResourceData[], action : ResourceAction) {
 
         return resourceData;
       });
+      return {
+        ...state,
+        resources: updatedResources
+      };
     }
     case ActionType.OnSpendResource: {
-      return state.map(resourceData => {
+      const updatedResources = state.resources.map(resourceData => {
         if (resourceData.resource.isMatchingResourceType(action.payload?.resourceType)) {
           const newAmount = resourceData.currentAmount - (action.payload?.modifier ?? 0);
           resourceData.currentAmount = newAmount;
         }
         return resourceData;
       });
+
+      return {
+        ...state,
+        resources: updatedResources
+      };
     }
     default: {
       throw Error('Unknown action: ' + action.type);
@@ -118,18 +147,22 @@ function resourceReducer(state : ResourceData[], action : ResourceAction) {
   }
 }
 
+function playNote(note: BeatInfo) {
+  console.log(note);    
+}
+
 function App() {
-  const [resourceData, dispatch] = useReducer(resourceReducer, initResources);
+  const [gameData, dispatch] = useReducer(resourceReducer, initalState);
 
   //split the resource data into two pieces, one for the currency and another for the standard resources
-  const resourceDashboardData = resourceData.filter((resource) => !resource.resource.isCurrency());
-  const moneyData = resourceData.find((resource) => resource.resource.isCurrency());
+  const resourceDashboardData = gameData.resources.filter((resource) => !resource.resource.isCurrency());
+  const moneyData = gameData.resources.find((resource) => resource.resource.isCurrency());
 
   useInterval(() => {
     dispatch({
       type: ActionType.TimePass
-    })
-  }, 1000);
+    });   
+  }, TICK_CHECK);
 
   //render each of the resources on the top, the currency info in the middle, and the upgrades at the bottom
   return (
@@ -145,11 +178,12 @@ function App() {
 
       <section className='currency-section'>
         <h2>Currency</h2>
+        <span>{moneyData?.currentAmount}</span>
         <div className='currency-section__holder'>
           {moneyData &&
             <CurrencyNode moneyData={moneyData} onClickCallback = {() => {
               dispatch({
-                type: ActionType.OnCollectMoney
+                type: ActionType.OnCollectResource
               })
             }}/>
           }        
@@ -159,13 +193,31 @@ function App() {
       <section className='upgrade-section'>
         <h2>Upgrades</h2>
         <div className='upgrade-section__holder'>
-          {upgrades.map((upgrade) => {
+          {gameData.upgrades.map((upgrade) => {
             return <UpgradeNode key={upgrade.upgradeInfo.displayName} upgrade={upgrade} dispatch={dispatch} currentCurrency={(moneyData?.currentAmount ?? 0)}/>
           })}
         </div>
       </section>
     </div>
   )
+}
+
+function createNextNote(tempo : number, currentBeat: BeatInfo) : BeatInfo {
+  // Advance current note and time by a 16th note...
+  const secondsPerBeat = 60.0 / tempo;    // Notice this picks up the CURRENT 
+      // tempo value to calculate beat length.
+  const nextNoteTime = (0.25 * secondsPerBeat) + currentBeat.time;   // Add beat length to last beat time
+  const note = (currentBeat.noteNumber + 1) % NOTES_PER_BAR;
+
+  return {
+    noteNumber: note,
+    time: nextNoteTime
+  }
+}
+
+interface BeatInfo {
+  noteNumber: number,
+  time: number
 }
 
 export default App

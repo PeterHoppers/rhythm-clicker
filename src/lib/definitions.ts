@@ -11,7 +11,7 @@ export type ResourceInfo = {
     resourceType: ResourceType;
     displayIcon: string;
     collectionRate: number;
-    maxCapacity?: number;
+    maxCapacity: number;
 }
 
 export type ResourceData = {
@@ -21,7 +21,7 @@ export type ResourceData = {
 
 export enum ActionType {
     TimePass,
-    OnCollectMoney,
+    OnCollectResource,
     OnSpendResource,
     Upgrade,
 }
