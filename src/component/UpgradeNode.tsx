@@ -20,11 +20,11 @@ export default function UpgradeNode(props: UpgradeNodeProps) {
             <button className={styles.button} disabled={isDisabled} aria-label={props.upgrade.displayInfo()} onClick={() => {
                 props.dispatch({
                     type: ActionType.Upgrade,
-                    payload: info.data
+                    upgradeAction: info.data
                 });      
                 props.dispatch({
                     type: ActionType.OnSpendResource,
-                    payload: {
+                    upgradeAction: {
                         modifier: info.cost,
                         resourceType: ResourceType.Money
                     }

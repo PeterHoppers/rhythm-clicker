@@ -2,10 +2,10 @@ import { useEffect, useReducer, useState } from 'react'
 import { ResourceLibrary, MoneyInfo } from './data/resourceLibrary';
 import { UpgradeLibrary } from './data/upgradeLibrary';
 import './App.css'
-import { ActionType, Resource, ResourceAction, ResourceData, ResourceInfo, Upgrade, UpgradeType } from './lib/definitions';
-import ResourceNode from './component/ResourceNode';
+import { ActionType, Resource, ResourceAction, ResourceData, ResourceInfo, ResourceType, Upgrade, UpgradeType } from './lib/definitions';
+import ResourceDisplay from './component/ResourceDisplay';
 import { useInterval } from './lib/useInterval';
-import CurrencyNode from './component/CurrencyNode';
+import ResourceNode from './component/ResourceNode';
 import UpgradeNode from './component/UpgradeNode';
 
 const NOTES_PER_BAR = 16;
@@ -98,10 +98,10 @@ function resourceReducer(state : AppState, action : ResourceAction) {
     }
     case ActionType.Upgrade: {
       const updatedResources = state.resources.map(resourceData => {
-        if (resourceData.resource.isMatchingResourceType(action.payload?.resourceType)) {
-          const upgradeType = action.payload?.upgradeType;
+        if (resourceData.resource.isMatchingResourceType(action.upgradeAction?.resourceType)) {
+          const upgradeType = action.upgradeAction?.upgradeType;
           if (upgradeType !== undefined) {
-            resourceData.resource.resourceInfo = performUpgrade(resourceData.resource.resourceInfo, upgradeType, action.payload?.modifier ?? 0);
+            resourceData.resource.resourceInfo = performUpgrade(resourceData.resource.resourceInfo, upgradeType, action.upgradeAction?.modifier ?? 0);
           }
         } 
 
@@ -115,22 +115,24 @@ function resourceReducer(state : AppState, action : ResourceAction) {
     }
     case ActionType.OnCollectResource: {
       const updatedResources = state.resources.map(resourceData => {
-        if (resourceData.resource.isCurrency()) {
+        if (resourceData.resource.isMatchingResourceType(action.resourceAction)) {
           const newAmount = resourceData.resource.performCollection(resourceData.currentAmount);
           resourceData.currentAmount = newAmount;
         }
 
         return resourceData;
       });
+
       return {
         ...state,
         resources: updatedResources
       };
     }
+
     case ActionType.OnSpendResource: {
       const updatedResources = state.resources.map(resourceData => {
-        if (resourceData.resource.isMatchingResourceType(action.payload?.resourceType)) {
-          const newAmount = resourceData.currentAmount - (action.payload?.modifier ?? 0);
+        if (resourceData.resource.isMatchingResourceType(action.upgradeAction?.resourceType)) {
+          const newAmount = resourceData.currentAmount - (action.upgradeAction?.modifier ?? 0);
           resourceData.currentAmount = newAmount;
         }
         return resourceData;
@@ -154,10 +156,6 @@ function playNote(note: BeatInfo) {
 function App() {
   const [gameData, dispatch] = useReducer(resourceReducer, initalState);
 
-  //split the resource data into two pieces, one for the currency and another for the standard resources
-  const resourceDashboardData = gameData.resources.filter((resource) => !resource.resource.isCurrency());
-  const moneyData = gameData.resources.find((resource) => resource.resource.isCurrency());
-
   useInterval(() => {
     dispatch({
       type: ActionType.TimePass
@@ -166,39 +164,42 @@ function App() {
 
   //render each of the resources on the top, the currency info in the middle, and the upgrades at the bottom
   return (
-    <div className='resource-main'>
-      <section className='resource-dashboard'>
-        <h1>Resource Dashboard</h1>
-        <div className='resource-dashboard__holder'>
-          {resourceDashboardData.map((data) => {
-            return <ResourceNode key={data.resource.resourceInfo.resourceType} resourceData={data} />
-          })}
-        </div>        
-      </section>
+    <>
+      <h1>Rhythm Clicker</h1>
+      <div className='resource-main'>        
+        <section className='resource-dashboard'>
+          <h2>Resources Collected</h2>
+          <div className='resource-dashboard__holder'>
+            {gameData.resources.map((data) => {
+              return <ResourceDisplay key={data.resource.resourceInfo.resourceType} resourceData={data} />
+            })}
+          </div>        
+        </section>
 
-      <section className='currency-section'>
-        <h2>Currency</h2>
-        <span>{moneyData?.currentAmount}</span>
-        <div className='currency-section__holder'>
-          {moneyData &&
-            <CurrencyNode moneyData={moneyData} onClickCallback = {() => {
-              dispatch({
-                type: ActionType.OnCollectResource
-              })
-            }}/>
-          }        
-        </div>
-      </section>
+        <section className='currency-section'>
+          <h2>Resource Field</h2>
+          <div className='currency-section__holder'>
+            {gameData.resources.map((data) => {
+              return <ResourceNode resourceData={data} onClickCallback = {() => {
+                dispatch({
+                  type: ActionType.OnCollectResource,
+                  resourceAction: data.resource.resourceInfo.resourceType
+                })
+              }}/>
+            })}      
+          </div>
+        </section>
 
-      <section className='upgrade-section'>
-        <h2>Upgrades</h2>
-        <div className='upgrade-section__holder'>
-          {gameData.upgrades.map((upgrade) => {
-            return <UpgradeNode key={upgrade.upgradeInfo.displayName} upgrade={upgrade} dispatch={dispatch} currentCurrency={(moneyData?.currentAmount ?? 0)}/>
-          })}
-        </div>
-      </section>
-    </div>
+        <section className='upgrade-section'>
+          <h2>Upgrades</h2>
+          <div className='upgrade-section__holder'>
+            {gameData.upgrades.map((upgrade) => {
+              return <UpgradeNode key={upgrade.upgradeInfo.displayName} upgrade={upgrade} dispatch={dispatch} currentCurrency={0}/>
+            })}
+          </div>
+        </section>
+      </div>
+    </>    
   )
 }
 

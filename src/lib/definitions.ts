@@ -46,7 +46,8 @@ export type UpgradeInfo = {
 
 export type ResourceAction = {
     type: ActionType,
-    payload?: UpgradeData
+    upgradeAction?: UpgradeData,
+    resourceAction?: ResourceType
 }
 
 export class Resource {
