@@ -12,11 +12,11 @@ import { getBeatNumbers } from './lib/rhythm/beatNotation';
 
 const TICK_CHECK = 25;
 const BEAT_LENGTH = .25;
-const RHYTHM_LENIENCY = .125;
+const RHYTHM_LENIENCY = .25;
 const INPUT_DELAY = .05;
 const TEMPO = 100; //TODO: be able to change this
 const AUDIO_BEATS = getBeatNumbers(4);
-const CLICK_PATH = "Kick_Not Weird.wav";
+const CLICK_PATH = "metronone.wav";
 
 let sampleSfx : AudioBuffer;
 
@@ -91,7 +91,7 @@ function resourceReducer(state : AppState, action : ResourceAction) {
 
       let beat = state.scheduledBeat;
       if (beat && beat.time <= state.audioContext.currentTime && sampleSfx) {
-        playNote(state.audioContext, sampleSfx, beat); 
+        playMetronone(state.audioContext, sampleSfx, beat); 
         beat = createNextNote(TEMPO, beat);
       }
 
@@ -124,7 +124,6 @@ function resourceReducer(state : AppState, action : ResourceAction) {
       }
 
       const resource = resourceAction.resource;
-      console.log(resource);
       const resourceType = resource.getResourceType();
       if (!isClickOnPattern(state.audioContext.currentTime, state.scheduledBeat, resource.resourceInfo.pattern ?? [])) {
         return state;
@@ -182,6 +181,7 @@ function isClickOnPattern(clickTime: number, upcomingBeat: BeatInfo, possibleBea
   }
 
   const closerBeat = (upcomingBeat.time - pressTime < pressTime - previousBeat.time) ? upcomingBeat : previousBeat;
+  console.log(closerBeat.time, clickTime);
   if (!possibleBeatNumbers.includes(closerBeat.noteNumber)) {
     return false;
   }
@@ -189,22 +189,31 @@ function isClickOnPattern(clickTime: number, upcomingBeat: BeatInfo, possibleBea
   return (Math.abs(closerBeat.time - pressTime) <= RHYTHM_LENIENCY);
 }
 
-function playNote(audioContext : AudioContext, audioBuffer: AudioBuffer, note: BeatInfo) {
+function playMetronone(audioContext : AudioContext, audioBuffer: AudioBuffer, note: BeatInfo) {
   if (audioContext.state === "suspended") {
     audioContext.resume();
   }
 
-  if (AUDIO_BEATS.includes(note.noteNumber)) {
-    playSample(audioContext, audioBuffer, note.time);  
+  if (AUDIO_BEATS.includes(note.noteNumber)) {   
+    const stressedNote = (note.noteNumber % NOTES_PER_BAR === 0) ? 1.25 : .5;
+    playSample(audioContext, audioBuffer, note.time, stressedNote);
   }
 }
 
-function playSample(audioContext : AudioContext, audioBuffer: AudioBuffer, time : number) {
+function playSample(audioContext : AudioContext, audioBuffer: AudioBuffer, time : number, volume?: number) {
   const sampleSource = new AudioBufferSourceNode(audioContext, {
     buffer: audioBuffer,
     playbackRate: 1,
   });
-  sampleSource.connect(audioContext.destination);
+
+  if (volume) {
+    const gainNode = audioContext.createGain();
+    sampleSource.connect(gainNode).connect(audioContext.destination);
+    gainNode.gain.value = volume;
+  } else {
+    sampleSource.connect(audioContext.destination);
+  }
+
   sampleSource.start(time);
   return sampleSource;
 }

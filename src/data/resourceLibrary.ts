@@ -7,21 +7,22 @@ export const ResourceLibrary : ResourceInfo[] = [
         displayIcon: "🌳",
         resourceType: ResourceType.Wood,
         collectionAmount: 3,
-        clickPathSFX: "",
-        pattern: getBeatNumbers(4)
+        clickPathSFX: createFilePath("RD_C_HH_2"),
+        pattern: getBeatNumbers(8)
     },
     {
         displayIcon: "🧱",
         resourceType: ResourceType.Brick,
         collectionAmount: 2,
-        clickPathSFX: "sfx/Hat_Closed.wav",
-        pattern: getBeatNumbers(4, 2)
+        clickPathSFX: createFilePath("RD_S_1"),
+        pattern: getBeatNumbers(2, 8)
     },
     {
         displayIcon: "⚙️",
         resourceType: ResourceType.Metal,
         collectionAmount: 1,
-        clickPathSFX: "",
+        clickPathSFX: createFilePath("Kick_Not Weird"),
+        pattern: getBeatNumbers(2)
     },
     {
         displayIcon: "💰",
@@ -30,3 +31,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         clickPathSFX: "",
     }
 ]
+
+function createFilePath(fileName: string) : string {
+    return `sfx/${fileName}.wav`;
+}
