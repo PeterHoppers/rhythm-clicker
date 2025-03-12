@@ -11,6 +11,10 @@
     border: 0;
 }
 
-.button:active {
+.pressed {
     transform: scale(.9);
+}
+
+.unpressed {
+    transform: scale(1);
 }
