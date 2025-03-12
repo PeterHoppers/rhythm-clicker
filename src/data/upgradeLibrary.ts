@@ -4,72 +4,25 @@ import { ResourceType, UpgradeInfo, UpgradeType } from "../lib/definitions";
 export const UpgradeLibrary : UpgradeInfo[] = [
     {
         data: {
-            upgradeType: UpgradeType.CollectionRate,
-            resourceType: ResourceType.Wood,
+            upgradeType: UpgradeType.NewResource,
+            resourceType: ResourceType.Money,
             modifier: 1,
         },
         displayIcon: "🪓",
         displayName: "Axe",
-        cost: 15,
-    },
-    {
-        data: {
-            upgradeType: UpgradeType.Capacity,
-            resourceType: ResourceType.Wood,
-            modifier: 10,
+        cost: [
+        {
+            resourceAmount: 10,
+            resourceType: ResourceType.Wood
         },
-        displayIcon: "🏚️",
-        displayName: "Shed",
-        cost: 10
-    },
-    {
-        data: {
-            upgradeType: UpgradeType.CollectionRate,
-            resourceType: ResourceType.Brick,
-            modifier: 1,
+        {
+            resourceAmount: 10,
+            resourceType: ResourceType.Metal
         },
-        displayIcon: "👷",
-        displayName: "Worker",
-        cost: 25,
-    },
-    {
-        data: {
-            upgradeType: UpgradeType.Capacity,
-            resourceType: ResourceType.Brick,
-            modifier: 10,
+        {
+            resourceAmount: 10,
+            resourceType: ResourceType.Brick
         },
-        displayIcon: "🏗️",
-        displayName: "Storage",
-        cost: 50
-    },
-    {
-        data: {
-            upgradeType: UpgradeType.CollectionRate,
-            resourceType: ResourceType.Metal,
-            modifier: 1,
-        },
-        displayIcon: "⛏️",
-        displayName: "Pickaxe",
-        cost: 100
-    },
-    {
-        data: {
-            upgradeType: UpgradeType.Capacity,
-            resourceType: ResourceType.Metal,
-            modifier: 10,
-        },
-        displayIcon: "🧰",
-        displayName: "Toolbox",
-        cost: 75
-    },    
-    {
-        data: {
-            upgradeType: UpgradeType.CollectionRate,
-            resourceType: ResourceType.Money,
-            modifier: 1,
-        },
-        displayIcon: "🏦",
-        displayName: "Bank",
-        cost: 55
+        ]
     }
 ]

@@ -2,7 +2,7 @@ import { useEffect, useReducer } from 'react'
 import { ResourceLibrary } from './data/resourceLibrary';
 import { UpgradeLibrary } from './data/upgradeLibrary';
 import './App.css'
-import { ActionType, Resource, ResourceAction, ResourceData, ResourceInfo, ResourceType, Upgrade, UpgradeType } from './lib/definitions';
+import { ActionType, Resource, ResourceAction, ResourceData, ResourceType, Upgrade, ResourceTransaction, UpgradeType, UpgradeData } from './lib/definitions';
 import ResourceDisplay from './component/ResourceDisplay';
 import { useInterval } from './lib/useInterval';
 import ResourceNode from './component/ResourceNode';
@@ -39,7 +39,8 @@ function createInitialResources() : ResourceData[] {
   {ResourceLibrary.map((resourceInfo) => (
     resources.push({
       resource: new Resource(resourceInfo),
-      currentAmount: 0
+      currentAmount: 0,
+      isVisible: resourceInfo.startingResource
     })
   ))}
 
@@ -55,6 +56,11 @@ function createUpgrades() : Upgrade[] {
   return upgrades;
 }
 
+
+type UpgradeReturn = {
+  upgrades:  Upgrade[],
+  resources:  ResourceData[]
+}
 /**
  * Takes the resource info related to the resource and modifies it depending on the upgrade's information.
  * @param info 
@@ -62,16 +68,25 @@ function createUpgrades() : Upgrade[] {
  * @param modifier 
  * @returns 
  */
-function performUpgrade(info: ResourceInfo, upgrade: UpgradeType, modifier: number) : ResourceInfo {
-  switch (upgrade) {
-    case UpgradeType.CollectionRate: {
-      const newRate = info.collectionAmount + modifier;
-      info.collectionAmount = newRate;
-      break;
+function performUpgrade(upgrade: UpgradeData, resources: ResourceData[], upgrades: Upgrade[]) : UpgradeReturn {
+  switch (upgrade.upgradeType) {
+    case UpgradeType.NewResource: {
+      resources.map(resource => {
+        if (!resource.resource.isMatchingResourceType(upgrade.resourceType)) {
+          return resource;
+        }
+
+        resource.isVisible = true;
+      });
+      
+      upgrades = upgrades.filter(x => x.upgradeInfo.data.upgradeType !== UpgradeType.NewResource && x.upgradeInfo.data.resourceType !== upgrade.resourceType);
     }
   }
 
-  return info;
+  return {
+    upgrades: upgrades,
+    resources: resources
+  };
 }
 
 /**
@@ -101,20 +116,17 @@ function resourceReducer(state : AppState, action : ResourceAction) {
       };
     }
     case ActionType.Upgrade: {
-      const updatedResources = state.resources.map(resourceData => {
-        if (resourceData.resource.isMatchingResourceType(action.upgradeAction?.resourceType)) {
-          const upgradeType = action.upgradeAction?.upgradeType;
-          if (upgradeType !== undefined) {
-            resourceData.resource.resourceInfo = performUpgrade(resourceData.resource.resourceInfo, upgradeType, action.upgradeAction?.modifier ?? 0);
-          }
-        } 
+      const upgradeAction = action.upgradeAction;
+      if (!upgradeAction) {
+        return state;
+      }
 
-        return resourceData;
-      });
+      const upgradeReturns = performUpgrade(upgradeAction, state.resources, state.upgrades);
 
       return {
         ...state,
-        resources: updatedResources
+        resources: upgradeReturns.resources,
+        upgrades: upgradeReturns.upgrades
       };
     }
     case ActionType.OnCollectResource: {
@@ -181,7 +193,6 @@ function isClickOnPattern(clickTime: number, upcomingBeat: BeatInfo, possibleBea
   }
 
   const closerBeat = (upcomingBeat.time - pressTime < pressTime - previousBeat.time) ? upcomingBeat : previousBeat;
-  console.log(closerBeat.time, clickTime);
   if (!possibleBeatNumbers.includes(closerBeat.noteNumber)) {
     return false;
   }
@@ -244,6 +255,13 @@ async function getFile(audioContext : AudioContext, filepath : string) {
 function App() {
   const [gameData, dispatch] = useReducer(resourceReducer, initalState);
 
+  const resourcesCollected : ResourceTransaction[] = gameData.resources.map(x => {
+    return {
+      resourceAmount: x.currentAmount,
+      resourceType: x.resource.getResourceType()
+    }
+  });
+
   useInterval(() => {
     dispatch({
       type: ActionType.TimePass
@@ -288,7 +306,7 @@ function App() {
         <section className='resource-dashboard'>
           <h2>Resources Collected</h2>
           <div className='resource-dashboard__holder'>
-            {gameData.resources.map((data) => {
+            {gameData.resources.filter(x => x.isVisible).map((data) => {
               return <ResourceDisplay key={data.resource.resourceInfo.resourceType} resourceData={data} />
             })}
           </div>        
@@ -297,7 +315,7 @@ function App() {
         <section className='currency-section'>
           <h2>Resource Field</h2>
           <div className='currency-section__holder'>
-            {gameData.resources.map((data, index) => {
+            {gameData.resources.filter(x => x.isVisible).map((data, index) => {
               return <ResourceNode key={data.resource.resourceInfo.resourceType} resourceData={data} keyCode={index.toString()} onClickCallback = {() => {
                 dispatch({
                   type: ActionType.OnCollectResource,
@@ -312,7 +330,7 @@ function App() {
           <h2>Upgrades</h2>
           <div className='upgrade-section__holder'>
             {gameData.upgrades.map((upgrade) => {
-              return <UpgradeNode key={upgrade.upgradeInfo.displayName} upgrade={upgrade} dispatch={dispatch} currentCurrency={0}/>
+              return <UpgradeNode key={upgrade.upgradeInfo.displayName} upgrade={upgrade} dispatch={dispatch} currentResources={resourcesCollected}/>
             })}
           </div>
         </section>

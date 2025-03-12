@@ -8,28 +8,32 @@ export const ResourceLibrary : ResourceInfo[] = [
         resourceType: ResourceType.Wood,
         collectionAmount: 3,
         clickPathSFX: createFilePath("RD_C_HH_2"),
-        pattern: getBeatNumbers(8)
+        pattern: getBeatNumbers(8),
+        startingResource: true,
     },
     {
         displayIcon: "🧱",
         resourceType: ResourceType.Brick,
         collectionAmount: 2,
         clickPathSFX: createFilePath("RD_S_1"),
-        pattern: getBeatNumbers(2, 8)
+        pattern: getBeatNumbers(2, 8),        
+        startingResource: true,
     },
     {
         displayIcon: "⚙️",
         resourceType: ResourceType.Metal,
         collectionAmount: 1,
         clickPathSFX: createFilePath("Kick_Not Weird"),
-        pattern: getBeatNumbers(2)
+        pattern: getBeatNumbers(2),        
+        startingResource: true,
     },
     {
         displayIcon: "💰",
         resourceType: ResourceType.Money,
         collectionAmount: 5,
-        clickPathSFX: "",
-    }
+        clickPathSFX: createFilePath("Hat_Closed"),
+        pattern: getBeatNumbers(4)
+    },
 ]
 
 function createFilePath(fileName: string) : string {

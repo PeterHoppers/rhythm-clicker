@@ -13,12 +13,14 @@ export type ResourceInfo = {
     displayIcon: string;
     collectionAmount: number;
     clickPathSFX: string;
-    pattern?: number[];
+    pattern?: number[];    
+    startingResource?: boolean;
 }
 
 export type ResourceData = {
     resource : Resource;
     currentAmount: number;
+    isVisible?: boolean;
     clickSFX?: AudioBuffer;
 }
 
@@ -30,8 +32,7 @@ export enum ActionType {
 }
 
 export enum UpgradeType {
-    CollectionRate,
-    Capacity
+    NewResource
 }
 
 export type UpgradeData = {
@@ -44,7 +45,12 @@ export type UpgradeInfo = {
     data: UpgradeData,
     displayName: string;
     displayIcon: string;
-    cost: number;
+    cost: ResourceTransaction[];
+}
+
+export type ResourceTransaction = {
+    resourceType: ResourceType;
+    resourceAmount: number
 }
 
 export type ResourceAction = {
@@ -79,13 +85,7 @@ export class Upgrade {
     //render information for each different upgrade type here. Would like to move closer to where upgrade types are created
     displayInfo() : string {
         let upgradeEffectDescription = "";
-        switch(this.upgradeInfo.data.upgradeType) {
-            case UpgradeType.CollectionRate:
-                upgradeEffectDescription = `Increase collection rate of ${this.upgradeInfo.data.resourceType} by ${this.upgradeInfo.data.modifier}.`;
-                break;
-            case UpgradeType.Capacity:
-                upgradeEffectDescription = `Increase max capacity of ${this.upgradeInfo.data.resourceType} by ${this.upgradeInfo.data.modifier}.`;
-                break;
+        switch(this.upgradeInfo.data.upgradeType) {            
             default:
                 upgradeEffectDescription = `Need to define new upgrade description.`;
                 break;
