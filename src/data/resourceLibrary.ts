@@ -6,28 +6,27 @@ export const ResourceLibrary : ResourceInfo[] = [
     {
         displayIcon: "🌳",
         resourceType: ResourceType.Wood,
-        collectionRate: 3,
-        maxCapacity: 50,
+        collectionAmount: 3,
+        clickPathSFX: "",
         pattern: getBeatNumbers(4)
     },
     {
         displayIcon: "🧱",
         resourceType: ResourceType.Brick,
-        collectionRate: 2,
-        maxCapacity: 10,
+        collectionAmount: 2,
+        clickPathSFX: "sfx/Hat_Closed.wav",
         pattern: getBeatNumbers(4, 2)
     },
     {
         displayIcon: "⚙️",
         resourceType: ResourceType.Metal,
-        collectionRate: 1,
-        maxCapacity: 5
+        collectionAmount: 1,
+        clickPathSFX: "",
     },
+    {
+        displayIcon: "💰",
+        resourceType: ResourceType.Money,
+        collectionAmount: 5,
+        clickPathSFX: "",
+    }
 ]
-
-export const MoneyInfo : ResourceInfo = {
-    displayIcon: "💰",
-    resourceType: ResourceType.Money,
-    collectionRate: 5,
-    maxCapacity: Number.MAX_SAFE_INTEGER
-}

@@ -11,14 +11,15 @@ export enum ResourceType {
 export type ResourceInfo = {    
     resourceType: ResourceType;
     displayIcon: string;
-    collectionRate: number;
-    maxCapacity: number;
+    collectionAmount: number;
+    clickPathSFX: string;
     pattern?: number[];
 }
 
 export type ResourceData = {
     resource : Resource;
     currentAmount: number;
+    clickSFX?: AudioBuffer;
 }
 
 export enum ActionType {
@@ -49,7 +50,7 @@ export type UpgradeInfo = {
 export type ResourceAction = {
     type: ActionType,
     upgradeAction?: UpgradeData,
-    resourceAction?: ResourceInfo
+    resourceAction?: ResourceData
 }
 
 export class Resource {
@@ -59,22 +60,12 @@ export class Resource {
         this.resourceInfo = resourceInfo;
     }
 
-    performCollection(currentValue: number) : number {
-        const maxCapacity = this.resourceInfo.maxCapacity;
-        const newValue = currentValue + this.resourceInfo.collectionRate;
-        if (newValue < maxCapacity) {
-            return newValue;
-        } else {
-            return maxCapacity;
-        }
-    }
-
     isMatchingResourceType(resourceType : ResourceType | undefined) : boolean {
-        return this.resourceInfo.resourceType === resourceType;
+        return this.getResourceType() === resourceType;
     }
 
-    isCurrency() : boolean {
-        return this.resourceInfo.resourceType === ResourceType.Money;
+    getResourceType() {
+        return this.resourceInfo.resourceType;
     }
 }
 

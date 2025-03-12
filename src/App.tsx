@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from 'react'
-import { ResourceLibrary, MoneyInfo } from './data/resourceLibrary';
+import { ResourceLibrary } from './data/resourceLibrary';
 import { UpgradeLibrary } from './data/upgradeLibrary';
 import './App.css'
 import { ActionType, Resource, ResourceAction, ResourceData, ResourceInfo, ResourceType, Upgrade, UpgradeType } from './lib/definitions';
@@ -16,6 +16,7 @@ const RHYTHM_LENIENCY = .125;
 const INPUT_DELAY = .05;
 const TEMPO = 100; //TODO: be able to change this
 const AUDIO_BEATS = getBeatNumbers(4);
+const CLICK_PATH = "Kick_Not Weird.wav";
 
 let sampleSfx : AudioBuffer;
 
@@ -42,11 +43,6 @@ function createInitialResources() : ResourceData[] {
     })
   ))}
 
-  resources.push({
-    resource: new Resource(MoneyInfo),
-    currentAmount: 0
-  })
-
   return resources;
 }
 
@@ -69,13 +65,8 @@ function createUpgrades() : Upgrade[] {
 function performUpgrade(info: ResourceInfo, upgrade: UpgradeType, modifier: number) : ResourceInfo {
   switch (upgrade) {
     case UpgradeType.CollectionRate: {
-      const newRate = info.collectionRate + modifier;
-      info.collectionRate = newRate;
-      break;
-    }
-    case UpgradeType.Capacity: {
-      const newRate = info.maxCapacity + modifier;
-      info.maxCapacity = newRate;
+      const newRate = info.collectionAmount + modifier;
+      info.collectionAmount = newRate;
       break;
     }
   }
@@ -127,16 +118,22 @@ function resourceReducer(state : AppState, action : ResourceAction) {
       };
     }
     case ActionType.OnCollectResource: {
-      if (!action.resourceAction?.resourceType) {
+      const resourceAction = action.resourceAction;
+      if (!resourceAction) {
         return state;
       }
 
-      if (!isClickOnPattern(state.audioContext.currentTime, state.scheduledBeat, action.resourceAction?.pattern ?? [])) {
+      const resource = resourceAction.resource;
+      console.log(resource);
+      const resourceType = resource.getResourceType();
+      if (!isClickOnPattern(state.audioContext.currentTime, state.scheduledBeat, resource.resourceInfo.pattern ?? [])) {
         return state;
       }
 
-
-      const updatedResources = modifiyResource(state.resources, action.resourceAction?.resourceType, action.resourceAction.collectionRate);
+      const updatedResources = modifiyResource(state.resources, resourceType, resource.resourceInfo.collectionAmount ?? 0);
+      if (resourceAction.clickSFX) {
+        playSample(state.audioContext, resourceAction.clickSFX, state.audioContext.currentTime);
+      }      
 
       return {
         ...state,
@@ -186,13 +183,10 @@ function isClickOnPattern(clickTime: number, upcomingBeat: BeatInfo, possibleBea
 
   const closerBeat = (upcomingBeat.time - pressTime < pressTime - previousBeat.time) ? upcomingBeat : previousBeat;
   if (!possibleBeatNumbers.includes(closerBeat.noteNumber)) {
-    console.log(closerBeat.noteNumber, possibleBeatNumbers);
     return false;
   }
   
-  const isOnBeat =  (Math.abs(closerBeat.time - pressTime) <= RHYTHM_LENIENCY); 
-  
-  return isOnBeat;
+  return (Math.abs(closerBeat.time - pressTime) <= RHYTHM_LENIENCY);
 }
 
 function playNote(audioContext : AudioContext, audioBuffer: AudioBuffer, note: BeatInfo) {
@@ -215,8 +209,12 @@ function playSample(audioContext : AudioContext, audioBuffer: AudioBuffer, time 
   return sampleSource;
 }
 
-async function setupSample(audioContext : AudioContext) {
-  const filePath = "Kick_Not Weird.wav";
+interface SFXInfo {
+  sfx: AudioBuffer;
+  path: string;
+}
+
+async function setupSample(audioContext : AudioContext, filePath: string) {
   // Here we're waiting for the load of the file
   // To be able to use this keyword we need to be within an `async` function
   const sample = await getFile(audioContext, filePath);
@@ -227,7 +225,11 @@ async function getFile(audioContext : AudioContext, filepath : string) {
   const response = await fetch(filepath);
   const arrayBuffer = await response.arrayBuffer();
   const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-  return audioBuffer;
+  const audioInfo : SFXInfo = {
+    sfx: audioBuffer,
+    path: filepath
+  }
+  return audioInfo;
 }
 
 function App() {
@@ -240,11 +242,34 @@ function App() {
   }, TICK_CHECK);
 
   useEffect(() => {
-    setupSample(gameData.audioContext).then((sample) => {
-      sampleSfx = sample;
+    const promises : Promise<SFXInfo>[] = [];
+
+    gameData.resources.forEach(resource => {
+      const path = resource.resource.resourceInfo.clickPathSFX;
+
+      if (path && path !== "") {
+        promises.push(setupSample(gameData.audioContext, resource.resource.resourceInfo.clickPathSFX));
+      }
     });
-    
-  }, [gameData.audioContext])
+
+    promises.push(setupSample(gameData.audioContext, CLICK_PATH));
+
+    Promise.all(promises).then((values) => {
+      values.forEach(sfxInfo => {
+        const sfxPath = sfxInfo.path;
+        if (sfxPath === CLICK_PATH) {
+          sampleSfx = sfxInfo.sfx;
+        } else {
+          const resource = gameData.resources.find(x => x.resource.resourceInfo.clickPathSFX === sfxPath);
+          if (resource) {
+            resource.clickSFX = sfxInfo.sfx;
+          }
+        }
+      });
+    }).catch((rejected) => {
+      console.log(rejected);
+    });    
+  }, [gameData.audioContext, gameData.resources])
 
   //render each of the resources on the top, the currency info in the middle, and the upgrades at the bottom
   return (
@@ -267,7 +292,7 @@ function App() {
               return <ResourceNode key={data.resource.resourceInfo.resourceType} resourceData={data} keyCode={index.toString()} onClickCallback = {() => {
                 dispatch({
                   type: ActionType.OnCollectResource,
-                  resourceAction: data.resource.resourceInfo
+                  resourceAction: data
                 })
               }}/>
             })}      
