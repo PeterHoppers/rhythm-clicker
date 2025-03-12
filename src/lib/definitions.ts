@@ -1,4 +1,5 @@
-//This file holds all the basic definitions of all the unique types and classes found in the code
+export const NOTES_PER_BAR = 16;
+
 export enum ResourceType {
     Wood = "Wood",
     Brick = "Brick",
@@ -12,6 +13,7 @@ export type ResourceInfo = {
     displayIcon: string;
     collectionRate: number;
     maxCapacity: number;
+    pattern?: number[];
 }
 
 export type ResourceData = {
@@ -47,7 +49,7 @@ export type UpgradeInfo = {
 export type ResourceAction = {
     type: ActionType,
     upgradeAction?: UpgradeData,
-    resourceAction?: ResourceType
+    resourceAction?: ResourceInfo
 }
 
 export class Resource {

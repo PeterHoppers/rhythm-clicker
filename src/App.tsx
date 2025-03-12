@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useState } from 'react'
+import { useEffect, useReducer } from 'react'
 import { ResourceLibrary, MoneyInfo } from './data/resourceLibrary';
 import { UpgradeLibrary } from './data/upgradeLibrary';
 import './App.css'
@@ -7,13 +7,15 @@ import ResourceDisplay from './component/ResourceDisplay';
 import { useInterval } from './lib/useInterval';
 import ResourceNode from './component/ResourceNode';
 import UpgradeNode from './component/UpgradeNode';
+import { NOTES_PER_BAR } from './lib/definitions';
+import { getBeatNumbers } from './lib/rhythm/beatNotation';
 
-const NOTES_PER_BAR = 16;
 const TICK_CHECK = 25;
 const BEAT_LENGTH = .25;
-const RHYTHM_LENIENCY = .1;
+const RHYTHM_LENIENCY = .125;
 const INPUT_DELAY = .05;
 const TEMPO = 100; //TODO: be able to change this
+const AUDIO_BEATS = getBeatNumbers(4);
 
 let sampleSfx : AudioBuffer;
 
@@ -125,15 +127,16 @@ function resourceReducer(state : AppState, action : ResourceAction) {
       };
     }
     case ActionType.OnCollectResource: {
-      const isOnBeat = isClickOnPattern(state.audioContext.currentTime, state.scheduledBeat);
-      const updatedResources = state.resources.map(resourceData => {
-        if (resourceData.resource.isMatchingResourceType(action.resourceAction)) {
-          const newAmount = resourceData.resource.performCollection(resourceData.currentAmount);
-          resourceData.currentAmount = newAmount;
-        }
+      if (!action.resourceAction?.resourceType) {
+        return state;
+      }
 
-        return resourceData;
-      });
+      if (!isClickOnPattern(state.audioContext.currentTime, state.scheduledBeat, action.resourceAction?.pattern ?? [])) {
+        return state;
+      }
+
+
+      const updatedResources = modifiyResource(state.resources, action.resourceAction?.resourceType, action.resourceAction.collectionRate);
 
       return {
         ...state,
@@ -142,13 +145,11 @@ function resourceReducer(state : AppState, action : ResourceAction) {
     }
 
     case ActionType.OnSpendResource: {
-      const updatedResources = state.resources.map(resourceData => {
-        if (resourceData.resource.isMatchingResourceType(action.upgradeAction?.resourceType)) {
-          const newAmount = resourceData.currentAmount - (action.upgradeAction?.modifier ?? 0);
-          resourceData.currentAmount = newAmount;
-        }
-        return resourceData;
-      });
+      if (!action.upgradeAction?.resourceType) {
+        return state;
+      }
+
+      const updatedResources = modifiyResource(state.resources, action.upgradeAction?.resourceType, (action.upgradeAction?.modifier ?? 0) * -1);
 
       return {
         ...state,
@@ -161,18 +162,36 @@ function resourceReducer(state : AppState, action : ResourceAction) {
   }
 }
 
-function isClickOnPattern(clickTime: number, upcomingBeat: BeatInfo) : boolean {
+function modifiyResource(resources : ResourceData[], resourceType : ResourceType, amount : number) : ResourceData[] {
+  return resources.map(resourceData => {
+    if (resourceData.resource.isMatchingResourceType(resourceType)) {
+      const newAmount = resourceData.currentAmount + amount;
+      resourceData.currentAmount = newAmount;
+    }
+    return resourceData;
+  });
+}
+
+function isClickOnPattern(clickTime: number, upcomingBeat: BeatInfo, possibleBeatNumbers: number[]) : boolean {
   const pressTime = clickTime - INPUT_DELAY;
+  let previousBeatNumber = upcomingBeat.noteNumber - 1;
+  if (previousBeatNumber < 0) {
+    previousBeatNumber = NOTES_PER_BAR - 1;
+  }
+
   const previousBeat : BeatInfo = {
     time: upcomingBeat.time - getGapToNextTime(TEMPO),
-    noteNumber: upcomingBeat.noteNumber - 1
+    noteNumber: previousBeatNumber
   }
 
   const closerBeat = (upcomingBeat.time - pressTime < pressTime - previousBeat.time) ? upcomingBeat : previousBeat;
-
-  const isOnBeat =  (Math.abs(closerBeat.time - pressTime) <= RHYTHM_LENIENCY);
+  if (!possibleBeatNumbers.includes(closerBeat.noteNumber)) {
+    console.log(closerBeat.noteNumber, possibleBeatNumbers);
+    return false;
+  }
   
-  console.log(pressTime, closerBeat.time, isOnBeat);
+  const isOnBeat =  (Math.abs(closerBeat.time - pressTime) <= RHYTHM_LENIENCY); 
+  
   return isOnBeat;
 }
 
@@ -181,7 +200,7 @@ function playNote(audioContext : AudioContext, audioBuffer: AudioBuffer, note: B
     audioContext.resume();
   }
 
-  if (note.noteNumber % 4 == 0) {
+  if (AUDIO_BEATS.includes(note.noteNumber)) {
     playSample(audioContext, audioBuffer, note.time);  
   }
 }
@@ -244,11 +263,11 @@ function App() {
         <section className='currency-section'>
           <h2>Resource Field</h2>
           <div className='currency-section__holder'>
-            {gameData.resources.map((data) => {
-              return <ResourceNode key={data.resource.resourceInfo.resourceType} resourceData={data} onClickCallback = {() => {
+            {gameData.resources.map((data, index) => {
+              return <ResourceNode key={data.resource.resourceInfo.resourceType} resourceData={data} keyCode={index.toString()} onClickCallback = {() => {
                 dispatch({
                   type: ActionType.OnCollectResource,
-                  resourceAction: data.resource.resourceInfo.resourceType
+                  resourceAction: data.resource.resourceInfo
                 })
               }}/>
             })}      
