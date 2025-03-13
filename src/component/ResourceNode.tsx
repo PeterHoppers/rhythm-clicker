@@ -52,7 +52,7 @@ export default function ResourceNode(props: ResourceNodeProps) {
         setPressed(false);
     }
 
-    const classNames = `${styles.button} ${(isPressed) ? styles.pressed : styles.unpressed}`;
+    const classNames = `${styles.button} ${(isPressed) ? styles.pressed : styles.unpressed} ${(props.resourceData.shouldPress) ? styles.preview : styles.default}`;
 
     return (
         <>

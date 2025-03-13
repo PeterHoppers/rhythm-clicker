@@ -21,6 +21,7 @@ export type ResourceData = {
     resource : Resource;
     currentAmount: number;
     isVisible?: boolean;
+    shouldPress?: boolean;
     clickSFX?: AudioBuffer;
 }
 

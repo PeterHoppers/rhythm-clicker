@@ -105,8 +105,9 @@ function resourceReducer(state : AppState, action : ResourceAction) {
       }
 
       let beat = state.scheduledBeat;
-      if (beat && beat.time <= state.audioContext.currentTime && sampleSfx) {
+      if (beat && beat.time <= state.audioContext.currentTime) {
         playMetronone(state.audioContext, sampleSfx, beat); 
+        previewBeats(state.resources, beat);
         beat = createNextNote(TEMPO, beat);
       }
 
@@ -137,7 +138,8 @@ function resourceReducer(state : AppState, action : ResourceAction) {
 
       const resource = resourceAction.resource;
       const resourceType = resource.getResourceType();
-      if (!isClickOnPattern(state.audioContext.currentTime, state.scheduledBeat, resource.resourceInfo.pattern ?? [])) {
+      const isOnBeat = isClickOnPattern(state.audioContext.currentTime, state.scheduledBeat, resource.resourceInfo.pattern ?? [])
+      if (!isOnBeat) {
         return state;
       }
 
@@ -205,10 +207,20 @@ function playMetronone(audioContext : AudioContext, audioBuffer: AudioBuffer, no
     audioContext.resume();
   }
 
-  if (AUDIO_BEATS.includes(note.noteNumber)) {   
-    const stressedNote = (note.noteNumber % NOTES_PER_BAR === 0) ? 1.25 : .5;
-    playSample(audioContext, audioBuffer, note.time, stressedNote);
+  if (!audioBuffer) {
+    return;
   }
+
+  if (AUDIO_BEATS.includes(note.noteNumber)) {   
+    const noteVolume = (note.noteNumber % NOTES_PER_BAR === 0) ? 2 : .5;
+    playSample(audioContext, audioBuffer, note.time, noteVolume);
+  }
+}
+
+function previewBeats(resources : ResourceData[], note : BeatInfo) {
+  resources.map(resource => {
+    resource.shouldPress = resource.resource.resourceInfo.pattern?.includes(note.noteNumber);
+  })
 }
 
 function playSample(audioContext : AudioContext, audioBuffer: AudioBuffer, time : number, volume?: number) {
@@ -316,7 +328,8 @@ function App() {
           <h2>Resource Field</h2>
           <div className='currency-section__holder'>
             {gameData.resources.filter(x => x.isVisible).map((data, index) => {
-              return <ResourceNode key={data.resource.resourceInfo.resourceType} resourceData={data} keyCode={index.toString()} onClickCallback = {() => {
+              //TODO: create field notes that can have resource nodes assigned to them
+              return <ResourceNode key={data.resource.resourceInfo.resourceType} resourceData={data} keyCode={(index + 1).toString()} onClickCallback = {() => {
                 dispatch({
                   type: ActionType.OnCollectResource,
                   resourceAction: data

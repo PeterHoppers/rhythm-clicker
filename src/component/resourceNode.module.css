@@ -22,3 +22,7 @@
 .unpressed {
     transform: scale(1);
 }
+
+.preview {
+    outline: 3px solid pink;
+}

@@ -16,7 +16,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         resourceType: ResourceType.Brick,
         collectionAmount: 2,
         clickPathSFX: createFilePath("RD_S_1"),
-        pattern: getBeatNumbers(2, 8),        
+        pattern: getBeatNumbers(4),        
         startingResource: true,
     },
     {
@@ -32,7 +32,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         resourceType: ResourceType.Money,
         collectionAmount: 5,
         clickPathSFX: createFilePath("Hat_Closed"),
-        pattern: getBeatNumbers(4)
+        pattern: getBeatNumbers(2, 8)
     },
 ]
 
