@@ -8,13 +8,11 @@ import { useInterval } from './lib/useInterval';
 import ResourceNode from './component/ResourceNode';
 import UpgradeNode from './component/UpgradeNode';
 import { NOTES_PER_BAR } from './lib/definitions';
-import { getBeatNumbers } from './lib/rhythm/beatNotation';
+import { getBeatNumbers, BeatInfo, createNextNote, isClickOnPattern } from './lib/rhythm/beatNotation';
+import { setupSFX, SFXInfo, playSFX } from './lib/rhythm/playback';
 
 const TICK_CHECK = 25;
-const BEAT_LENGTH = .25;
-const RHYTHM_LENIENCY = .1;
-const INPUT_DELAY = 0;
-const TEMPO = 200; //TODO: be able to change this
+const TEMPO = 500; //TODO: be able to change this
 const AUDIO_BEATS = getBeatNumbers(4);
 const CLICK_PATH = "metronone.wav";
 
@@ -40,6 +38,7 @@ function createInitialResources() : ResourceData[] {
     resources.push({
       resource: new Resource(resourceInfo),
       currentAmount: 0,
+      successNotes: [],
       isVisible: resourceInfo.startingResource
     })
   ))}
@@ -108,7 +107,12 @@ function resourceReducer(state : AppState, action : ResourceAction) {
       if (beat && beat.time <= state.audioContext.currentTime) {
         playMetronone(state.audioContext, sampleSfx, beat); 
         previewBeats(state.resources, beat);
-        playBeats(state.resources, state.audioContext, beat);
+        //playBeats(state.resources, state.audioContext, beat);
+
+        if (beat.noteNumber % NOTES_PER_BAR === 0) {
+          resetNotes(state.resources);
+        }
+
         beat = createNextNote(TEMPO, beat);
       }
 
@@ -139,14 +143,28 @@ function resourceReducer(state : AppState, action : ResourceAction) {
 
       const resource = resourceAction.resource;
       const resourceType = resource.getResourceType();
-      const isOnBeat = isClickOnPattern(state.audioContext.currentTime, state.scheduledBeat, resource.resourceInfo.pattern ?? [])
-      if (!isOnBeat) {
-        return state;
+      const beatPress = isClickOnPattern(state.audioContext.currentTime, state.scheduledBeat, resource.resourceInfo.pattern ?? [], TEMPO)
+      if (!beatPress.isOnBeat) {
+        const updatedResources = state.resources.map(resource => {
+          if (resource.resource.isMatchingResourceType(resourceType)) {
+            resource.successNotes = [];
+          }
+          return resource;
+        })
+        return {
+          ...state,
+          resources: updatedResources
+        };
       }
 
       const updatedResources = modifiyResource(state.resources, resourceType, resource.resourceInfo.collectionAmount ?? 0);
       if (resourceAction.clickSFX) {
-        playSample(state.audioContext, resourceAction.clickSFX, state.audioContext.currentTime);
+        playSFX(state.audioContext, resourceAction.clickSFX, state.audioContext.currentTime);
+        updatedResources.map(resource => {
+          if (resource.resource.isMatchingResourceType(resourceType)) {
+            resource.successNotes.push(beatPress.beatNumber);
+          }
+        })
       }      
 
       return {
@@ -183,39 +201,6 @@ function modifiyResource(resources : ResourceData[], resourceType : ResourceType
   });
 }
 
-function isClickOnPattern(clickTime: number, upcomingBeat: BeatInfo, possibleBeatNumbers: number[]) : boolean {
-  const pressTime = clickTime - INPUT_DELAY;
-  let previousBeatNumber = upcomingBeat.noteNumber - 1;
-  if (previousBeatNumber < 0) {
-    previousBeatNumber = NOTES_PER_BAR - 1;
-  }
-
-  const previousBeat : BeatInfo = {
-    time: upcomingBeat.time - getGapToNextTime(TEMPO),
-    noteNumber: previousBeatNumber
-  }  
-
-  //determine which note was trying to be hit by looking to see if eitehr of them are valid notes
-  const isPreviousValid = possibleBeatNumbers.includes(previousBeat.noteNumber);
-  const isUpcomingValid = possibleBeatNumbers.includes(upcomingBeat.noteNumber);
-
-  let targetBeat : BeatInfo;
-  if (isPreviousValid && !isUpcomingValid) {
-    targetBeat = previousBeat;
-  } else if (!isPreviousValid && isUpcomingValid) {
-    targetBeat = upcomingBeat
-  } else if (isPreviousValid && isUpcomingValid) {
-    targetBeat = (Math.abs(upcomingBeat.time - pressTime) < Math.abs(pressTime - previousBeat.time)) ? upcomingBeat : previousBeat;
-  } else {
-    return false;
-  }
-
-  const isOnBeat = (Math.abs(targetBeat.time - pressTime) <= RHYTHM_LENIENCY);
-  
-  console.log(pressTime, (Math.abs(targetBeat.time - pressTime)), RHYTHM_LENIENCY, isOnBeat);
-  return isOnBeat;
-}
-
 function playMetronone(audioContext : AudioContext, audioBuffer: AudioBuffer, note: BeatInfo) {
   if (audioContext.state === "suspended") {
     audioContext.resume();
@@ -225,9 +210,11 @@ function playMetronone(audioContext : AudioContext, audioBuffer: AudioBuffer, no
     return;
   }
 
+  const isNewBar = (note.noteNumber % NOTES_PER_BAR === 0);
+
   if (AUDIO_BEATS.includes(note.noteNumber)) {   
-    const noteVolume = (note.noteNumber % NOTES_PER_BAR === 0) ? 2 : .5;
-    playSample(audioContext, audioBuffer, note.time, noteVolume);
+    const noteVolume = (isNewBar) ? 2 : .5;
+    playSFX(audioContext, audioBuffer, note.time, noteVolume);
   }
 }
 
@@ -243,50 +230,21 @@ function previewBeats(resources : ResourceData[], note : BeatInfo) {
 function playBeats(resources : ResourceData[], audioContext : AudioContext, note : BeatInfo) {
   resources.forEach(resource => {
     if (resource.shouldPress && resource.clickSFX) {
-      playSample(audioContext, resource.clickSFX, note.time);
+      playSFX(audioContext, resource.clickSFX, note.time);
+      resource.isPlayed = true;
+    } else {
+      resource.isPlayed = false;
     }
   });
 }
 
-function playSample(audioContext : AudioContext, audioBuffer: AudioBuffer, time : number, volume?: number) {
-  const sampleSource = new AudioBufferSourceNode(audioContext, {
-    buffer: audioBuffer,
-    playbackRate: 1,
-  });
-
-  if (volume) {
-    const gainNode = audioContext.createGain();
-    sampleSource.connect(gainNode).connect(audioContext.destination);
-    gainNode.gain.value = volume;
-  } else {
-    sampleSource.connect(audioContext.destination);
-  }
-
-  sampleSource.start(time);
-  return sampleSource;
-}
-
-interface SFXInfo {
-  sfx: AudioBuffer;
-  path: string;
-}
-
-async function setupSample(audioContext : AudioContext, filePath: string) {
-  // Here we're waiting for the load of the file
-  // To be able to use this keyword we need to be within an `async` function
-  const sample = await getFile(audioContext, filePath);
-  return sample;
-}
-
-async function getFile(audioContext : AudioContext, filepath : string) {
-  const response = await fetch(filepath);
-  const arrayBuffer = await response.arrayBuffer();
-  const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-  const audioInfo : SFXInfo = {
-    sfx: audioBuffer,
-    path: filepath
-  }
-  return audioInfo;
+function resetNotes(resources : ResourceData[]) {
+  resources.map(resource => {
+    if (resource.successNotes.length == resource.resource.resourceInfo.pattern?.length) {
+      resource.currentAmount += resource.resource.resourceInfo.completedBarAmount;
+    }
+    resource.successNotes = [];
+  })
 }
 
 function App() {
@@ -312,11 +270,11 @@ function App() {
       const path = resource.resource.resourceInfo.clickPathSFX;
 
       if (path && path !== "") {
-        promises.push(setupSample(gameData.audioContext, resource.resource.resourceInfo.clickPathSFX));
+        promises.push(setupSFX(gameData.audioContext, resource.resource.resourceInfo.clickPathSFX));
       }
     });
 
-    promises.push(setupSample(gameData.audioContext, CLICK_PATH));
+    promises.push(setupSFX(gameData.audioContext, CLICK_PATH));
 
     Promise.all(promises).then((values) => {
       values.forEach(sfxInfo => {
@@ -375,28 +333,6 @@ function App() {
       </div>
     </>    
   )
-}
-
-function createNextNote(tempo : number, currentBeat: BeatInfo) : BeatInfo {
-  const nextNoteTime = getGapToNextTime(tempo) + currentBeat.time;
-  const note = (currentBeat.noteNumber + 1) % NOTES_PER_BAR;
-
-  return {
-    noteNumber: note,
-    time: nextNoteTime
-  }
-}
-
-function getGapToNextTime(tempo: number) {
-  // Advance current note and time by a 16th note...
-  const secondsPerBeat = 60.0 / tempo;    // Notice this picks up the CURRENT 
-  // tempo value to calculate beat length.
-  return (BEAT_LENGTH * secondsPerBeat);   // Add beat length to last beat time
-}
-
-interface BeatInfo {
-  noteNumber: number,
-  time: number
 }
 
 export default App

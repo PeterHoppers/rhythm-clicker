@@ -1,5 +1,7 @@
 import { Upgrade, ActionType, ResourceAction, ResourceTransaction } from "../lib/definitions";
 import styles from "./upgrade.module.css";
+import { Tooltip, PlacesType } from "react-tooltip";
+import ResourceCost from "./Resources/ResourceCost";
 
 const TOOLTIP_SHOW_DELAY_IN_MS = 250;
 const TOOLTIP_HIDE_DELAY_IN_MS = 400;
@@ -26,9 +28,16 @@ export default function UpgradeNode(props: UpgradeNodeProps) {
         }
     });    
 
+    const tooltipId = `tooltip-${props.upgrade.upgradeInfo.displayName}`;
+
     return (
         <span>
-            <button className={styles.button} disabled={isDisabled} aria-label={props.upgrade.displayInfo()} onClick={() => {
+            <button 
+                data-tooltip-id={tooltipId}
+                data-tooltip-place="top"
+                className={styles.button} disabled={isDisabled} 
+                aria-label={props.upgrade.displayInfo()} 
+                onClick={() => {
                 props.dispatch({
                     type: ActionType.Upgrade,
                     upgradeAction: info.data
@@ -45,6 +54,9 @@ export default function UpgradeNode(props: UpgradeNodeProps) {
             }}>
                 {info.displayIcon}
             </button>
+            <Tooltip id={tooltipId}>
+                <ResourceCost upgradeTitle={info.displayName} upgradeEffect={props.upgrade.displayInfo()} upgradeCosts={info.cost}/>
+            </Tooltip>
         </span>            
     )
 }

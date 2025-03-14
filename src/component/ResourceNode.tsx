@@ -1,6 +1,7 @@
 import { ResourceData } from "../lib/definitions";
 import styles from "./resourceNode.module.css";
 import { useEffect, useState } from "react";
+import { getResourceDisplay } from "../data/resourceLibrary";
 
 //this takes the current information about the currency and displays the basic information, along with a button that can trigger the gain money call back
 
@@ -52,12 +53,12 @@ export default function ResourceNode(props: ResourceNodeProps) {
         setPressed(false);
     }
 
-    const classNames = `${styles.button} ${(isPressed) ? styles.pressed : styles.unpressed} ${(props.resourceData.shouldPress) ? styles.preview : styles.default}`;
+    const classNames = `${styles.button} ${(isPressed || props.resourceData.isPlayed) ? styles.pressed : styles.unpressed} ${(props.resourceData.shouldPress) ? styles.preview : styles.default}`;
 
     return (
         <>
             <button className={classNames} onMouseDown={onPressedButton} onMouseLeave={onReleaseButton} onMouseUp={onReleaseButton} onTouchStart={onPressedButton} onTouchEnd={onReleaseButton} onTouchCancel={onReleaseButton}>
-                {info.displayIcon}
+                {getResourceDisplay(info.resourceType)}
             </button>         
         </>
     )

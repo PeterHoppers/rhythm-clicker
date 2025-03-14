@@ -1,4 +1,6 @@
 export const NOTES_PER_BAR = 32;
+export const RHYTHM_LENIENCY = .1;
+export const INPUT_DELAY = 0.02933;
 
 export enum ResourceType {
     Wood = "Wood",
@@ -13,8 +15,8 @@ export enum ResourceType {
 
 export type ResourceInfo = {    
     resourceType: ResourceType;
-    displayIcon: string;
     collectionAmount: number;
+    completedBarAmount: number;
     clickPathSFX: string;
     pattern?: number[];    
     startingResource?: boolean;
@@ -23,8 +25,10 @@ export type ResourceInfo = {
 export type ResourceData = {
     resource : Resource;
     currentAmount: number;
+    successNotes: number[];
     isVisible?: boolean;
     shouldPress?: boolean;
+    isPlayed?: boolean;
     clickSFX?: AudioBuffer;
 }
 
@@ -54,7 +58,8 @@ export type UpgradeInfo = {
 
 export type ResourceTransaction = {
     resourceType: ResourceType;
-    resourceAmount: number
+    resourceAmount: number;
+    resourceDisplay?: string;
 }
 
 export type ResourceAction = {
@@ -89,12 +94,15 @@ export class Upgrade {
     //render information for each different upgrade type here. Would like to move closer to where upgrade types are created
     displayInfo() : string {
         let upgradeEffectDescription = "";
-        switch(this.upgradeInfo.data.upgradeType) {            
+        switch(this.upgradeInfo.data.upgradeType) {   
+            case UpgradeType.NewResource:
+                upgradeEffectDescription = `Buy this upgrade to unlock to the ${this.upgradeInfo.data.resourceType} resource.`;
+                break;
             default:
                 upgradeEffectDescription = `Need to define new upgrade description.`;
                 break;
         }
-
-        return `${this.upgradeInfo.displayName}: cost ${this.upgradeInfo.cost}. ${upgradeEffectDescription}`;
+        
+        return `${upgradeEffectDescription}`;
     }
 }

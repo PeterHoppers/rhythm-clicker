@@ -6,33 +6,31 @@ body {
 .resource-main {
   display: flex;
   flex-direction: row;
-  height: 100vh;
 }
 
 .resource-dashboard {
-  width: 100%; 
+  width: 30%;
   text-align: center;
   padding-bottom: 1em;
-  border-bottom: 1px solid black;
 }
 
 .resource-dashboard__holder {
   display: flex;
-  width: 100%;
+  flex-wrap: wrap;
   justify-content: center;
   gap: 1em;
+  margin: auto;
 }
 
 .currency-section {
   width: 100%; 
   text-align: center;
-  border-bottom: 1px solid black;
   padding-bottom: 1em;
   flex-grow: 1;
 }
 
 .upgrade-section {
-  width: 100%; 
+  width: 30%;
   text-align: center;
 }
 

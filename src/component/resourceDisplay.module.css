@@ -1,14 +1,19 @@
 .holder {
+    width: 100px;
     padding: .5em;
     border: 1px solid black;
 }
 
 .info {
     display: flex;
+    flex-direction: column;
 }
 
 .icon {
     font-size: 2em;
+    display: flex;
+    flex-direction: column;
+    gap: .25em;
 }
 
 .stats {

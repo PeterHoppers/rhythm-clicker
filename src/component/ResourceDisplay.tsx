@@ -1,4 +1,5 @@
 import { ResourceData } from "../lib/definitions";
+import { getResourceDisplay } from "../data/resourceLibrary";
 
 import styles from "./resourceDisplay.module.css";
 
@@ -12,9 +13,9 @@ export default function ResourceDisplay(props: ResourceDisplayProps) {
     return (
         <div className={styles.holder}>
             <div className={styles.info}>
-                <div className={styles.icon}>
+                <div className={styles.icon}>                    
+                    <span>{getResourceDisplay(info.resourceType)}</span>
                     <span>{props.resourceData.currentAmount}</span>
-                    <span>{info.displayIcon}</span>
                 </div>                
             </div>
         </div>

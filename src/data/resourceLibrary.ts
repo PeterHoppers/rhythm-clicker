@@ -10,64 +10,77 @@ swung16.push(15);
 //a file to define the implementation of each of the resources. This allows easy creation of new resources when needed
 export const ResourceLibrary : ResourceInfo[] = [
     {
-        displayIcon: "🌳",
         resourceType: ResourceType.Wood,
         collectionAmount: 3,
+        completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_C_HH_2"),
-        pattern: everyOther,
-        startingResource: false,
-    },
-    {
-        displayIcon: "🧱",
-        resourceType: ResourceType.Brick,
-        collectionAmount: 2,
-        clickPathSFX: createFilePath("RD_S_1"),
-        pattern: getBeatNumbers(4),        
-        startingResource: false,
-    },
-    {
-        displayIcon: "⚙️",
-        resourceType: ResourceType.Metal,
-        collectionAmount: 1,
-        clickPathSFX: createFilePath("RD_K_1"),
-        pattern: getBeatNumbers(4),        
+        pattern: getBeatNumbers(4),
         startingResource: true,
     },
     {
-        displayIcon: "💰",
+        resourceType: ResourceType.Brick,
+        collectionAmount: 2,
+        completedBarAmount: 10,
+        clickPathSFX: createFilePath("RD_S_1"),
+        pattern: getBeatNumbers(4, 4),     
+    },
+    {
+        resourceType: ResourceType.Metal,
+        collectionAmount: 1,
+        completedBarAmount: 10,
+        clickPathSFX: createFilePath("RD_K_1"),
+        pattern: everyOther,     
+    },
+    {
         resourceType: ResourceType.Money,
         collectionAmount: 5,
+        completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_S_1"),
         pattern: [31],
-        startingResource: true
     },
     {
-        displayIcon: "🧹",
         resourceType: ResourceType.Stone,
         collectionAmount: 5,
+        completedBarAmount: 10,
         clickPathSFX: createFilePath("Hat_Closed"),
         pattern: getBeatNumbers(4, 4),
-        startingResource: true
     },
     {
-        displayIcon: "🏠",
         resourceType: ResourceType.House,
         collectionAmount: 1,
+        completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_C_HH_8"),
         pattern: swung16,
-        startingResource: true
     },
     {
-        displayIcon: "👏",
         resourceType: ResourceType.Clap,
         collectionAmount: 1,
+        completedBarAmount: 10,
         clickPathSFX: createFilePath("Clap_Stack 2"),
         pattern: getBeatNumbers(2, 8),
-        startingResource: true
     },
 ]
-//[0, 3, 6, 8, 11, 14, 16, 19, 22, 24, 27, 30],
 
 function createFilePath(fileName: string) : string {
     return `sfx/${fileName}.wav`;
+}
+
+export function getResourceDisplay(resourceType: ResourceType) : string {
+    switch (resourceType) {
+        case ResourceType.Brick:        
+            return "🧱";
+        case ResourceType.Clap:
+            return "👏";
+        case ResourceType.Wood:
+            return "🌳";
+        case ResourceType.House:
+            return "🏠";
+        case ResourceType.Money:
+            return "💰";
+        case ResourceType.Metal:
+            return "⚙️";
+        case ResourceType.Swing:
+        default:
+            return "🌱";
+    }
 }

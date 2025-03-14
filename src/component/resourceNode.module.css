@@ -12,6 +12,13 @@
     padding: .125em;
     border-radius: 10px;
     filter: drop-shadow(2px 2px 4px black);
+    width: 110px;
+    aspect-ratio: 1/1;
+    text-align: center;
+}
+
+.button:hover {
+    cursor: pointer;
 }
 
 .pressed {
@@ -25,4 +32,8 @@
 
 .preview {
     outline: 3px solid pink;
+}
+
+.default {
+    outline: 1px solid black;
 }
