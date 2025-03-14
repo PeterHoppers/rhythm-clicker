@@ -12,9 +12,9 @@ import { getBeatNumbers } from './lib/rhythm/beatNotation';
 
 const TICK_CHECK = 25;
 const BEAT_LENGTH = .25;
-const RHYTHM_LENIENCY = .25;
-const INPUT_DELAY = .05;
-const TEMPO = 100; //TODO: be able to change this
+const RHYTHM_LENIENCY = .1;
+const INPUT_DELAY = 0;
+const TEMPO = 200; //TODO: be able to change this
 const AUDIO_BEATS = getBeatNumbers(4);
 const CLICK_PATH = "metronone.wav";
 
@@ -108,6 +108,7 @@ function resourceReducer(state : AppState, action : ResourceAction) {
       if (beat && beat.time <= state.audioContext.currentTime) {
         playMetronone(state.audioContext, sampleSfx, beat); 
         previewBeats(state.resources, beat);
+        playBeats(state.resources, state.audioContext, beat);
         beat = createNextNote(TEMPO, beat);
       }
 
@@ -192,14 +193,27 @@ function isClickOnPattern(clickTime: number, upcomingBeat: BeatInfo, possibleBea
   const previousBeat : BeatInfo = {
     time: upcomingBeat.time - getGapToNextTime(TEMPO),
     noteNumber: previousBeatNumber
-  }
+  }  
 
-  const closerBeat = (upcomingBeat.time - pressTime < pressTime - previousBeat.time) ? upcomingBeat : previousBeat;
-  if (!possibleBeatNumbers.includes(closerBeat.noteNumber)) {
+  //determine which note was trying to be hit by looking to see if eitehr of them are valid notes
+  const isPreviousValid = possibleBeatNumbers.includes(previousBeat.noteNumber);
+  const isUpcomingValid = possibleBeatNumbers.includes(upcomingBeat.noteNumber);
+
+  let targetBeat : BeatInfo;
+  if (isPreviousValid && !isUpcomingValid) {
+    targetBeat = previousBeat;
+  } else if (!isPreviousValid && isUpcomingValid) {
+    targetBeat = upcomingBeat
+  } else if (isPreviousValid && isUpcomingValid) {
+    targetBeat = (Math.abs(upcomingBeat.time - pressTime) < Math.abs(pressTime - previousBeat.time)) ? upcomingBeat : previousBeat;
+  } else {
     return false;
   }
+
+  const isOnBeat = (Math.abs(targetBeat.time - pressTime) <= RHYTHM_LENIENCY);
   
-  return (Math.abs(closerBeat.time - pressTime) <= RHYTHM_LENIENCY);
+  console.log(pressTime, (Math.abs(targetBeat.time - pressTime)), RHYTHM_LENIENCY, isOnBeat);
+  return isOnBeat;
 }
 
 function playMetronone(audioContext : AudioContext, audioBuffer: AudioBuffer, note: BeatInfo) {
@@ -219,8 +233,19 @@ function playMetronone(audioContext : AudioContext, audioBuffer: AudioBuffer, no
 
 function previewBeats(resources : ResourceData[], note : BeatInfo) {
   resources.map(resource => {
+    if (!resource.isVisible) {
+      return resource;
+    }
     resource.shouldPress = resource.resource.resourceInfo.pattern?.includes(note.noteNumber);
-  })
+  });
+}
+
+function playBeats(resources : ResourceData[], audioContext : AudioContext, note : BeatInfo) {
+  resources.forEach(resource => {
+    if (resource.shouldPress && resource.clickSFX) {
+      playSample(audioContext, resource.clickSFX, note.time);
+    }
+  });
 }
 
 function playSample(audioContext : AudioContext, audioBuffer: AudioBuffer, time : number, volume?: number) {

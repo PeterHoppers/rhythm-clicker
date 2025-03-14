@@ -1,9 +1,12 @@
-export const NOTES_PER_BAR = 16;
+export const NOTES_PER_BAR = 32;
 
 export enum ResourceType {
     Wood = "Wood",
     Brick = "Brick",
     Stone = "Stone",
+    House = "House",
+    Swing = "Swing",
+    Clap = "Clap",
     Metal = "Metal",
     Money = "Money"
 }
