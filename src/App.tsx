@@ -1,8 +1,8 @@
 import { useEffect, useReducer } from 'react'
-import { ResourceLibrary } from './data/resourceLibrary';
+import { ResourceLibrary, ResourceHybrids } from './data/resourceLibrary';
 import { UpgradeLibrary } from './data/upgradeLibrary';
 import './App.css'
-import { ActionType, Resource, GameAction, ResourceData, ResourceType, Upgrade, ResourceTransaction, UpgradeType, GameEffect } from './lib/definitions';
+import { ActionType, Resource, GameAction, ResourceData, ResourceType, Upgrade, ResourceTransaction, UpgradeType, ResourceState } from './lib/definitions';
 import ResourceDisplay from './component/ResourceDisplay';
 import { useInterval } from './lib/useInterval';
 import ResourceNode from './component/ResourceNode';
@@ -34,14 +34,21 @@ const initalState : AppState = {
 
 function createInitialResources() : ResourceData[] {
   const resources : ResourceData[] = [];
-  {ResourceLibrary.map((resourceInfo) => (
+  {ResourceLibrary.forEach(resourceInfo => {
+    let startingState : ResourceState;
+    if (resourceInfo.startingResource) {
+      startingState = ResourceState.Clickable;
+    } else {
+      startingState = ResourceState.Hidden;
+    }
+
     resources.push({
       resource: new Resource(resourceInfo),
       currentAmount: 0,
       successNotes: [],
-      isVisible: resourceInfo.startingResource
+      interactionState: startingState
     })
-  ))}
+  })}
 
   return resources;
 }
@@ -88,14 +95,15 @@ function resourceReducer(state : AppState, action : GameAction) {
         scheduledBeat: beat,
       };
     }
+    
     case ActionType.Upgrade: {
       if (!action.effect) {
         return state;
       }
 
       const upgrade = action.effect;
-      let newResource;
-      let newUpgrades;
+      let newResource : ResourceData[] = state.resources;
+      let newUpgrades : Upgrade[] = state.upgrades;
 
       switch (upgrade.upgradeType) {
         case UpgradeType.NewResource: {
@@ -104,7 +112,7 @@ function resourceReducer(state : AppState, action : GameAction) {
               return resource;
             }
     
-            resource.isVisible = true;
+            resource.interactionState = ResourceState.Clickable;
             return resource;
           });
           
@@ -121,6 +129,7 @@ function resourceReducer(state : AppState, action : GameAction) {
         upgrades: newUpgrades
       }
     }
+    
     case ActionType.OnCollectResource: {
       const effect = action.effect;
       if (!effect) {
@@ -213,14 +222,14 @@ function playMetronone(audioContext : AudioContext, audioBuffer: AudioBuffer, no
 
 function previewBeats(resources : ResourceData[], note : BeatInfo) {
   resources.map(resource => {
-    if (!resource.isVisible) {
+    if (resource.interactionState !== ResourceState.Clickable) {
       return resource;
     }
     resource.shouldPress = resource.resource.resourceInfo.pattern?.includes(note.noteNumber);
   });
 }
 
-function playBeats(resources : ResourceData[], audioContext : AudioContext, note : BeatInfo) {
+/*function playBeats(resources : ResourceData[], audioContext : AudioContext, note : BeatInfo) {
   resources.forEach(resource => {
     if (resource.shouldPress && resource.clickSFX) {
       playSFX(audioContext, resource.clickSFX, note.time);
@@ -229,15 +238,40 @@ function playBeats(resources : ResourceData[], audioContext : AudioContext, note
       resource.isPlayed = false;
     }
   });
-}
+}*/
 
 function resetNotes(resources : ResourceData[]) {
-  resources.map(resource => {
-    if (resource.successNotes.length == resource.resource.resourceInfo.pattern?.length) {
-      resource.currentAmount += resource.resource.resourceInfo.completedBarAmount;
+  const resourceCompleted : ResourceType[] = [];
+  resources.map(data => {
+    if (data.successNotes.length == data.resource.resourceInfo.pattern?.length) {
+      data.currentAmount += data.resource.resourceInfo.completedBarAmount;
+      resourceCompleted.push(data.resource.getResourceType());
     }
-    resource.successNotes = [];
-  })
+    data.successNotes = [];
+    return data;
+  });
+
+  if (resourceCompleted.length <= 1) {
+    return;
+  }
+
+  ResourceHybrids.forEach(hybrid => {
+    const isCompeleted = hybrid.completed.every(x => resourceCompleted.includes(x));
+    console.log(isCompeleted, hybrid);
+    if (isCompeleted) {
+      resources.map(data => {
+        if (data.resource.isMatchingResourceType(hybrid.made)) {
+          if (data.interactionState === ResourceState.Hidden) {
+            data.interactionState = ResourceState.Gainable;
+          }
+
+          data.currentAmount += data.resource.resourceInfo.collectionAmount;
+        }
+
+        return data;
+      })
+    }
+  });
 }
 
 function App() {
@@ -295,7 +329,7 @@ function App() {
         <section className='resource-dashboard'>
           <h2>Resources Collected</h2>
           <div className='resource-dashboard__holder'>
-            {gameData.resources.filter(x => x.isVisible).map((data) => {
+            {gameData.resources.filter(x => x.interactionState !== ResourceState.Hidden).map((data) => {
               return <ResourceDisplay key={data.resource.resourceInfo.resourceType} resourceData={data} />
             })}
           </div>        
@@ -304,7 +338,7 @@ function App() {
         <section className='currency-section'>
           <h2>Resource Field</h2>
           <div className='currency-section__holder'>
-            {gameData.resources.filter(x => x.isVisible).map((data, index) => {
+            {gameData.resources.filter(x => x.interactionState === ResourceState.Clickable).map((data, index) => {
               const resourceType = data.resource.getResourceType();
               //TODO: create field notes that can have resource nodes assigned to them
               return <ResourceNode key={resourceType} resourceData={data} keyCode={(index + 1).toString()} onClickCallback = {() => {

@@ -1,4 +1,4 @@
-import { ResourceInfo, ResourceType } from "../lib/definitions";
+import { ResourceCreation, ResourceInfo, ResourceType } from "../lib/definitions";
 import { getBeatNumbers } from "../lib/rhythm/beatNotation";
 
 const everyOther = getBeatNumbers(8);
@@ -10,7 +10,7 @@ swung16.push(15);
 //a file to define the implementation of each of the resources. This allows easy creation of new resources when needed
 export const ResourceLibrary : ResourceInfo[] = [
     {
-        resourceType: ResourceType.Wood,
+        resourceType: ResourceType.Water,
         collectionAmount: 3,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_C_HH_2"),
@@ -18,14 +18,14 @@ export const ResourceLibrary : ResourceInfo[] = [
         startingResource: true,
     },
     {
-        resourceType: ResourceType.Brick,
+        resourceType: ResourceType.Seed,
         collectionAmount: 2,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_S_1"),
         pattern: getBeatNumbers(4, 4),     
     },
     {
-        resourceType: ResourceType.Metal,
+        resourceType: ResourceType.Wood,
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_K_1"),
@@ -59,6 +59,16 @@ export const ResourceLibrary : ResourceInfo[] = [
         clickPathSFX: createFilePath("Clap_Stack 2"),
         pattern: getBeatNumbers(2, 8),
     },
+];
+
+export const ResourceHybrids : ResourceCreation[] = [
+    {
+        completed: [
+            ResourceType.Seed,
+            ResourceType.Water
+        ],
+        made: ResourceType.Wood
+    },
 ]
 
 function createFilePath(fileName: string) : string {
@@ -79,8 +89,13 @@ export function getResourceDisplay(resourceType: ResourceType) : string {
             return "💰";
         case ResourceType.Metal:
             return "⚙️";
-        case ResourceType.Swing:
-        default:
+        case ResourceType.Seed:
             return "🌱";
+        case ResourceType.Water:
+            return "💧";
+        case ResourceType.Fire:
+            return "🔥";
+        default:
+            return "🙃";
     }
 }

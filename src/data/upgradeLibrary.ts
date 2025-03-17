@@ -6,13 +6,27 @@ export const UpgradeLibrary : UpgradeInfo[] = [
     {
         effect: {
             upgradeType: UpgradeType.NewResource,
-            resourceType: ResourceType.Brick,
+            resourceType: ResourceType.Seed,
         },
-        displayIcon: getResourceDisplay(ResourceType.Brick),
-        displayName: "Brick Maker",
+        displayIcon: getResourceDisplay(ResourceType.Seed),
+        displayName: "Seedlings",
         cost: [
         {
-            resourceAmount: 50,
+            resourceAmount: 10,
+            resourceType: ResourceType.Water
+        },        
+        ]
+    },
+    {
+        effect: {
+            upgradeType: UpgradeType.NewResource,
+            resourceType: ResourceType.Wood,
+        },
+        displayIcon: "🪓",
+        displayName: "Axe",
+        cost: [
+        {
+            resourceAmount: 5,
             resourceType: ResourceType.Wood
         },        
         ]
@@ -20,23 +34,15 @@ export const UpgradeLibrary : UpgradeInfo[] = [
     {
         effect: {
             upgradeType: UpgradeType.NewResource,
-            resourceType: ResourceType.Money,
+            resourceType: ResourceType.Fire,
         },
-        displayIcon: "🪓",
-        displayName: "Axe",
+        displayIcon: getResourceDisplay(ResourceType.Fire),
+        displayName: "Forest Fire",
         cost: [
         {
-            resourceAmount: 10,
+            resourceAmount: 100,
             resourceType: ResourceType.Wood
-        },
-        {
-            resourceAmount: 10,
-            resourceType: ResourceType.Metal
-        },
-        {
-            resourceAmount: 10,
-            resourceType: ResourceType.Brick
-        },
+        },        
         ]
-    }
+    },
 ]

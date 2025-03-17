@@ -1,16 +1,25 @@
 export const NOTES_PER_BAR = 32;
-export const RHYTHM_LENIENCY = .1;
+export const RHYTHM_LENIENCY = .5;
 export const INPUT_DELAY = 0.02933;
 
 export enum ResourceType {
+    Seed = "Seed",
+    Water = "Water",
     Wood = "Wood",
     Brick = "Brick",
+    Fire = "Fire",
     Stone = "Stone",
     House = "House",
     Swing = "Swing",
     Clap = "Clap",
     Metal = "Metal",
     Money = "Money"
+}
+
+export enum ResourceState {
+    Hidden,
+    Gainable,
+    Clickable
 }
 
 export enum ActionType {
@@ -38,7 +47,7 @@ export type ResourceData = {
     resource : Resource;
     currentAmount: number;
     successNotes: number[];
-    isVisible?: boolean;
+    interactionState: ResourceState;
     shouldPress?: boolean;
     isPlayed?: boolean;
     clickSFX?: AudioBuffer;
@@ -49,6 +58,11 @@ export type UpgradeInfo = {
     displayName: string;
     displayIcon: string;
     cost: ResourceTransaction[];
+}
+
+export type ResourceCreation = {
+    completed: ResourceType[],
+    made: ResourceType
 }
 
 export type ResourceTransaction = {

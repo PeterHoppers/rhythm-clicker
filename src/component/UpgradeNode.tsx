@@ -1,6 +1,6 @@
 import { Upgrade, ActionType, GameAction, ResourceTransaction } from "../lib/definitions";
 import styles from "./upgrade.module.css";
-import { Tooltip, PlacesType } from "react-tooltip";
+import { Tooltip } from "react-tooltip";
 import ResourceCost from "./Resources/ResourceCost";
 
 const TOOLTIP_SHOW_DELAY_IN_MS = 250;
