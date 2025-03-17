@@ -2,7 +2,7 @@ import { useEffect, useReducer } from 'react'
 import { ResourceLibrary } from './data/resourceLibrary';
 import { UpgradeLibrary } from './data/upgradeLibrary';
 import './App.css'
-import { ActionType, Resource, ResourceAction, ResourceData, ResourceType, Upgrade, ResourceTransaction, UpgradeType, UpgradeData } from './lib/definitions';
+import { ActionType, Resource, GameAction, ResourceData, ResourceType, Upgrade, ResourceTransaction, UpgradeType, GameEffect } from './lib/definitions';
 import ResourceDisplay from './component/ResourceDisplay';
 import { useInterval } from './lib/useInterval';
 import ResourceNode from './component/ResourceNode';
@@ -55,39 +55,6 @@ function createUpgrades() : Upgrade[] {
   return upgrades;
 }
 
-
-type UpgradeReturn = {
-  upgrades:  Upgrade[],
-  resources:  ResourceData[]
-}
-/**
- * Takes the resource info related to the resource and modifies it depending on the upgrade's information.
- * @param info 
- * @param upgrade 
- * @param modifier 
- * @returns 
- */
-function performUpgrade(upgrade: UpgradeData, resources: ResourceData[], upgrades: Upgrade[]) : UpgradeReturn {
-  switch (upgrade.upgradeType) {
-    case UpgradeType.NewResource: {
-      resources.map(resource => {
-        if (!resource.resource.isMatchingResourceType(upgrade.resourceType)) {
-          return resource;
-        }
-
-        resource.isVisible = true;
-      });
-      
-      upgrades = upgrades.filter(x => x.upgradeInfo.data.upgradeType !== UpgradeType.NewResource && x.upgradeInfo.data.resourceType !== upgrade.resourceType);
-    }
-  }
-
-  return {
-    upgrades: upgrades,
-    resources: resources
-  };
-}
-
 /**
  * A standard reducer for modifying the state through actions, rather than creating a bunch of functions that called setState.
  * Each unique way to modify the state of the resources should have its own resource action and be implemented here.
@@ -95,7 +62,7 @@ function performUpgrade(upgrade: UpgradeData, resources: ResourceData[], upgrade
  * @param action 
  * @returns 
  */
-function resourceReducer(state : AppState, action : ResourceAction) {
+function resourceReducer(state : AppState, action : GameAction) {
   switch (action.type) {
     case ActionType.TimePass: {
       if (state.audioContext.state === "suspended") {
@@ -122,28 +89,52 @@ function resourceReducer(state : AppState, action : ResourceAction) {
       };
     }
     case ActionType.Upgrade: {
-      const upgradeAction = action.upgradeAction;
-      if (!upgradeAction) {
+      if (!action.effect) {
         return state;
       }
 
-      const upgradeReturns = performUpgrade(upgradeAction, state.resources, state.upgrades);
+      const upgrade = action.effect;
+      let newResource;
+      let newUpgrades;
+
+      switch (upgrade.upgradeType) {
+        case UpgradeType.NewResource: {
+          newResource = state.resources.map(resource => {
+            if (!resource.resource.isMatchingResourceType(upgrade.resourceType)) {
+              return resource;
+            }
+    
+            resource.isVisible = true;
+            return resource;
+          });
+          
+          newUpgrades = state.upgrades.filter(x => x.upgradeInfo.effect.resourceType !== upgrade.resourceType);
+          break;
+        }
+        default:
+          break;
+      }
 
       return {
         ...state,
-        resources: upgradeReturns.resources,
-        upgrades: upgradeReturns.upgrades
-      };
+        resources: newResource,
+        upgrades: newUpgrades
+      }
     }
     case ActionType.OnCollectResource: {
-      const resourceAction = action.resourceAction;
-      if (!resourceAction) {
+      const effect = action.effect;
+      if (!effect) {
         return state;
       }
 
-      const resource = resourceAction.resource;
-      const resourceType = resource.getResourceType();
-      const beatPress = isClickOnPattern(state.audioContext.currentTime, state.scheduledBeat, resource.resourceInfo.pattern ?? [], TEMPO)
+      const resourceType = effect.resourceType;
+      const resourceData = state.resources.find(x => x.resource.isMatchingResourceType(resourceType));
+      if (!resourceData || !resourceType) {
+        return state;
+      }
+      const resource = resourceData.resource;
+      const resourceInfo = resource.resourceInfo;
+      const beatPress = isClickOnPattern(state.audioContext.currentTime, state.scheduledBeat, resourceInfo.pattern ?? [], TEMPO)
       if (!beatPress.isOnBeat) {
         const updatedResources = state.resources.map(resource => {
           if (resource.resource.isMatchingResourceType(resourceType)) {
@@ -157,9 +148,10 @@ function resourceReducer(state : AppState, action : ResourceAction) {
         };
       }
 
-      const updatedResources = modifiyResource(state.resources, resourceType, resource.resourceInfo.collectionAmount ?? 0);
-      if (resourceAction.clickSFX) {
-        playSFX(state.audioContext, resourceAction.clickSFX, state.audioContext.currentTime);
+      const updatedResources = modifiyResource(state.resources, resourceType, resourceInfo.collectionAmount ?? 0);
+      
+      if (resourceData.clickSFX) {
+        playSFX(state.audioContext, resourceData.clickSFX, state.audioContext.currentTime);
         updatedResources.map(resource => {
           if (resource.resource.isMatchingResourceType(resourceType)) {
             resource.successNotes.push(beatPress.beatNumber);
@@ -174,11 +166,12 @@ function resourceReducer(state : AppState, action : ResourceAction) {
     }
 
     case ActionType.OnSpendResource: {
-      if (!action.upgradeAction?.resourceType) {
+      const resourceType = action.effect.resourceType;
+      if (!resourceType) {
         return state;
       }
 
-      const updatedResources = modifiyResource(state.resources, action.upgradeAction?.resourceType, (action.upgradeAction?.modifier ?? 0) * -1);
+      const updatedResources = modifiyResource(state.resources, resourceType, (action.effect?.modifier ?? 0) * -1);
 
       return {
         ...state,
@@ -259,7 +252,8 @@ function App() {
 
   useInterval(() => {
     dispatch({
-      type: ActionType.TimePass
+      type: ActionType.TimePass,
+      effect: {}
     });   
   }, TICK_CHECK);
 
@@ -311,11 +305,14 @@ function App() {
           <h2>Resource Field</h2>
           <div className='currency-section__holder'>
             {gameData.resources.filter(x => x.isVisible).map((data, index) => {
+              const resourceType = data.resource.getResourceType();
               //TODO: create field notes that can have resource nodes assigned to them
-              return <ResourceNode key={data.resource.resourceInfo.resourceType} resourceData={data} keyCode={(index + 1).toString()} onClickCallback = {() => {
+              return <ResourceNode key={resourceType} resourceData={data} keyCode={(index + 1).toString()} onClickCallback = {() => {
                 dispatch({
                   type: ActionType.OnCollectResource,
-                  resourceAction: data
+                  effect: {
+                    resourceType: resourceType
+                  }
                 })
               }}/>
             })}      

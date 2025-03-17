@@ -13,6 +13,18 @@ export enum ResourceType {
     Money = "Money"
 }
 
+export enum ActionType {
+    TimePass,
+    OnCollectResource,
+    OnSpendResource,
+    Upgrade,
+}
+
+export enum UpgradeType {
+    NewResource,
+    CollectionIncrease
+}
+
 export type ResourceInfo = {    
     resourceType: ResourceType;
     collectionAmount: number;
@@ -32,25 +44,8 @@ export type ResourceData = {
     clickSFX?: AudioBuffer;
 }
 
-export enum ActionType {
-    TimePass,
-    OnCollectResource,
-    OnSpendResource,
-    Upgrade,
-}
-
-export enum UpgradeType {
-    NewResource
-}
-
-export type UpgradeData = {
-    modifier: number
-    resourceType?: ResourceType,
-    upgradeType?: UpgradeType,
-}
-
-export type UpgradeInfo = {
-    data: UpgradeData,
+export type UpgradeInfo = {    
+    effect: GameEffect,
     displayName: string;
     displayIcon: string;
     cost: ResourceTransaction[];
@@ -62,10 +57,15 @@ export type ResourceTransaction = {
     resourceDisplay?: string;
 }
 
-export type ResourceAction = {
+export type GameAction = {
     type: ActionType,
-    upgradeAction?: UpgradeData,
-    resourceAction?: ResourceData
+    effect: GameEffect,
+}
+
+export type GameEffect = {
+    resourceType?: ResourceType,
+    modifier?: number
+    upgradeType?: UpgradeType,
 }
 
 export class Resource {
@@ -94,9 +94,9 @@ export class Upgrade {
     //render information for each different upgrade type here. Would like to move closer to where upgrade types are created
     displayInfo() : string {
         let upgradeEffectDescription = "";
-        switch(this.upgradeInfo.data.upgradeType) {   
+        switch(this.upgradeInfo.effect.upgradeType) {   
             case UpgradeType.NewResource:
-                upgradeEffectDescription = `Buy this upgrade to unlock to the ${this.upgradeInfo.data.resourceType} resource.`;
+                upgradeEffectDescription = `Buy this upgrade to unlock to the ${this.upgradeInfo.effect.resourceType} resource.`;
                 break;
             default:
                 upgradeEffectDescription = `Need to define new upgrade description.`;

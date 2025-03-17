@@ -4,10 +4,9 @@ import { getResourceDisplay } from "./resourceLibrary";
 //a file to define the implementation of each of the upgrades. Keeps the definition of all of them in one spot
 export const UpgradeLibrary : UpgradeInfo[] = [
     {
-        data: {
+        effect: {
             upgradeType: UpgradeType.NewResource,
             resourceType: ResourceType.Brick,
-            modifier: 1,
         },
         displayIcon: getResourceDisplay(ResourceType.Brick),
         displayName: "Brick Maker",
@@ -19,10 +18,9 @@ export const UpgradeLibrary : UpgradeInfo[] = [
         ]
     },
     {
-        data: {
+        effect: {
             upgradeType: UpgradeType.NewResource,
             resourceType: ResourceType.Money,
-            modifier: 1,
         },
         displayIcon: "🪓",
         displayName: "Axe",

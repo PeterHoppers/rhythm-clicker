@@ -1,4 +1,4 @@
-import { Upgrade, ActionType, ResourceAction, ResourceTransaction } from "../lib/definitions";
+import { Upgrade, ActionType, GameAction, ResourceTransaction } from "../lib/definitions";
 import styles from "./upgrade.module.css";
 import { Tooltip, PlacesType } from "react-tooltip";
 import ResourceCost from "./Resources/ResourceCost";
@@ -10,7 +10,7 @@ const TOOLTIP_HIDE_DELAY_IN_MS = 400;
 interface UpgradeNodeProps {
     upgrade: Upgrade,
     currentResources: ResourceTransaction[],
-    dispatch: React.ActionDispatch<[action: ResourceAction]>
+    dispatch: React.ActionDispatch<[action: GameAction]>
 }
 
 export default function UpgradeNode(props: UpgradeNodeProps) {
@@ -40,12 +40,12 @@ export default function UpgradeNode(props: UpgradeNodeProps) {
                 onClick={() => {
                 props.dispatch({
                     type: ActionType.Upgrade,
-                    upgradeAction: info.data
+                    effect: info.effect,                    
                 });      
                 props.upgrade.upgradeInfo.cost.forEach(cost => {
                     props.dispatch({
                         type: ActionType.OnSpendResource,
-                        upgradeAction: {
+                        effect: {
                             modifier: cost.resourceAmount,
                             resourceType: cost.resourceType
                         }
