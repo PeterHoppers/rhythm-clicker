@@ -2,7 +2,6 @@ import { ResourceCreation, ResourceInfo, ResourceType } from "../lib/definitions
 import { getBeatNumbers } from "../lib/rhythm/beatNotation";
 
 const everyOther = getBeatNumbers(8);
-everyOther.push(30);
 
 const swung16 = getBeatNumbers(8);
 swung16.push(15);
@@ -53,7 +52,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         pattern: swung16,
     },
     {
-        resourceType: ResourceType.Clap,
+        resourceType: ResourceType.Fire,
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("Clap_Stack 2"),

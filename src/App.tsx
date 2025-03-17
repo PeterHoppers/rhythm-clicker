@@ -162,7 +162,7 @@ function resourceReducer(state : AppState, action : GameAction) {
       if (resourceData.clickSFX) {
         playSFX(state.audioContext, resourceData.clickSFX, state.audioContext.currentTime);
         updatedResources.map(resource => {
-          if (resource.resource.isMatchingResourceType(resourceType)) {
+          if (resource.resource.isMatchingResourceType(resourceType) && !resource.successNotes.includes(beatPress.beatNumber)) {
             resource.successNotes.push(beatPress.beatNumber);
           }
         })
@@ -243,11 +243,24 @@ function previewBeats(resources : ResourceData[], note : BeatInfo) {
 function resetNotes(resources : ResourceData[]) {
   const resourceCompleted : ResourceType[] = [];
   resources.map(data => {
-    if (data.successNotes.length == data.resource.resourceInfo.pattern?.length) {
+    if (data.successNotes.length === 0) {
+      return data;
+    }
+
+    //if the last note entered into this list was 
+    const isLastNoteForNextRow = (data.successNotes[data.successNotes.length - 1] == 0 && data.successNotes.length > 1);
+    const useableList = (isLastNoteForNextRow) ? data.successNotes.slice(0, data.successNotes.length - 1) : data.successNotes;
+    const patternLength = data.resource.resourceInfo.pattern?.length ?? 0;
+    if (useableList.length >= patternLength) {
       data.currentAmount += data.resource.resourceInfo.completedBarAmount;
       resourceCompleted.push(data.resource.getResourceType());
     }
-    data.successNotes = [];
+
+    if (isLastNoteForNextRow) {
+      data.successNotes = [0];
+    } else {
+      data.successNotes = [];
+    }
     return data;
   });
 
