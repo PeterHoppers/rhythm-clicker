@@ -39,7 +39,9 @@ export type ResourceInfo = {
     collectionAmount: number;
     completedBarAmount: number;
     clickPathSFX: string;
+    description?: string;
     pattern?: number[];    
+    patternNotation?: string;
     startingResource?: boolean;
 }
 

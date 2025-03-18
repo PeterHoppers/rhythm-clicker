@@ -1,5 +1,7 @@
 import { ResourceData } from "../lib/definitions";
 import { getResourceDisplay } from "../data/resourceLibrary";
+import { Tooltip } from "react-tooltip";
+import ResourceDescription from "./Resources/ResourceDescription";
 
 import styles from "./resourceDisplay.module.css";
 
@@ -10,14 +12,24 @@ interface ResourceDisplayProps {
 
 export default function ResourceDisplay(props: ResourceDisplayProps) {
     const info = props.resourceData.resource.resourceInfo;
+    const tooltipId = `tooltip-resource-display-${info.resourceType}`;
+    
     return (
-        <div className={styles.holder}>
+        <div 
+            className={styles.holder}
+            data-tooltip-id={tooltipId}
+            data-tooltip-place="bottom"
+            data-tooltip-delay-hide={100}
+        >
             <div className={styles.info}>
                 <div className={styles.icon}>                    
                     <span>{getResourceDisplay(info.resourceType)}</span>
                     <span>{props.resourceData.currentAmount}</span>
                 </div>                
-            </div>
+            </div>                        
+            <Tooltip id={tooltipId} className={styles.tooltip}>
+                <ResourceDescription resourceTitle={info.resourceType} resourceDescription={info.description ?? ""} resourceNotation={info.patternNotation ?? ""} />
+            </Tooltip>
         </div>
     )
 }

@@ -13,7 +13,9 @@ export const ResourceLibrary : ResourceInfo[] = [
         collectionAmount: 3,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_C_HH_2"),
+        description: "A constantly dripping that keeps the world grounded.",
         pattern: getBeatNumbers(4),
+        patternNotation: "X:1 \nBzzz:|\n",
         startingResource: true,
     },
     {
@@ -21,13 +23,15 @@ export const ResourceLibrary : ResourceInfo[] = [
         collectionAmount: 2,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_S_1"),
-        pattern: getBeatNumbers(4, 4),     
+        pattern: getBeatNumbers(4, 4),
+        patternNotation: "X:1 \nzzBz:|\n",    
     },
     {
         resourceType: ResourceType.Wood,
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_K_1"),
+        patternNotation: "X:1 \nBzBz:|\n",
         pattern: everyOther,     
     },
     {

@@ -1,12 +1,14 @@
 import abcjs from "abcjs";
 import "./noteRenderer.css";
 
-export function renderNotes(elementID: string, noteString : string, activeNoteNumber: number) {
+export function renderNotes(elementID: string, noteString : string, activeNoteNumber?: number) {
     abcjs.renderAbc(elementID, noteString, {
-        clickListener: () => {
-
-        }
+        responsive: "resize"
     });
+
+    if (activeNoteNumber === undefined) {
+        return;
+    }
 
     const notes = document.getElementById(elementID)?.querySelectorAll("[data-index]");
     if (!notes || notes.length - 1 < activeNoteNumber) {

@@ -34,3 +34,7 @@
     font-size: .65em;
     bottom: 0;
 }
+
+.tooltip {
+    max-width: 250px;
+}
