@@ -1,7 +1,7 @@
 import { renderNotes } from "../../lib/notes/noteRenderer";
 import { useEffect } from "react";
 
-const METRONOME_DUISPLAY_ID = "metronome_display"; 
+const METRONOME_DISPLAY_ID = "metronome_display"; 
 
 interface MetronomeVisualProps {
     beatToRender: number;
@@ -9,11 +9,11 @@ interface MetronomeVisualProps {
 
 export default function MetronomeVisual(props : MetronomeVisualProps) {
     useEffect(() => {
-        renderNotes(METRONOME_DUISPLAY_ID, "X:1 \nBzzz|Bzzz|Bzzz|Bzzz:|\n", props.beatToRender);
+        renderNotes(METRONOME_DISPLAY_ID, "X:1 \nBzzz|Bzzz|Bzzz|Bzzz:|\n", props.beatToRender);
     }, [props.beatToRender]);
 
     return (
-        <div id={METRONOME_DUISPLAY_ID}>
+        <div id={METRONOME_DISPLAY_ID}>
         </div>
     )
 }
