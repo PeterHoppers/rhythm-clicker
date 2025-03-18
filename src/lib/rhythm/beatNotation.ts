@@ -24,10 +24,7 @@ export function getBeatNumbers(numberOfBeats : number, offset? : number) : numbe
 
 export function isClickOnPattern(clickTime: number, upcomingBeat: BeatInfo, possibleBeatNumbers: number[], tempo : number) : BeatPress {
   const pressTime = clickTime - INPUT_DELAY;
-  let previousBeatNumber = upcomingBeat.noteNumber - 1;
-  if (previousBeatNumber < 0) {
-    previousBeatNumber = NOTES_PER_BAR - 1;
-  }
+  const previousBeatNumber = getPreviousBeatNumber(upcomingBeat.noteNumber);
 
   const previousBeat : BeatInfo = {
     time: upcomingBeat.time - getGapToNextTime(tempo),
@@ -69,6 +66,14 @@ export function createNextNote(tempo : number, currentBeat: BeatInfo) : BeatInfo
         noteNumber: note,
         time: nextNoteTime
     }
+}
+
+export function getPreviousBeatNumber(currentBeatNumber : number) {
+  let previousBeatNumber = currentBeatNumber - 1;
+  if (previousBeatNumber < 0) {
+    previousBeatNumber = NOTES_PER_BAR - 1;
+  }
+  return previousBeatNumber;
 }
   
 function getGapToNextTime(tempo: number) {

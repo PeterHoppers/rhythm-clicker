@@ -1,0 +1,7 @@
+.abcjs-active-note {
+    fill: #1900ff;
+}
+
+.abcjs-note_selected {
+    fill: currentColor;
+}

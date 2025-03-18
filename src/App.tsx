@@ -8,8 +8,9 @@ import { useInterval } from './lib/useInterval';
 import ResourceNode from './component/ResourceNode';
 import UpgradeNode from './component/UpgradeNode';
 import { NOTES_PER_BAR } from './lib/definitions';
-import { getBeatNumbers, BeatInfo, createNextNote, isClickOnPattern } from './lib/rhythm/beatNotation';
+import { getBeatNumbers, BeatInfo, createNextNote, isClickOnPattern, getPreviousBeatNumber } from './lib/rhythm/beatNotation';
 import { setupSFX, SFXInfo, playSFX } from './lib/rhythm/playback';
+import MetronomeVisual from './component/Notation/MetronomeVisual';
 
 const TICK_CHECK = 25;
 const TEMPO = 500; //TODO: be able to change this
@@ -161,9 +162,9 @@ function resourceReducer(state : AppState, action : GameAction) {
       
       if (resourceData.clickSFX) {
         playSFX(state.audioContext, resourceData.clickSFX, state.audioContext.currentTime);
-        updatedResources.map(resource => {
-          if (resource.resource.isMatchingResourceType(resourceType) && !resource.successNotes.includes(beatPress.beatNumber)) {
-            resource.successNotes.push(beatPress.beatNumber);
+        updatedResources.map(data => {
+          if (data.resource.isMatchingResourceType(resourceType) && !data.successNotes.includes(beatPress.beatNumber)) {
+            data.successNotes.push(beatPress.beatNumber);
           }
         })
       }      
@@ -364,6 +365,7 @@ function App() {
               }}/>
             })}      
           </div>
+          <MetronomeVisual beatToRender={Math.floor(getPreviousBeatNumber(gameData.scheduledBeat.noteNumber) / 2)}/>
         </section>
 
         <section className='upgrade-section'>
