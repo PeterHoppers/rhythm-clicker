@@ -49,8 +49,6 @@ export function isClickOnPattern(clickTime: number, upcomingBeat: BeatInfo, poss
     };
   }
 
-  console.log((targetBeat.time - pressTime));
-
   const isOnBeat = (Math.abs(targetBeat.time - pressTime) <= RHYTHM_LENIENCY);  
   return {
     isOnBeat: isOnBeat,

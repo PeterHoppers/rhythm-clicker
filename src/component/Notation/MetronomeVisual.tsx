@@ -9,7 +9,10 @@ interface MetronomeVisualProps {
 
 export default function MetronomeVisual(props : MetronomeVisualProps) {
     useEffect(() => {
-        renderNotes(METRONOME_DISPLAY_ID, "X:1 \nBzzz|Bzzz|Bzzz|Bzzz:|\n", props.beatToRender);
+        renderNotes(METRONOME_DISPLAY_ID, "X:1 \nBzzz|Bzzz|Bzzz|Bzzz:|\n", {
+            activeNoteNumber: props.beatToRender,
+            isResponsive: true
+        });
     }, [props.beatToRender]);
 
     return (

@@ -10,7 +10,7 @@ interface ResourceNotationProps {
 
 export default function ResourceNotation(props : ResourceNotationProps) {
     useEffect(() => {
-        renderNotes(props.notationName, props.notationString);
+        renderNotes(props.notationName, props.notationString, {width: 250});
     }, [props.notationName, props.notationString]);
 
     return (

@@ -10,7 +10,7 @@ swung16.push(15);
 export const ResourceLibrary : ResourceInfo[] = [
     {
         resourceType: ResourceType.Water,
-        collectionAmount: 3,
+        collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_C_HH_2"),
         description: "A constantly dripping that keeps the world grounded.",
@@ -20,7 +20,7 @@ export const ResourceLibrary : ResourceInfo[] = [
     },
     {
         resourceType: ResourceType.Seed,
-        collectionAmount: 2,
+        collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_S_1"),
         pattern: getBeatNumbers(4, 4),
@@ -36,31 +36,43 @@ export const ResourceLibrary : ResourceInfo[] = [
     },
     {
         resourceType: ResourceType.Money,
-        collectionAmount: 5,
+        collectionAmount: 1,
         completedBarAmount: 10,
-        clickPathSFX: createFilePath("RD_S_1"),
-        pattern: [31],
+        clickPathSFX: createFilePath("448537__tedagame__b5"),        
+        patternNotation: "X:1 \nB/2B/2B/2B/2| B/2z B/2B/2:|\n",
+        pattern: [0, 2, 4, 6, 8, 12, 14, 16, 18, 20, 22, 24, 28, 30],
+        startingResource: true
     },
     {
-        resourceType: ResourceType.Stone,
-        collectionAmount: 5,
+        resourceType: ResourceType.Smoke,
+        collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("Hat_Closed"),
         pattern: getBeatNumbers(4, 4),
     },
     {
-        resourceType: ResourceType.House,
+        resourceType: ResourceType.Steam,
         collectionAmount: 1,
         completedBarAmount: 10,
-        clickPathSFX: createFilePath("RD_C_HH_8"),
-        pattern: swung16,
-    },
+        clickPathSFX: createFilePath("Hat_Closed"),
+        pattern: getBeatNumbers(4, 4),
+    },    
     {
         resourceType: ResourceType.Fire,
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("Clap_Stack 2"),
-        pattern: getBeatNumbers(2, 8),
+        pattern: getBeatNumbers(2, 8),        
+        patternNotation: "X:1 \nz4 | Bzzz:|\n",
+    },
+    {
+        resourceType: ResourceType.Storm,
+        collectionAmount: 1,
+        completedBarAmount: 10,
+        clickPathSFX: createFilePath("RD_C_HH_8"),
+        pattern: swung16,
+        patternNotation:  "X:1 \nB z B z | B z B B | B z B z | B z B z:|\n",
+        startingResource: true
     },
 ];
 
@@ -72,6 +84,20 @@ export const ResourceHybrids : ResourceCreation[] = [
         ],
         made: ResourceType.Wood
     },
+    {
+        completed: [
+            ResourceType.Wood,
+            ResourceType.Fire
+        ],
+        made: ResourceType.Smoke
+    },
+    {
+        completed: [
+            ResourceType.Water,
+            ResourceType.Fire
+        ],
+        made: ResourceType.Steam
+    },    
 ]
 
 function createFilePath(fileName: string) : string {
@@ -86,18 +112,20 @@ export function getResourceDisplay(resourceType: ResourceType) : string {
             return "👏";
         case ResourceType.Wood:
             return "🌳";
-        case ResourceType.House:
-            return "🏠";
+        case ResourceType.Storm:
+            return "⛈️";
         case ResourceType.Money:
             return "💰";
-        case ResourceType.Metal:
-            return "⚙️";
+        case ResourceType.Steam:
+            return "☁️";
         case ResourceType.Seed:
             return "🌱";
         case ResourceType.Water:
             return "💧";
         case ResourceType.Fire:
             return "🔥";
+        case ResourceType.Smoke:
+            return "🌫️";
         default:
             return "🙃";
     }

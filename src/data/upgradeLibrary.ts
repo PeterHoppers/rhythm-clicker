@@ -19,18 +19,33 @@ export const UpgradeLibrary : UpgradeInfo[] = [
     },
     {
         effect: {
-            upgradeType: UpgradeType.NewResource,
+            upgradeType: UpgradeType.CollectionIncrease,
             resourceType: ResourceType.Wood,
+            modifier: 5
         },
         displayIcon: "🪓",
         displayName: "Axe",
         cost: [
         {
-            resourceAmount: 5,
+            resourceAmount: 3,
+            resourceType: ResourceType.Wood
+        },               
+        ]
+    },
+    {
+        effect: {
+            upgradeType: UpgradeType.NewResource,
+            resourceType: ResourceType.Wood,
+        },
+        displayIcon: getResourceDisplay(ResourceType.Wood),
+        displayName: "Forestery",
+        cost: [
+        {
+            resourceAmount: 10,
             resourceType: ResourceType.Wood
         },        
         ]
-    },
+    },    
     {
         effect: {
             upgradeType: UpgradeType.NewResource,
@@ -43,6 +58,28 @@ export const UpgradeLibrary : UpgradeInfo[] = [
             resourceAmount: 100,
             resourceType: ResourceType.Wood
         },        
+        ]
+    },
+    {
+        effect: {
+            upgradeType: UpgradeType.NewResource,
+            resourceType: ResourceType.Storm,
+        },
+        displayIcon: getResourceDisplay(ResourceType.Storm),
+        displayName: "A Storm Brewing",
+        cost: [
+        {
+            resourceAmount: 3,
+            resourceType: ResourceType.Steam
+        },        
+        {
+            resourceAmount: 3,
+            resourceType: ResourceType.Smoke,
+        },
+        {
+            resourceAmount: 150,
+            resourceType: ResourceType.Water
+        }
         ]
     },
 ]

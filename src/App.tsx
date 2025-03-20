@@ -120,6 +120,18 @@ function resourceReducer(state : AppState, action : GameAction) {
           newUpgrades = state.upgrades.filter(x => x.upgradeInfo.effect.resourceType !== upgrade.resourceType);
           break;
         }
+        case UpgradeType.CollectionIncrease: {
+          newResource = state.resources.map(resource => {
+            if (!resource.resource.isMatchingResourceType(upgrade.resourceType)) {
+              return resource;
+            }
+    
+            resource.resource.resourceInfo.collectionAmount += upgrade.modifier ?? 0;
+            resource.resource.resourceInfo.completedBarAmount += upgrade.modifier ?? 0;
+            return resource;
+          });
+          break;
+        }
         default:
           break;
       }
@@ -268,6 +280,8 @@ function resetNotes(resources : ResourceData[]) {
   if (resourceCompleted.length <= 1) {
     return;
   }
+
+  console.log(resourceCompleted);
 
   ResourceHybrids.forEach(hybrid => {
     const isCompeleted = hybrid.completed.every(x => resourceCompleted.includes(x));
