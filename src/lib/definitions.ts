@@ -1,4 +1,5 @@
 import { BeatInfo } from "./rhythm/beatNotation";
+import { createDescription } from "../data/resourceLibrary";
 
 export const NOTES_PER_BAR = 32;
 export const RHYTHM_LENIENCY = .5;
@@ -101,6 +102,10 @@ export class Resource {
 
     getResourceType() {
         return this.resourceInfo.resourceType;
+    }
+
+    getFullDisplayDescription() {
+        return createDescription(this.resourceInfo.description ?? "", this.getResourceType());
     }
 }
 

@@ -47,7 +47,7 @@ export default function ResourceDisplay(props: ResourceDisplayProps) {
             <Tooltip id={tooltipId} className={styles.tooltip}>
                 <ResourceDescription 
                     resourceTitle={info.resourceType} 
-                    resourceDescription={info.description ?? ""} 
+                    resourceDescription={props.resourceData.resource.getFullDisplayDescription()} 
                     resourceNotation={info.patternNotation ?? ""} 
                     isResourceCollectable={props.resourceData.interactionState === ResourceState.Clickable} />
             </Tooltip>

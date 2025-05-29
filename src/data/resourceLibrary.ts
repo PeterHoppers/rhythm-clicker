@@ -32,7 +32,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_K_1"),
         patternNotation: "X:1 \nBzBz:|\n",
-        pattern: everyOther,     
+        pattern: everyOther
     },
     {
         resourceType: ResourceType.Money,
@@ -71,8 +71,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_C_HH_8"),
         pattern: swung16,
-        patternNotation:  "X:1 \nB z B z | B z B B | B z B z | B z B z:|\n",
-        startingResource: true
+        patternNotation:  "X:1 \nB z B z | B z B B | B z B z | B z B z:|\n"
     },
 ];
 
@@ -102,6 +101,26 @@ export const ResourceHybrids : ResourceCreation[] = [
 
 function createFilePath(fileName: string) : string {
     return `sfx/${fileName}.wav`;
+}
+
+export function createDescription(startingDescription: string, resourceType : ResourceType) : string {
+    const description = startingDescription;
+    const resourceCreation = ResourceHybrids.find(x => x.made === resourceType);
+
+    if (!resourceCreation) {
+        return description;
+    }
+
+    let creationDescription = "Can be made by collecting a full bar of";
+    const appender = " & ";
+    resourceCreation.completed.forEach(element => {
+        creationDescription += ` ${getResourceDisplay(element)}${appender}`;
+    });
+
+    creationDescription = creationDescription.slice(0, appender.length * -1);
+    creationDescription += ".";
+
+    return `${description}\n${creationDescription}`;
 }
 
 export function getResourceDisplay(resourceType: ResourceType) : string {
