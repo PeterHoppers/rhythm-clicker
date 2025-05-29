@@ -362,9 +362,9 @@ function App() {
 
   //render each of the resources on the top, the currency info in the middle, and the upgrades at the bottom
   return (
-    <>
-      <h1>Rhythm Clicker</h1>
-      <div className='resource-main'>        
+    <div className='resource-app'>
+      <h1 className='resource-title'>Rhythm Clicker</h1>
+      <main className='resource-main'>        
         <section className='resource-dashboard'>
           <h2>Resources Collected</h2>
           <div className='resource-dashboard__holder'>
@@ -375,9 +375,9 @@ function App() {
         </section>
 
         <section className='currency-section'>
-          <h2>Resource Field</h2>
+          <h2 className='resource-title'>Resource Field</h2>
           <div className='currency-section__holder'>
-            {gameData.resources.filter(x => x.interactionState === ResourceState.Clickable).map((data, index) => {
+            {gameData.resources.map((data, index) => {
               const resourceType = data.resource.getResourceType();
               //TODO: create field notes that can have resource nodes assigned to them
               return <ResourceNode key={resourceType} resourceData={data} keyCode={(index + 1).toString()} onClickCallback = {() => {
@@ -391,8 +391,9 @@ function App() {
             })}      
           </div>
           <MetronomeVisual beatToRender={Math.floor(getPreviousBeatNumber(gameData.scheduledBeat.noteNumber) / 2)}/>
-        </section>
-
+        </section>       
+      </main>
+      <div className='resource-side'>   
         <section className='upgrade-section'>
           <h2>Upgrades</h2>
           <div className='upgrade-section__holder'>
@@ -402,7 +403,7 @@ function App() {
           </div>
         </section>
       </div>
-    </>    
+    </div>    
   )
 }
 

@@ -36,4 +36,5 @@
 }
 
 .tooltip {
+    z-index: 10;
 }

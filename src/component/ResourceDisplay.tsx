@@ -3,6 +3,7 @@ import { getResourceDisplay } from "../data/resourceLibrary";
 import { Tooltip } from "react-tooltip";
 import ResourceDescription from "./Resources/ResourceDescription";
 import { GameAction, ActionType } from "../lib/definitions";
+import ProgressBar from "./ProgressBar/ProgressBar";
 
 import styles from "./resourceDisplay.module.css";
 
@@ -42,7 +43,7 @@ export default function ResourceDisplay(props: ResourceDisplayProps) {
                     <span>{getResourceDisplay(info.resourceType)}</span>
                     <span>{props.resourceData.currentAmount}</span>
                     {props.resourceData.interactionState === ResourceState.Clickable &&
-                        <span>{props.resourceData.successNotes.length} / {props.resourceData.resource.resourceInfo.pattern?.length}</span>
+                        <ProgressBar currentValue={props.resourceData.successNotes.length}  maxValue={props.resourceData.resource.resourceInfo.pattern?.length ?? 0}/>
                     }                    
                 </div>                
             </div>                        

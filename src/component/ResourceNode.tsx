@@ -1,4 +1,4 @@
-import { ResourceData } from "../lib/definitions";
+import { ResourceData, ResourceState } from "../lib/definitions";
 import styles from "./resourceNode.module.css";
 import { useEffect, useState } from "react";
 import { getResourceDisplay } from "../data/resourceLibrary";
@@ -14,6 +14,7 @@ interface ResourceNodeProps {
 export default function ResourceNode(props: ResourceNodeProps) {
     const [isPressed, setPressed] = useState<boolean>(false);
     const info = props.resourceData.resource.resourceInfo;
+    const isEnabled = (props.resourceData.interactionState === ResourceState.Clickable);
 
     useEffect(() => {
         window.addEventListener('keydown', handleKeyDownEvent);
@@ -57,7 +58,7 @@ export default function ResourceNode(props: ResourceNodeProps) {
 
     return (
         <>
-            <button className={classNames} onMouseDown={onPressedButton} onMouseLeave={onReleaseButton} onMouseUp={onReleaseButton} onTouchStart={onPressedButton} onTouchEnd={onReleaseButton} onTouchCancel={onReleaseButton}>
+            <button className={classNames} onMouseDown={onPressedButton} onMouseLeave={onReleaseButton} onMouseUp={onReleaseButton} onTouchStart={onPressedButton} onTouchEnd={onReleaseButton} onTouchCancel={onReleaseButton} disabled={!isEnabled}>
                 {getResourceDisplay(info.resourceType)}
             </button>         
         </>

@@ -17,7 +17,13 @@
     text-align: center;
 }
 
-.button:hover {
+.button:disabled {
+    background-color: gray;
+    color: rgba(0, 0, 0, .05);
+    filter: saturate(0);
+}
+
+.button:not(:disabled):hover {
     cursor: pointer;
 }
 
