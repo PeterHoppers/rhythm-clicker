@@ -41,7 +41,9 @@ export default function ResourceDisplay(props: ResourceDisplayProps) {
                 <div className={styles.icon}>                    
                     <span>{getResourceDisplay(info.resourceType)}</span>
                     <span>{props.resourceData.currentAmount}</span>
-                    <span>{props.resourceData.successNotes.length} / {props.resourceData.resource.resourceInfo.pattern?.length}</span>
+                    {props.resourceData.interactionState === ResourceState.Clickable &&
+                        <span>{props.resourceData.successNotes.length} / {props.resourceData.resource.resourceInfo.pattern?.length}</span>
+                    }                    
                 </div>                
             </div>                        
             <Tooltip id={tooltipId} className={styles.tooltip}>
