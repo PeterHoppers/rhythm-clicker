@@ -297,7 +297,6 @@ function resetNotes(resources : ResourceData[], barNumber: number) {
 
   ResourceHybrids.forEach(hybrid => {
     const isCompeleted = hybrid.completed.every(x => resourceCompleted.includes(x));
-    console.log(isCompeleted, hybrid);
     if (isCompeleted) {
       resources.map(data => {
         if (data.resource.isMatchingResourceType(hybrid.made)) {

@@ -5,6 +5,7 @@ interface RescourceDescriptionProps {
     resourceTitle: string;
     resourceDescription: string;
     resourceNotation: string;
+    isResourceCollectable: boolean
 }
 
 export default function ResourceDescription(props: RescourceDescriptionProps) {
@@ -12,7 +13,7 @@ export default function ResourceDescription(props: RescourceDescriptionProps) {
         <>
             <h3 className={styles.title}>{props.resourceTitle}</h3>         
             <p>{props.resourceDescription}</p>
-            {props.resourceNotation && 
+            {props.resourceNotation && props.isResourceCollectable &&
                 <>
                     <p className={styles.subtitle}>Collection Notation:</p>
                     <ResourceNotation notationName={props.resourceTitle} notationString={props.resourceNotation}/>

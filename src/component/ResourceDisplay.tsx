@@ -1,4 +1,4 @@
-import { ResourceData } from "../lib/definitions";
+import { ResourceData, ResourceState } from "../lib/definitions";
 import { getResourceDisplay } from "../data/resourceLibrary";
 import { Tooltip } from "react-tooltip";
 import ResourceDescription from "./Resources/ResourceDescription";
@@ -45,7 +45,11 @@ export default function ResourceDisplay(props: ResourceDisplayProps) {
                 </div>                
             </div>                        
             <Tooltip id={tooltipId} className={styles.tooltip}>
-                <ResourceDescription resourceTitle={info.resourceType} resourceDescription={info.description ?? ""} resourceNotation={info.patternNotation ?? ""} />
+                <ResourceDescription 
+                    resourceTitle={info.resourceType} 
+                    resourceDescription={info.description ?? ""} 
+                    resourceNotation={info.patternNotation ?? ""} 
+                    isResourceCollectable={props.resourceData.interactionState === ResourceState.Clickable} />
             </Tooltip>
         </div>
     )
