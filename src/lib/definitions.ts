@@ -1,3 +1,5 @@
+import { BeatInfo } from "./rhythm/beatNotation";
+
 export const NOTES_PER_BAR = 32;
 export const RHYTHM_LENIENCY = .5;
 export const INPUT_DELAY = 0.02933;
@@ -49,7 +51,7 @@ export type ResourceInfo = {
 export type ResourceData = {
     resource : Resource;
     currentAmount: number;
-    successNotes: number[];
+    successNotes: BeatInfo[];
     interactionState: ResourceState;
     shouldPress?: boolean;
     isPlayed?: boolean;

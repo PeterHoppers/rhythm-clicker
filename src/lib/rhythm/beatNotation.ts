@@ -2,15 +2,17 @@ import { NOTES_PER_BAR, INPUT_DELAY, RHYTHM_LENIENCY} from "../definitions";
 
 const BEAT_LENGTH = 0;
 
-export type BeatPress = {
-    isOnBeat: boolean,
-    beatNumber: number
-}
-
 export type BeatInfo = {
     noteNumber: number,
+    barNumber: number,
     time: number
 }  
+
+export type BeatPress = {
+  isOnBeat: boolean,
+  beatInfo: BeatInfo
+}
+
 
 export function getBeatNumbers(numberOfBeats : number, offset? : number) : number[] {
     const noteNumbers : number[] = [];
@@ -25,10 +27,12 @@ export function getBeatNumbers(numberOfBeats : number, offset? : number) : numbe
 export function isClickOnPattern(clickTime: number, upcomingBeat: BeatInfo, possibleBeatNumbers: number[], tempo : number) : BeatPress {
   const pressTime = clickTime - INPUT_DELAY;
   const previousBeatNumber = getPreviousBeatNumber(upcomingBeat.noteNumber);
+  const previousBarNumber = (previousBeatNumber === NOTES_PER_BAR - 1) ? upcomingBeat.barNumber - 1 : upcomingBeat.barNumber;
 
   const previousBeat : BeatInfo = {
     time: upcomingBeat.time - getGapToNextTime(tempo),
-    noteNumber: previousBeatNumber
+    noteNumber: previousBeatNumber,
+    barNumber: previousBarNumber
   }  
 
   //determine which note was trying to be hit by looking to see if eitehr of them are valid notes
@@ -45,24 +49,26 @@ export function isClickOnPattern(clickTime: number, upcomingBeat: BeatInfo, poss
   } else {
     return {
       isOnBeat: false,
-      beatNumber: upcomingBeat.noteNumber
+      beatInfo: upcomingBeat
     };
   }
 
   const isOnBeat = (Math.abs(targetBeat.time - pressTime) <= RHYTHM_LENIENCY);  
   return {
     isOnBeat: isOnBeat,
-    beatNumber: targetBeat.noteNumber
+    beatInfo: targetBeat
   };
 }
 
 export function createNextNote(tempo : number, currentBeat: BeatInfo) : BeatInfo {
     const nextNoteTime = getGapToNextTime(tempo) + currentBeat.time;
     const note = (currentBeat.noteNumber + 1) % NOTES_PER_BAR;
+    const barNumber = (note === 0) ? currentBeat.barNumber + 1 : currentBeat.barNumber;
 
     return {
         noteNumber: note,
-        time: nextNoteTime
+        time: nextNoteTime,
+        barNumber: barNumber
     }
 }
 

@@ -30,7 +30,7 @@ const initalState : AppState = {
   resources : createInitialResources(),
   upgrades : createUpgrades(), 
   audioContext: new AudioContext(),
-  scheduledBeat: {time: 0, noteNumber: 0}
+  scheduledBeat: {time: 0, noteNumber: 0, barNumber: 0}
 }
 
 function createInitialResources() : ResourceData[] {
@@ -85,7 +85,7 @@ function resourceReducer(state : AppState, action : GameAction) {
         previewBeats(state.resources, state.audioContext, beat);
 
         if (beat.noteNumber % NOTES_PER_BAR === 0) {
-          resetNotes(state.resources);
+          resetNotes(state.resources, beat.barNumber - 1);
         }
 
         beat = createNextNote(TEMPO, beat);
@@ -156,7 +156,7 @@ function resourceReducer(state : AppState, action : GameAction) {
       }
       const resource = resourceData.resource;
       const resourceInfo = resource.resourceInfo;
-      const beatPress = isClickOnPattern(state.audioContext.currentTime, state.scheduledBeat, resourceInfo.pattern ?? [], TEMPO)
+      const beatPress = isClickOnPattern(state.audioContext.currentTime, state.scheduledBeat, resourceInfo.pattern ?? [], TEMPO);
       if (!beatPress.isOnBeat) {
         const updatedResources = state.resources.map(resource => {
           if (resource.resource.isMatchingResourceType(resourceType)) {
@@ -176,8 +176,8 @@ function resourceReducer(state : AppState, action : GameAction) {
       if (resourceData.clickSFX) {
         playSFX(state.audioContext, resourceData.clickSFX, state.audioContext.currentTime);
         updatedResources.map(data => {
-          if (data.resource.isMatchingResourceType(resourceType) && !data.successNotes.includes(beatPress.beatNumber)) {
-            data.successNotes.push(beatPress.beatNumber);
+          if (data.resource.isMatchingResourceType(resourceType) && !data.successNotes.includes(beatPress.beatInfo)) {
+            data.successNotes.push(beatPress.beatInfo);
             data.isPreviewed = false;
           }
         })
@@ -273,27 +273,21 @@ function previewBeats(resources : ResourceData[], audioContext : AudioContext, n
   });
 }
 
-function resetNotes(resources : ResourceData[]) {
+function resetNotes(resources : ResourceData[], barNumber: number) {
   const resourceCompleted : ResourceType[] = [];
   resources.map(data => {
     if (data.successNotes.length === 0) {
       return data;
     }
 
-    //if the last note entered into this list was 
-    const isLastNoteForNextRow = (data.successNotes[data.successNotes.length - 1] == 0 && data.successNotes.length > 1);
-    const useableList = (isLastNoteForNextRow) ? data.successNotes.slice(0, data.successNotes.length - 1) : data.successNotes;
+    const useableList = data.successNotes.filter(x => x.barNumber === barNumber);
     const patternLength = data.resource.resourceInfo.pattern?.length ?? 0;
     if (useableList.length >= patternLength) {
       data.currentAmount += data.resource.resourceInfo.completedBarAmount;
       resourceCompleted.push(data.resource.getResourceType());
     }
 
-    if (isLastNoteForNextRow) {
-      data.successNotes = [0];
-    } else {
-      data.successNotes = [];
-    }
+    data.successNotes = data.successNotes.filter(x => x.barNumber === barNumber + 1); //reset notes if any are for the next beat already
     return data;
   });
 
