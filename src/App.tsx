@@ -81,8 +81,8 @@ function resourceReducer(state : AppState, action : GameAction) {
       let beat = state.scheduledBeat;
       if (beat && beat.time <= state.audioContext.currentTime) {
         playMetronone(state.audioContext, sampleSfx, beat); 
-        previewBeats(state.resources, beat);
-        //playBeats(state.resources, state.audioContext, beat);
+        visualizeBeats(state.resources, beat);
+        previewBeats(state.resources, state.audioContext, beat);
 
         if (beat.noteNumber % NOTES_PER_BAR === 0) {
           resetNotes(state.resources);
@@ -161,6 +161,7 @@ function resourceReducer(state : AppState, action : GameAction) {
         const updatedResources = state.resources.map(resource => {
           if (resource.resource.isMatchingResourceType(resourceType)) {
             resource.successNotes = [];
+            resource.isPreviewed = false;
           }
           return resource;
         })
@@ -177,6 +178,7 @@ function resourceReducer(state : AppState, action : GameAction) {
         updatedResources.map(data => {
           if (data.resource.isMatchingResourceType(resourceType) && !data.successNotes.includes(beatPress.beatNumber)) {
             data.successNotes.push(beatPress.beatNumber);
+            data.isPreviewed = false;
           }
         })
       }      
@@ -194,6 +196,27 @@ function resourceReducer(state : AppState, action : GameAction) {
       }
 
       const updatedResources = modifiyResource(state.resources, resourceType, (action.effect?.modifier ?? 0) * -1);
+
+      return {
+        ...state,
+        resources: updatedResources
+      };
+    }
+
+    case ActionType.OnPreviewResource: {
+      const resourceType = action.effect.resourceType;
+      if (!resourceType) {
+        return state;
+      }
+
+      const isPreviewing = action.effect.modifier === 1;
+
+      const updatedResources = state.resources.map(resourceData => {
+        if (resourceData.resource.isMatchingResourceType(resourceType)) {
+          resourceData.isPreviewed = isPreviewing;
+        }
+        return resourceData;
+      });
 
       return {
         ...state,
@@ -233,7 +256,7 @@ function playMetronone(audioContext : AudioContext, audioBuffer: AudioBuffer, no
   }
 }
 
-function previewBeats(resources : ResourceData[], note : BeatInfo) {
+function visualizeBeats(resources : ResourceData[], note : BeatInfo) {
   resources.map(resource => {
     if (resource.interactionState !== ResourceState.Clickable) {
       return resource;
@@ -242,16 +265,13 @@ function previewBeats(resources : ResourceData[], note : BeatInfo) {
   });
 }
 
-/*function playBeats(resources : ResourceData[], audioContext : AudioContext, note : BeatInfo) {
+function previewBeats(resources : ResourceData[], audioContext : AudioContext, note : BeatInfo) {
   resources.forEach(resource => {
-    if (resource.shouldPress && resource.clickSFX) {
+    if (resource.shouldPress && resource.clickSFX && resource.isPreviewed) {
       playSFX(audioContext, resource.clickSFX, note.time);
-      resource.isPlayed = true;
-    } else {
-      resource.isPlayed = false;
     }
   });
-}*/
+}
 
 function resetNotes(resources : ResourceData[]) {
   const resourceCompleted : ResourceType[] = [];
@@ -280,8 +300,6 @@ function resetNotes(resources : ResourceData[]) {
   if (resourceCompleted.length <= 1) {
     return;
   }
-
-  console.log(resourceCompleted);
 
   ResourceHybrids.forEach(hybrid => {
     const isCompeleted = hybrid.completed.every(x => resourceCompleted.includes(x));
@@ -345,9 +363,9 @@ function App() {
         }
       });
     }).catch((rejected) => {
-      console.log(rejected);
+      console.log(`${rejected}`);
     });    
-  }, [gameData.audioContext, gameData.resources])
+  }, [gameData.audioContext, gameData.resources]);
 
   //render each of the resources on the top, the currency info in the middle, and the upgrades at the bottom
   return (
@@ -358,7 +376,7 @@ function App() {
           <h2>Resources Collected</h2>
           <div className='resource-dashboard__holder'>
             {gameData.resources.filter(x => x.interactionState !== ResourceState.Hidden).map((data) => {
-              return <ResourceDisplay key={data.resource.resourceInfo.resourceType} resourceData={data} />
+              return <ResourceDisplay key={data.resource.resourceInfo.resourceType} resourceData={data} dispatch={dispatch} />
             })}
           </div>        
         </section>

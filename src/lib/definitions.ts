@@ -27,6 +27,7 @@ export enum ActionType {
     OnCollectResource,
     OnSpendResource,
     Upgrade,
+    OnPreviewResource,
 }
 
 export enum UpgradeType {
@@ -52,6 +53,7 @@ export type ResourceData = {
     interactionState: ResourceState;
     shouldPress?: boolean;
     isPlayed?: boolean;
+    isPreviewed?: boolean;
     clickSFX?: AudioBuffer;
 }
 

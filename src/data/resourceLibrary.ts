@@ -38,10 +38,10 @@ export const ResourceLibrary : ResourceInfo[] = [
         resourceType: ResourceType.Money,
         collectionAmount: 1,
         completedBarAmount: 10,
-        clickPathSFX: createFilePath("448537__tedagame__b5"),        
+        clickPathSFX: createFilePath("RD_K_1"),        
         patternNotation: "X:1 \nB/2B/2B/2B/2| B/2z B/2B/2:|\n",
         pattern: [0, 2, 4, 6, 8, 12, 14, 16, 18, 20, 22, 24, 28, 30],
-        startingResource: true
+        startingResource: false
     },
     {
         resourceType: ResourceType.Smoke,
