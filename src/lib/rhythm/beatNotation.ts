@@ -26,14 +26,8 @@ export function getBeatNumbers(numberOfBeats : number, offset? : number) : numbe
 
 export function isClickOnPattern(clickTime: number, upcomingBeat: BeatInfo, possibleBeatNumbers: number[], tempo : number) : BeatPress {
   const pressTime = clickTime - INPUT_DELAY;
-  const previousBeatNumber = getPreviousBeatNumber(upcomingBeat.noteNumber);
-  const previousBarNumber = (previousBeatNumber === NOTES_PER_BAR - 1) ? upcomingBeat.barNumber - 1 : upcomingBeat.barNumber;
-
-  const previousBeat : BeatInfo = {
-    time: upcomingBeat.time - getGapToNextTime(tempo),
-    noteNumber: previousBeatNumber,
-    barNumber: previousBarNumber
-  }  
+  const previousBeat = getPreviousBeat(upcomingBeat, tempo);
+ 
 
   //determine which note was trying to be hit by looking to see if eitehr of them are valid notes
   const isPreviousValid = possibleBeatNumbers.includes(previousBeat.noteNumber);
@@ -70,6 +64,19 @@ export function createNextNote(tempo : number, currentBeat: BeatInfo) : BeatInfo
         time: nextNoteTime,
         barNumber: barNumber
     }
+}
+
+export function getPreviousBeat(upcomingBeat: BeatInfo, tempo : number) {
+  const previousBeatNumber = getPreviousBeatNumber(upcomingBeat.noteNumber);
+  const previousBarNumber = (previousBeatNumber === NOTES_PER_BAR - 1) ? upcomingBeat.barNumber - 1 : upcomingBeat.barNumber;
+
+  const previousBeat : BeatInfo = {
+    time: upcomingBeat.time - getGapToNextTime(tempo),
+    noteNumber: previousBeatNumber,
+    barNumber: previousBarNumber
+  }  
+
+  return previousBeat;
 }
 
 export function getPreviousBeatNumber(currentBeatNumber : number) {

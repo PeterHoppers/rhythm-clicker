@@ -8,7 +8,7 @@ import { useInterval } from './lib/useInterval';
 import ResourceNode from './component/ResourceNode';
 import UpgradeNode from './component/UpgradeNode';
 import { NOTES_PER_BAR } from './lib/definitions';
-import { getBeatNumbers, BeatInfo, createNextNote, isClickOnPattern, getPreviousBeatNumber } from './lib/rhythm/beatNotation';
+import { getBeatNumbers, BeatInfo, createNextNote, isClickOnPattern, getPreviousBeatNumber, getPreviousBeat } from './lib/rhythm/beatNotation';
 import { setupSFX, SFXInfo, playSFX } from './lib/rhythm/playback';
 import MetronomeVisual from './component/Notation/MetronomeVisual';
 
@@ -78,6 +78,7 @@ function resourceReducer(state : AppState, action : GameAction) {
         return state;
       }
 
+      const updatedResources = state.resources;
       let beat = state.scheduledBeat;
       if (beat && beat.time <= state.audioContext.currentTime) {
         playMetronone(state.audioContext, sampleSfx, beat); 
@@ -85,15 +86,31 @@ function resourceReducer(state : AppState, action : GameAction) {
         previewBeats(state.resources, state.audioContext, beat);
 
         if (beat.noteNumber % NOTES_PER_BAR === 0) {
-          resetNotes(state.resources, beat.barNumber - 1);
+          resetNotes(state.resources);
         }
+        
+        const previousBeat = getPreviousBeat(beat, TEMPO);
+        updatedResources.map(data => {
+          const pattern = data.resource.resourceInfo.pattern ?? [];
+          if (pattern.includes(previousBeat.noteNumber)) {
+            if (data.successNotes.findIndex(x => x.barNumber === previousBeat.barNumber && x.noteNumber === previousBeat.noteNumber) === -1) {
+              data.successNotes = data.successNotes.slice(1);
+            } else {
+              if (isPatternCompleted(data.successNotes, pattern)) {
+                data.successNotes = data.successNotes.slice(0, pattern.length);
+              }              
+            }
+            
+          }
+        });
 
         beat = createNextNote(TEMPO, beat);
       }
 
       return {
-        ...state,
+        ...state,        
         scheduledBeat: beat,
+        resources: updatedResources,
       };
     }
     
@@ -160,7 +177,7 @@ function resourceReducer(state : AppState, action : GameAction) {
       if (!beatPress.isOnBeat) {
         const updatedResources = state.resources.map(resource => {
           if (resource.resource.isMatchingResourceType(resourceType)) {
-            resource.successNotes = [];
+            resource.successNotes = resource.successNotes.slice(0, -1);
             resource.isPreviewed = false;
           }
           return resource;
@@ -174,14 +191,38 @@ function resourceReducer(state : AppState, action : GameAction) {
       const updatedResources = modifiyResource(state.resources, resourceType, resourceInfo.collectionAmount ?? 0);
       
       if (resourceData.clickSFX) {
-        playSFX(state.audioContext, resourceData.clickSFX, state.audioContext.currentTime);
-        updatedResources.map(data => {
-          if (data.resource.isMatchingResourceType(resourceType) && !data.successNotes.includes(beatPress.beatInfo)) {
-            data.successNotes.push(beatPress.beatInfo);
-            data.isPreviewed = false;
+        playSFX(state.audioContext, resourceData.clickSFX, state.audioContext.currentTime);        
+      }    
+      
+      updatedResources.map(data => {
+        if (data.resource.isMatchingResourceType(resourceType) && !data.successNotes.includes(beatPress.beatInfo)) {
+          data.successNotes.push(beatPress.beatInfo);
+          if (isPatternCompleted(data.successNotes, data.resource.resourceInfo.pattern ?? [])) {
+            data.currentAmount += data.resource.resourceInfo.completedBarAmount;
           }
-        })
-      }      
+        }
+      });
+
+      const resourceCompleted = updatedResources.filter(re => isPatternCompleted(re.successNotes, re.resource.resourceInfo.pattern ?? [])).map(x => x.resource.getResourceType());
+
+      if (resourceCompleted.length > 1) {
+        ResourceHybrids.forEach(hybrid => {
+          const isCompeleted = hybrid.completed.every(x => resourceCompleted.includes(x));
+          if (isCompeleted) {
+            updatedResources.map(data => {
+              if (data.resource.isMatchingResourceType(hybrid.made)) {
+                if (data.interactionState === ResourceState.Hidden) {
+                  data.interactionState = ResourceState.Gainable;
+                }
+      
+                data.currentAmount += data.resource.resourceInfo.collectionAmount;
+              }
+      
+              return data;
+            })
+          }
+        });
+      }
 
       return {
         ...state,
@@ -273,43 +314,18 @@ function previewBeats(resources : ResourceData[], audioContext : AudioContext, n
   });
 }
 
-function resetNotes(resources : ResourceData[], barNumber: number) {
-  const resourceCompleted : ResourceType[] = [];
+function isPatternCompleted(successNotes : BeatInfo[], pattern: number[]) : boolean {
+  return successNotes.length >= pattern.length;
+}
+
+function resetNotes(resources : ResourceData[]) {
   resources.map(data => {
     if (data.successNotes.length === 0) {
       return data;
     }
 
-    const useableList = data.successNotes.filter(x => x.barNumber === barNumber);
-    const patternLength = data.resource.resourceInfo.pattern?.length ?? 0;
-    if (useableList.length >= patternLength) {
-      data.currentAmount += data.resource.resourceInfo.completedBarAmount;
-      resourceCompleted.push(data.resource.getResourceType());
-    }
-
-    data.successNotes = data.successNotes.filter(x => x.barNumber === barNumber + 1); //reset notes if any are for the next beat already
+    //data.successNotes = data.successNotes.slice(0, -2);
     return data;
-  });
-
-  if (resourceCompleted.length <= 1) {
-    return;
-  }
-
-  ResourceHybrids.forEach(hybrid => {
-    const isCompeleted = hybrid.completed.every(x => resourceCompleted.includes(x));
-    if (isCompeleted) {
-      resources.map(data => {
-        if (data.resource.isMatchingResourceType(hybrid.made)) {
-          if (data.interactionState === ResourceState.Hidden) {
-            data.interactionState = ResourceState.Gainable;
-          }
-
-          data.currentAmount += data.resource.resourceInfo.collectionAmount;
-        }
-
-        return data;
-      })
-    }
   });
 }
 
