@@ -45,6 +45,10 @@ export default function ResourceNode(props: ResourceNodeProps) {
                 return isPressed;
             }
 
+            if (props.resourceData.interactionState !== ResourceState.Clickable) {
+                return false;
+            }            
+
             props.onClickCallback();
             return true;
         });        
