@@ -9,8 +9,7 @@ import styles from "./resourceDisplay.module.css";
 
 //this takes the resource data and provides the UI elements to display them in the dashboard
 interface ResourceDisplayProps {
-    resourceData: ResourceData,    
-    toggleCallback: () => void
+    resourceData: ResourceData
 }
 
 export default function ResourceDisplay(props: ResourceDisplayProps) {
@@ -22,9 +21,7 @@ export default function ResourceDisplay(props: ResourceDisplayProps) {
             className={styles.holder}
             data-tooltip-id={tooltipId}
             data-tooltip-place="bottom"
-            data-tooltip-delay-hide={100}     
-            onMouseEnter={() => props.toggleCallback()}
-            onMouseLeave={() => props.toggleCallback()}       
+            data-tooltip-delay-hide={100}    
         >
             <div className={styles.info}>
                 <div className={styles.icon}>                    

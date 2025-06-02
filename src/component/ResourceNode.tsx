@@ -8,7 +8,8 @@ import { getResourceDisplay } from "../data/resourceLibrary";
 interface ResourceNodeProps {
     resourceData: ResourceData,
     keyCode: string,
-    onClickCallback: () => void
+    onClickCallback: () => void,
+    onHoverCallback: (isHover: boolean) => void,
 }
 
 export default function ResourceNode(props: ResourceNodeProps) {
@@ -46,8 +47,15 @@ export default function ResourceNode(props: ResourceNodeProps) {
 
             props.onClickCallback();
             return true;
-        });
-        
+        });        
+    }
+
+    const onButtonHover = (isHover: boolean) => {
+        if (!isEnabled) {
+            return;
+        }
+
+        props.onHoverCallback(isHover);
     }
 
     const onReleaseButton = () => {
@@ -58,7 +66,7 @@ export default function ResourceNode(props: ResourceNodeProps) {
 
     return (
         <>
-            <button className={classNames} onMouseDown={onPressedButton} onMouseLeave={onReleaseButton} onMouseUp={onReleaseButton} onTouchStart={onPressedButton} onTouchEnd={onReleaseButton} onTouchCancel={onReleaseButton} disabled={!isEnabled}>
+            <button className={classNames} onMouseDown={onPressedButton} onMouseLeave={onReleaseButton} onMouseUp={onReleaseButton} onTouchStart={onPressedButton} onTouchEnd={onReleaseButton} onTouchCancel={onReleaseButton} disabled={!isEnabled} onMouseEnter={() => onButtonHover(true)} onMouseOut={() => onButtonHover(false)}>
                 {getResourceDisplay(info.resourceType)}
             </button>         
         </>

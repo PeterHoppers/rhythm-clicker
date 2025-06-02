@@ -316,7 +316,7 @@ function visualizeBeats(resources : ResourceData[], note : BeatInfo) {
 function previewBeats(resources : ResourceData[], audioContext : AudioContext, note : BeatInfo) {
   resources.forEach(resource => {
     if (resource.shouldPress && resource.clickSFX && resource.isPreviewed) {
-      playSFX(audioContext, resource.clickSFX, note.time);
+      //playSFX(audioContext, resource.clickSFX, note.time);
     }
   });
 }
@@ -415,7 +415,10 @@ function App() {
             {gameData.resources.map((data, index) => {
               const resourceType = data.resource.getResourceType();
               //TODO: create field notes that can have resource nodes assigned to them
-              return <ResourceNode key={resourceType} resourceData={data} keyCode={(index + 1).toString()} onClickCallback = {() => {
+              return <ResourceNode key={resourceType} resourceData={data} keyCode={(index + 1).toString()} onHoverCallback={(isHover: boolean) => {
+                toggleResourcePreview(dispatch, resourceType, !isHover)
+              }}
+              onClickCallback = {() => {
                 dispatch({
                   type: ActionType.OnCollectResource,
                   effect: {
