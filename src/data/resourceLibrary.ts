@@ -30,7 +30,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         resourceType: ResourceType.Wood,
         collectionAmount: 1,
         completedBarAmount: 10,
-        clickPathSFX: createFilePath("RD_K_1"),
+        clickPathSFX: createFilePath("wood-knock"),
         patternNotation: "AzAz:|\n",
         pattern: everyOther
     },
@@ -71,8 +71,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_C_HH_8"),
         pattern: swung16,
-        patternNotation:  "A z A z | A z A A | A z A z | A z A z:|\n",
-        startingResource: true
+        patternNotation:  "A z A z | A z A A | A z A z | A z A z:|\n"
     },
 ];
 
