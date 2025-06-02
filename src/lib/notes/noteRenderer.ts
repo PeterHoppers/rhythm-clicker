@@ -10,7 +10,7 @@ export interface NoteRendererSettings {
 export function renderNotes(elementID: string, noteString : string, settings : NoteRendererSettings) {
     const responsive = (settings.isResponsive) ? "resize" : undefined;
     const width = (settings.width) ? settings.width : 740; //default from plugin
-    abcjs.renderAbc(elementID, "K:style=rhythm \nL:1/4 " + noteString, {
+    abcjs.renderAbc(elementID, "K:style=x  \nL:1/1 \n " + noteString, {
         responsive: responsive,
         staffwidth: width
     });

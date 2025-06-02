@@ -15,7 +15,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         clickPathSFX: createFilePath("RD_C_HH_2"),
         description: "A constantly dripping that keeps the world grounded.",
         pattern: getBeatNumbers(4),
-        patternNotation: "X:1 \nBzzz:|\n",
+        patternNotation: "Azzz:|\n",
         startingResource: true,
     },
     {
@@ -24,14 +24,14 @@ export const ResourceLibrary : ResourceInfo[] = [
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_S_1"),
         pattern: getBeatNumbers(4, 4),
-        patternNotation: "X:1 \nzzBz:|\n",    
+        patternNotation: "zzAz:|\n",    
     },
     {
         resourceType: ResourceType.Wood,
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_K_1"),
-        patternNotation: "X:1 \nBzBz:|\n",
+        patternNotation: "AzAz:|\n",
         pattern: everyOther
     },
     {
@@ -39,7 +39,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_K_1"),        
-        patternNotation: "X:1 \nB/2B/2B/2B/2| B/2z B/2B/2:|\n",
+        patternNotation: "B/2B/2B/2B/2| B/2z B/2B/2:|\n",
         pattern: [0, 2, 4, 6, 8, 12, 14, 16, 18, 20, 22, 24, 28, 30],
         startingResource: false
     },
@@ -63,7 +63,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         completedBarAmount: 10,
         clickPathSFX: createFilePath("Clap_Stack 2"),
         pattern: getBeatNumbers(2, 8),        
-        patternNotation: "X:1 \nz4 | Bzzz:|\n",
+        patternNotation: "zzzz | Azzz:|\n"
     },
     {
         resourceType: ResourceType.Storm,
@@ -71,7 +71,8 @@ export const ResourceLibrary : ResourceInfo[] = [
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_C_HH_8"),
         pattern: swung16,
-        patternNotation:  "X:1 \nB z B z | B z B B | B z B z | B z B z:|\n"
+        patternNotation:  "A z A z | A z A A | A z A z | A z A z:|\n",
+        startingResource: true
     },
 ];
 

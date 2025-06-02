@@ -13,7 +13,7 @@ import { setupSFX, SFXInfo, playSFX } from './lib/rhythm/playback';
 import MetronomeVisual from './component/Notation/MetronomeVisual';
 
 const TICK_CHECK = 25;
-const TEMPO = 500; //TODO: be able to change this
+const TEMPO = 400; //TODO: be able to change this
 const AUDIO_BEATS = getBeatNumbers(4);
 const CLICK_PATH = "metronone.wav";
 
@@ -23,7 +23,8 @@ interface AppState {
   resources: ResourceData[],
   upgrades: Upgrade[],
   audioContext: AudioContext,
-  scheduledBeat: BeatInfo
+  scheduledBeat: BeatInfo,
+  bottomRendererNotes?: string
 }
 
 const initalState : AppState = {
@@ -251,17 +252,23 @@ function resourceReducer(state : AppState, action : GameAction) {
       }
 
       const isPreviewing = action.effect.modifier === 1;
+      let meternoneNotes = undefined;
 
       const updatedResources = state.resources.map(resourceData => {
         if (resourceData.resource.isMatchingResourceType(resourceType)) {
           resourceData.isPreviewed = isPreviewing;
+
+          if (isPreviewing) {
+            meternoneNotes = resourceData.resource.resourceInfo.patternNotation;
+          }
         }
         return resourceData;
       });
 
       return {
         ...state,
-        resources: updatedResources
+        resources: updatedResources,
+        bottomRendererNotes : meternoneNotes
       };
     }
     default: {
@@ -406,7 +413,7 @@ function App() {
               }}/>
             })}      
           </div>
-          <MetronomeVisual beatToRender={Math.floor(getPreviousBeatNumber(gameData.scheduledBeat.noteNumber) / 2)}/>
+          <MetronomeVisual beatToRender={Math.floor(getPreviousBeatNumber(gameData.scheduledBeat.noteNumber) / 2)} notesToDisplay={gameData.bottomRendererNotes}/>
         </section>       
       </main>
       <div className='resource-side'>   

@@ -63,6 +63,20 @@ export const UpgradeLibrary : UpgradeInfo[] = [
     {
         effect: {
             upgradeType: UpgradeType.NewResource,
+            resourceType: ResourceType.Money,
+        },
+        displayIcon: getResourceDisplay(ResourceType.Money),
+        displayName: "Bank Time",
+        cost: [
+        {
+            resourceAmount: 100,
+            resourceType: ResourceType.Fire
+        },        
+        ]
+    },
+    {
+        effect: {
+            upgradeType: UpgradeType.NewResource,
             resourceType: ResourceType.Storm,
         },
         displayIcon: getResourceDisplay(ResourceType.Storm),
