@@ -13,8 +13,8 @@ import { setupSFX, SFXInfo, playSFX } from './lib/rhythm/playback';
 import MetronomeVisual from './component/Notation/MetronomeVisual';
 
 const TICK_CHECK = 25;
-const TEMPO = 400; //TODO: be able to change this
-const AUDIO_BEATS = getBeatNumbers(4);
+const TEMPO = 200; //TODO: be able to change this
+const AUDIO_BEATS = getBeatNumbers(8);
 const CLICK_PATH = "metronone.wav";
 
 let sampleSfx : AudioBuffer;
@@ -296,9 +296,10 @@ function playMetronone(audioContext : AudioContext, audioBuffer: AudioBuffer, no
     return;
   }
 
-  const isNewBar = (note.noteNumber % NOTES_PER_BAR === 0);
+  const isNewBar = (note.noteNumber === 0 || note.noteNumber === NOTES_PER_BAR / 2);
 
   if (AUDIO_BEATS.includes(note.noteNumber)) {   
+    console.log(note.noteNumber)
     const noteVolume = (isNewBar) ? 2 : .5;
     playSFX(audioContext, audioBuffer, note.time, noteVolume);
   }
@@ -402,9 +403,7 @@ function App() {
           <h2>Resources Collected</h2>
           <div className='resource-dashboard__holder'>
             {gameData.resources.filter(x => x.interactionState !== ResourceState.Hidden).map((data) => {
-              return <ResourceDisplay key={data.resource.resourceInfo.resourceType} resourceData={data} toggleCallback={() => {
-                toggleResourcePreview(dispatch, data.resource.resourceInfo.resourceType, data.isPreviewed ?? false);
-              }} />
+              return <ResourceDisplay key={data.resource.resourceInfo.resourceType} resourceData={data} />
             })}
           </div>        
         </section>
@@ -428,7 +427,7 @@ function App() {
               }}/>
             })}      
           </div>
-          <MetronomeVisual beatToRender={Math.floor(getPreviousBeatNumber(gameData.scheduledBeat.noteNumber) / 2)} notesToDisplay={gameData.bottomRendererNotes}/>
+          <MetronomeVisual beatToRender={getPreviousBeatNumber(gameData.scheduledBeat.noteNumber)} notesToDisplay={gameData.bottomRendererNotes}/>
         </section>       
       </main>
       <div className='resource-side'>   

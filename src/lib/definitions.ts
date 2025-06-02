@@ -2,7 +2,7 @@ import { BeatInfo } from "./rhythm/beatNotation";
 import { createDescription } from "../data/resourceLibrary";
 
 export const NOTES_PER_BAR = 32;
-export const RHYTHM_LENIENCY = .5;
+export const RHYTHM_LENIENCY = .125;
 export const INPUT_DELAY = 0.02933;
 
 export enum ResourceType {

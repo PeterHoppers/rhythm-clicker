@@ -1,7 +1,7 @@
 import { ResourceCreation, ResourceInfo, ResourceType } from "../lib/definitions";
 import { getBeatNumbers } from "../lib/rhythm/beatNotation";
 
-const everyOther = getBeatNumbers(8);
+const everyOther = getBeatNumbers(16);
 
 const swung16 = getBeatNumbers(8);
 swung16.push(15);
@@ -14,8 +14,8 @@ export const ResourceLibrary : ResourceInfo[] = [
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_C_HH_2"),
         description: "A constantly dripping that keeps the world grounded.",
-        pattern: getBeatNumbers(4),
-        patternNotation: "Azzz:|\n",
+        pattern: getBeatNumbers(8),
+        patternNotation: "c c c c :|\n",
         startingResource: true,
     },
     {
@@ -23,16 +23,17 @@ export const ResourceLibrary : ResourceInfo[] = [
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_S_1"),
-        pattern: getBeatNumbers(4, 4),
-        patternNotation: "zzAz:|\n",    
+        pattern: getBeatNumbers(8, 2),
+        patternNotation: "z/2 c/2 z/2 c/2 z/2 c/2 z/2 c/2 :|\n",   
+        startingResource: true, 
     },
     {
         resourceType: ResourceType.Wood,
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("wood-knock"),
-        patternNotation: "AzAz:|\n",
-        pattern: everyOther
+        patternNotation: "c/2 c/2 c/2 c/2 c/2 c/2 c/2 c/2 :|\n",
+        pattern: everyOther,
     },
     {
         resourceType: ResourceType.Money,
@@ -62,8 +63,9 @@ export const ResourceLibrary : ResourceInfo[] = [
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("Clap_Stack 2"),
-        pattern: getBeatNumbers(2, 8),        
-        patternNotation: "zzzz | Azzz:|\n"
+        pattern: getBeatNumbers(4, 4),        
+        patternNotation: "z c z c :|\n",
+        startingResource: true, 
     },
     {
         resourceType: ResourceType.Storm,
@@ -71,7 +73,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_C_HH_8"),
         pattern: swung16,
-        patternNotation:  "A z A z | A z A A | A z A z | A z A z:|\n"
+        patternNotation:  "c z c z | c z c c | c z c z | c z c z:|\n"
     },
 ];
 
