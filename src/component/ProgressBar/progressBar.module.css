@@ -11,8 +11,6 @@
 .meter > span {
     display: block;
     height: 100%;
-    border-top-right-radius: 8px;
-    border-bottom-right-radius: 8px;
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
     background-color: rgb(43, 194, 83);
@@ -25,6 +23,16 @@
         inset 0 -2px 6px rgba(0, 0, 0, 0.4);
     position: relative;
     overflow: hidden;
+}
+
+.filled > span {
+    border-top-right-radius: 20px;
+    border-bottom-right-radius: 20px;
+}
+
+.unfilled > span {    
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
 }
 
 .meter > span:after,

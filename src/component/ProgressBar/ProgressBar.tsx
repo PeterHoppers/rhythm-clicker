@@ -14,7 +14,7 @@ export default function ProgressBar(props : ProgressBarProps) {
     const isDisplayed = (fill > 0);
     const fillStyle = `${fill * 100}%`;
     return (
-        <div className={`${styles.meter} ${styles.nostripes}`}>
+        <div className={`${styles.meter} ${styles.nostripes} ${(fill === 1) ? styles.filled : styles.unfilled}`}>
             {isDisplayed &&
                 <span style={{width: fillStyle}}></span>
             }            
