@@ -10,23 +10,12 @@ import styles from "./resourceDisplay.module.css";
 //this takes the resource data and provides the UI elements to display them in the dashboard
 interface ResourceDisplayProps {
     resourceData: ResourceData,    
-    dispatch: React.ActionDispatch<[action: GameAction]>
+    toggleCallback: () => void
 }
 
 export default function ResourceDisplay(props: ResourceDisplayProps) {
     const info = props.resourceData.resource.resourceInfo;
-    const tooltipId = `tooltip-resource-display-${info.resourceType}`;
-    const isPreviewing = props.resourceData.isPreviewed;
-
-    const toggleCallback = () => {
-        props.dispatch({
-            type: ActionType.OnPreviewResource,
-            effect: {
-                resourceType: info.resourceType,
-                modifier: (isPreviewing) ? 0 : 1
-            }                   
-        });
-    }                        
+    const tooltipId = `tooltip-resource-display-${info.resourceType}`;                     
     
     return (
         <div 
@@ -34,9 +23,8 @@ export default function ResourceDisplay(props: ResourceDisplayProps) {
             data-tooltip-id={tooltipId}
             data-tooltip-place="bottom"
             data-tooltip-delay-hide={100}     
-            onClick={() => toggleCallback()} 
-            onMouseEnter={() => toggleCallback()}
-            onMouseLeave={() => toggleCallback()}       
+            onMouseEnter={() => props.toggleCallback()}
+            onMouseLeave={() => props.toggleCallback()}       
         >
             <div className={styles.info}>
                 <div className={styles.icon}>                    

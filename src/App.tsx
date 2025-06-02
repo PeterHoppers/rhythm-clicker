@@ -321,6 +321,16 @@ function previewBeats(resources : ResourceData[], audioContext : AudioContext, n
   });
 }
 
+function toggleResourcePreview(dispatch: React.ActionDispatch<[action: GameAction]>, resourceType: ResourceType, isPreviewing: boolean ) {
+  dispatch({
+      type: ActionType.OnPreviewResource,
+      effect: {
+          resourceType: resourceType,
+          modifier: (isPreviewing) ? 0 : 1
+      }                   
+  });
+}
+
 function isPatternCompleted(successNotes : BeatInfo[], pattern: number[]) : boolean {
   return successNotes.length >= pattern.length;
 }
@@ -392,7 +402,9 @@ function App() {
           <h2>Resources Collected</h2>
           <div className='resource-dashboard__holder'>
             {gameData.resources.filter(x => x.interactionState !== ResourceState.Hidden).map((data) => {
-              return <ResourceDisplay key={data.resource.resourceInfo.resourceType} resourceData={data} dispatch={dispatch} />
+              return <ResourceDisplay key={data.resource.resourceInfo.resourceType} resourceData={data} toggleCallback={() => {
+                toggleResourcePreview(dispatch, data.resource.resourceInfo.resourceType, data.isPreviewed ?? false);
+              }} />
             })}
           </div>        
         </section>
