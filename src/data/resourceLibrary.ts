@@ -1,10 +1,12 @@
-import { ResourceCreation, ResourceInfo, ResourceType } from "../lib/definitions";
-import { getBeatNumbers } from "../lib/rhythm/beatNotation";
+import { ResourceCreation, ResourceInfo, ResourceType, QUARTERS_PER_PHRASE } from "../lib/definitions";
+import { getBeatNumbers, BeatNotation } from "../lib/rhythm/beatNotation";
 
-const everyOther = getBeatNumbers(16);
+const everyOther = getBeatNumbers(QUARTERS_PER_PHRASE * 2);
 
 const swung16 = getBeatNumbers(8);
 swung16.push(15);
+
+export const METRONOME_NOTATION = createNotation(getBeatNumbers(QUARTERS_PER_PHRASE), repeatStringIntoArray('z', QUARTERS_PER_PHRASE));
 
 //a file to define the implementation of each of the resources. This allows easy creation of new resources when needed
 export const ResourceLibrary : ResourceInfo[] = [
@@ -14,8 +16,8 @@ export const ResourceLibrary : ResourceInfo[] = [
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_C_HH_2"),
         description: "A constantly dripping that keeps the world grounded.",
-        pattern: getBeatNumbers(8),
-        patternNotation: "c c c c :|\n",
+        pattern: getBeatNumbers(QUARTERS_PER_PHRASE),
+        patternNotation: createNotation(getBeatNumbers(QUARTERS_PER_PHRASE), repeatStringIntoArray('c', QUARTERS_PER_PHRASE)), //"cccc :|\n",       
         startingResource: true,
     },
     {
@@ -23,26 +25,26 @@ export const ResourceLibrary : ResourceInfo[] = [
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_S_1"),
-        pattern: getBeatNumbers(8, 2),
-        patternNotation: "z/2 c/2 z/2 c/2 z/2 c/2 z/2 c/2 :|\n",   
-        startingResource: true, 
+        pattern: getBeatNumbers(QUARTERS_PER_PHRASE, QUARTERS_PER_PHRASE),
+        patternNotation: createNotation(getBeatNumbers(QUARTERS_PER_PHRASE), repeatStringIntoArray('z/2 ', QUARTERS_PER_PHRASE)).concat(createNotation(getBeatNumbers(QUARTERS_PER_PHRASE, QUARTERS_PER_PHRASE), repeatStringIntoArray('c/2 ', QUARTERS_PER_PHRASE))),        
+        startingResource: true
     },
     {
         resourceType: ResourceType.Wood,
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("wood-knock"),
-        patternNotation: "c/2 c/2 c/2 c/2 c/2 c/2 c/2 c/2 :|\n",
+        patternNotation: createNotation(getBeatNumbers(QUARTERS_PER_PHRASE * 2), repeatStringArrayIntoArray(['c/2', 'c/2 '], QUARTERS_PER_PHRASE)), //"c/2 c/2 c/2 c/2 c/2 c/2 c/2 c/2 :|\n",
         pattern: everyOther,
+        startingResource: true
     },
     {
         resourceType: ResourceType.Money,
         collectionAmount: 1,
         completedBarAmount: 10,
-        clickPathSFX: createFilePath("RD_K_1"),        
-        patternNotation: "B/2B/2B/2B/2| B/2z B/2B/2:|\n",
+        clickPathSFX: createFilePath("RD_K_1"),
         pattern: [0, 2, 4, 6, 8, 12, 14, 16, 18, 20, 22, 24, 28, 30],
-        startingResource: false
+        startingResource: true
     },
     {
         resourceType: ResourceType.Smoke,
@@ -64,8 +66,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         completedBarAmount: 10,
         clickPathSFX: createFilePath("Clap_Stack 2"),
         pattern: getBeatNumbers(4, 4),        
-        patternNotation: "z c z c :|\n",
-        startingResource: true, 
+        patternNotation: createNotation(getBeatNumbers(QUARTERS_PER_PHRASE / 2), repeatStringIntoArray('z', QUARTERS_PER_PHRASE / 2)).concat(createNotation(getBeatNumbers(QUARTERS_PER_PHRASE / 2, 4), repeatStringIntoArray('c', QUARTERS_PER_PHRASE / 2)))//"z c z c :|\n"
     },
     {
         resourceType: ResourceType.Storm,
@@ -73,7 +74,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_C_HH_8"),
         pattern: swung16,
-        patternNotation:  "c z c z | c z c c | c z c z | c z c z:|\n"
+        //patternNotation:  "c z c z | c z c c | c z c z | c z c z:|\n"
     },
 ];
 
@@ -150,4 +151,36 @@ export function getResourceDisplay(resourceType: ResourceType) : string {
         default:
             return "🙃";
     }
+}
+
+function createNotation(beatNotes: number[], notation: string[]) : BeatNotation[] {
+    const patterNotation : BeatNotation[] = [];
+    for (let index = 0; index < beatNotes.length; index++) {
+        patterNotation[index] =  {
+            startingBeatNumber: beatNotes[index],
+            notation: notation[index]
+        }
+    }
+
+    return patterNotation;
+}
+
+function repeatStringIntoArray(stringToRepeat : string, amountOfTimes : number) : string[] {
+    const stringArray : string[] = [];
+    for (let index = 0; index < amountOfTimes; index++) {
+        stringArray.push(stringToRepeat);
+    }
+
+    return stringArray;
+}
+
+function repeatStringArrayIntoArray(stringToRepeat : string[], amountOfTimes : number) : string[] {
+    const stringArray : string[] = [];
+    for (let index = 0; index < amountOfTimes; index++) {
+        stringToRepeat.forEach((msg : string) => {
+            stringArray.push(msg);   
+        });        
+    }
+
+    return stringArray;
 }

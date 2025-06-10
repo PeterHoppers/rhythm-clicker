@@ -1,8 +1,9 @@
-import { BeatInfo } from "./rhythm/beatNotation";
+import { BeatInfo, BeatNotation } from "./rhythm/beatNotation";
 import { createDescription } from "../data/resourceLibrary";
 
 export const NOTES_PER_BAR = 32;
-export const RHYTHM_LENIENCY = .125;
+export const QUARTERS_PER_PHRASE = NOTES_PER_BAR / 8;
+export const RHYTHM_LENIENCY = .175;
 export const INPUT_DELAY = 0.02933;
 
 export enum ResourceType {
@@ -45,7 +46,7 @@ export type ResourceInfo = {
     clickPathSFX: string;
     description?: string;
     pattern?: number[];    
-    patternNotation?: string;
+    patternNotation?: BeatNotation[];
     startingResource?: boolean;
 }
 

@@ -13,6 +13,19 @@ export type BeatPress = {
   beatInfo: BeatInfo
 }
 
+export type BeatNotation = {
+  notation: string,
+  startingBeatNumber: number
+}
+
+export function getNotationFromBeatNotation(beats : BeatNotation[]) : string {
+  let patternNotation: string = "";
+  beats.sort(x => x.startingBeatNumber).forEach(x => {
+    patternNotation += x.notation;
+  });
+
+  return patternNotation;
+}
 
 export function getBeatNumbers(numberOfBeats : number, offset? : number) : number[] {
     const noteNumbers : number[] = [];

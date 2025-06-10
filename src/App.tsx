@@ -7,14 +7,14 @@ import ResourceDisplay from './component/ResourceDisplay';
 import { useInterval } from './lib/useInterval';
 import ResourceNode from './component/ResourceNode';
 import UpgradeNode from './component/UpgradeNode';
-import { NOTES_PER_BAR } from './lib/definitions';
-import { getBeatNumbers, BeatInfo, createNextNote, isClickOnPattern, getPreviousBeatNumber, getPreviousBeat } from './lib/rhythm/beatNotation';
+import { NOTES_PER_BAR, QUARTERS_PER_PHRASE } from './lib/definitions';
+import { getBeatNumbers, BeatInfo, BeatNotation, createNextNote, isClickOnPattern, getPreviousBeatNumber, getPreviousBeat } from './lib/rhythm/beatNotation';
 import { setupSFX, SFXInfo, playSFX } from './lib/rhythm/playback';
 import MetronomeVisual from './component/Notation/MetronomeVisual';
 
 const TICK_CHECK = 25;
-const TEMPO = 200; //TODO: be able to change this
-const AUDIO_BEATS = getBeatNumbers(8);
+const TEMPO = 400; //TODO: be able to change this
+const AUDIO_BEATS = getBeatNumbers(QUARTERS_PER_PHRASE);
 const CLICK_PATH = "metronone.wav";
 
 let sampleSfx : AudioBuffer;
@@ -24,7 +24,7 @@ interface AppState {
   upgrades: Upgrade[],
   audioContext: AudioContext,
   scheduledBeat: BeatInfo,
-  bottomRendererNotes?: string
+  bottomRendererNotes?: BeatNotation[]
 }
 
 const initalState : AppState = {
@@ -298,8 +298,7 @@ function playMetronone(audioContext : AudioContext, audioBuffer: AudioBuffer, no
 
   const isNewBar = (note.noteNumber === 0 || note.noteNumber === NOTES_PER_BAR / 2);
 
-  if (AUDIO_BEATS.includes(note.noteNumber)) {   
-    console.log(note.noteNumber)
+  if (AUDIO_BEATS.includes(note.noteNumber)) {
     const noteVolume = (isNewBar) ? 2 : .5;
     playSFX(audioContext, audioBuffer, note.time, noteVolume);
   }
