@@ -1,4 +1,4 @@
-import { ResourceCreation, ResourceInfo, ResourceType, QUARTERS_PER_PHRASE } from "../lib/definitions";
+import { ResourceCreation, ResourceInfo, ResourceType, QUARTERS_PER_PHRASE, EIGHTH_VALUE, QUARTER_VALUE, SIXTEENTH_VALUE } from "../lib/definitions";
 import { getBeatNumbers, BeatNotation } from "../lib/rhythm/beatNotation";
 
 const everyOther = getBeatNumbers(QUARTERS_PER_PHRASE * 2);
@@ -7,6 +7,7 @@ const swung16 = getBeatNumbers(8);
 swung16.push(15);
 
 export const METRONOME_NOTATION = createNotation(getBeatNumbers(QUARTERS_PER_PHRASE), repeatStringIntoArray('z', QUARTERS_PER_PHRASE));
+const underPressureNotes = [0, EIGHTH_VALUE, QUARTER_VALUE, QUARTER_VALUE + SIXTEENTH_VALUE, QUARTER_VALUE + EIGHTH_VALUE, QUARTER_VALUE * 2,  QUARTER_VALUE * 2 + EIGHTH_VALUE];
 
 //a file to define the implementation of each of the resources. This allows easy creation of new resources when needed
 export const ResourceLibrary : ResourceInfo[] = [
@@ -34,7 +35,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("wood-knock"),
-        patternNotation: createNotation(getBeatNumbers(QUARTERS_PER_PHRASE * 2), repeatStringArrayIntoArray(['c/2', 'c/2 '], QUARTERS_PER_PHRASE)), //"c/2 c/2 c/2 c/2 c/2 c/2 c/2 c/2 :|\n",
+        patternNotation: createNotation(everyOther, repeatStringArrayIntoArray(['c/2', 'c/2 '], QUARTERS_PER_PHRASE)), //"c/2 c/2 c/2 c/2 c/2 c/2 c/2 c/2 :|\n",
         pattern: everyOther,
         startingResource: true
     },
@@ -43,7 +44,41 @@ export const ResourceLibrary : ResourceInfo[] = [
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_K_1"),
-        pattern: [0, 2, 4, 6, 8, 12, 14, 16, 18, 20, 22, 24, 28, 30],
+        pattern: underPressureNotes,
+        patternNotation: [
+            {
+                startingBeatNumber: underPressureNotes[0],
+                notation: "c/2"
+            },
+            {
+                startingBeatNumber: underPressureNotes[1],
+                notation: "c/2 "
+            },
+            {
+                startingBeatNumber: underPressureNotes[2],
+                notation: "c/2"
+            },
+            {
+                startingBeatNumber: underPressureNotes[3],
+                notation: "c/4"
+            },
+            {
+                startingBeatNumber: underPressureNotes[4],
+                notation: "c/4 "
+            },
+            {
+                startingBeatNumber: underPressureNotes[5],
+                notation: "c/2"
+            },
+            {
+                startingBeatNumber: underPressureNotes[6],
+                notation: "c/2"
+            },
+            {
+                startingBeatNumber: QUARTER_VALUE * 3,
+                notation: "z"
+            },
+        ],
         startingResource: true
     },
     {

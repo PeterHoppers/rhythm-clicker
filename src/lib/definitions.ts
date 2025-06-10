@@ -3,6 +3,9 @@ import { createDescription } from "../data/resourceLibrary";
 
 export const NOTES_PER_BAR = 32;
 export const QUARTERS_PER_PHRASE = NOTES_PER_BAR / 8;
+export const QUARTER_VALUE = NOTES_PER_BAR / 4;
+export const EIGHTH_VALUE = NOTES_PER_BAR / 8;
+export const SIXTEENTH_VALUE = NOTES_PER_BAR / 16;
 export const RHYTHM_LENIENCY = .175;
 export const INPUT_DELAY = 0.02933;
 
