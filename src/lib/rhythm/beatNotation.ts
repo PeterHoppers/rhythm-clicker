@@ -1,7 +1,5 @@
 import { NOTES_PER_BAR, INPUT_DELAY, RHYTHM_LENIENCY} from "../definitions";
 
-const BEAT_LENGTH = 0;
-
 export type BeatInfo = {
     noteNumber: number,
     barNumber: number,

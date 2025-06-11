@@ -1,8 +1,7 @@
 import { renderNotes } from "../../lib/notes/noteRenderer";
 import { useEffect } from "react";
-import { NOTES_PER_BAR } from "../../lib/definitions";
 import { BeatNotation, getNotationFromBeatNotation } from "../../lib/rhythm/beatNotation";
-import { METRONOME_NOTATION } from "../../data/resourceLibrary";
+import { METRONOME_NOTATION } from "../../data/patternLibrary";
 
 const METRONOME_DISPLAY_ID = "metronome_display"; 
 

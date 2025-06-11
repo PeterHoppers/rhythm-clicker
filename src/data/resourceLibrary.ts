@@ -1,12 +1,12 @@
 import { ResourceCreation, ResourceInfo, ResourceType, QUARTERS_PER_PHRASE, EIGHTH_VALUE, QUARTER_VALUE, SIXTEENTH_VALUE } from "../lib/definitions";
-import { getBeatNumbers, BeatNotation } from "../lib/rhythm/beatNotation";
+import { getBeatNumbers } from "../lib/rhythm/beatNotation";
+import { repeatStringArrayIntoArray, repeatStringIntoArray, createNotation, createPatternNotation, getPlayableNotesOnly, UNDER_PRESSURE_NOTATION, TAPPING_PATTERN } from "./patternLibrary";
 
 const everyOther = getBeatNumbers(QUARTERS_PER_PHRASE * 2);
 
 const swung16 = getBeatNumbers(8);
 swung16.push(15);
 
-export const METRONOME_NOTATION = createNotation(getBeatNumbers(QUARTERS_PER_PHRASE), repeatStringIntoArray('z', QUARTERS_PER_PHRASE));
 const underPressureNotes = [0, EIGHTH_VALUE, QUARTER_VALUE, QUARTER_VALUE + SIXTEENTH_VALUE, QUARTER_VALUE + EIGHTH_VALUE, QUARTER_VALUE * 2,  QUARTER_VALUE * 2 + EIGHTH_VALUE];
 
 //a file to define the implementation of each of the resources. This allows easy creation of new resources when needed
@@ -18,7 +18,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         clickPathSFX: createFilePath("RD_C_HH_2"),
         description: "A constantly dripping that keeps the world grounded.",
         pattern: getBeatNumbers(QUARTERS_PER_PHRASE),
-        patternNotation: createNotation(getBeatNumbers(QUARTERS_PER_PHRASE), repeatStringIntoArray('c', QUARTERS_PER_PHRASE)), //"cccc :|\n",       
+        patternNotation: createPatternNotation(QUARTERS_PER_PHRASE, "c"), //"cccc :|\n",       
         startingResource: true,
     },
     {
@@ -45,40 +45,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_K_1"),
         pattern: underPressureNotes,
-        patternNotation: [
-            {
-                startingBeatNumber: underPressureNotes[0],
-                notation: "c/2"
-            },
-            {
-                startingBeatNumber: underPressureNotes[1],
-                notation: "c/2 "
-            },
-            {
-                startingBeatNumber: underPressureNotes[2],
-                notation: "c/2"
-            },
-            {
-                startingBeatNumber: underPressureNotes[3],
-                notation: "c/4"
-            },
-            {
-                startingBeatNumber: underPressureNotes[4],
-                notation: "c/4 "
-            },
-            {
-                startingBeatNumber: underPressureNotes[5],
-                notation: "c/2"
-            },
-            {
-                startingBeatNumber: underPressureNotes[6],
-                notation: "c/2"
-            },
-            {
-                startingBeatNumber: QUARTER_VALUE * 3,
-                notation: "z"
-            },
-        ],
+        patternNotation: UNDER_PRESSURE_NOTATION,
         startingResource: true
     },
     {
@@ -86,7 +53,9 @@ export const ResourceLibrary : ResourceInfo[] = [
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("Hat_Closed"),
-        pattern: getBeatNumbers(4, 4),
+        pattern: getPlayableNotesOnly(TAPPING_PATTERN),
+        patternNotation: TAPPING_PATTERN,
+        startingResource: true
     },
     {
         resourceType: ResourceType.Steam,
@@ -186,36 +155,4 @@ export function getResourceDisplay(resourceType: ResourceType) : string {
         default:
             return "🙃";
     }
-}
-
-function createNotation(beatNotes: number[], notation: string[]) : BeatNotation[] {
-    const patterNotation : BeatNotation[] = [];
-    for (let index = 0; index < beatNotes.length; index++) {
-        patterNotation[index] =  {
-            startingBeatNumber: beatNotes[index],
-            notation: notation[index]
-        }
-    }
-
-    return patterNotation;
-}
-
-function repeatStringIntoArray(stringToRepeat : string, amountOfTimes : number) : string[] {
-    const stringArray : string[] = [];
-    for (let index = 0; index < amountOfTimes; index++) {
-        stringArray.push(stringToRepeat);
-    }
-
-    return stringArray;
-}
-
-function repeatStringArrayIntoArray(stringToRepeat : string[], amountOfTimes : number) : string[] {
-    const stringArray : string[] = [];
-    for (let index = 0; index < amountOfTimes; index++) {
-        stringToRepeat.forEach((msg : string) => {
-            stringArray.push(msg);   
-        });        
-    }
-
-    return stringArray;
 }
