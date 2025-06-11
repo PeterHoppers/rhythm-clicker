@@ -297,7 +297,7 @@ function playMetronone(audioContext : AudioContext, audioBuffer: AudioBuffer, no
     return;
   }
 
-  const isNewBar = (note.noteNumber === 0 || note.noteNumber === NOTES_PER_BAR / 2);
+  const isNewBar = (note.noteNumber === 0);
 
   if (AUDIO_BEATS.includes(note.noteNumber)) {
     const noteVolume = (isNewBar) ? 2 : .5;
