@@ -175,7 +175,8 @@ function resourceReducer(state : AppState, action : GameAction) {
       const resource = resourceData.resource;
       const resourceInfo = resource.resourceInfo;
       const beatPress = isClickOnPattern(state.audioContext.currentTime, state.scheduledBeat, resourceInfo.pattern ?? [], TEMPO);
-      if (!beatPress.isOnBeat) {
+      const alreadyPressedNotes = resourceData.successNotes.find(x => x.barNumber == beatPress.beatInfo.barNumber && x.noteNumber == beatPress.beatInfo.noteNumber);
+      if (!beatPress.isOnBeat || alreadyPressedNotes) {
         const updatedResources = state.resources.map(resource => {
           if (resource.resource.isMatchingResourceType(resourceType)) {
             resource.successNotes = resource.successNotes.slice(0, -1);
