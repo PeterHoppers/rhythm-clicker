@@ -1,44 +1,85 @@
-import { QUARTERS_PER_PHRASE, EIGHTH_VALUE, QUARTER_VALUE, SIXTEENTH_VALUE } from "../lib/definitions";
+import { ResourceType } from "../lib/definitions";
 import { getBeatNumbers, BeatNotation } from "../lib/rhythm/beatNotation";
 
-export const METRONOME_NOTATION = createNotation(getBeatNumbers(QUARTERS_PER_PHRASE), repeatStringIntoArray('z', QUARTERS_PER_PHRASE));
-export const UNDER_PRESSURE_NOTATION : BeatNotation[] = [{
-                startingBeatNumber: 0,
-                notation: "c/2"
-            },
-            {
-                startingBeatNumber: EIGHTH_VALUE,
-                notation: "c/2 "
-            },
-            {
-                startingBeatNumber: QUARTER_VALUE,
-                notation: "c/2"
-            },
-            {
-                startingBeatNumber: QUARTER_VALUE + SIXTEENTH_VALUE,
-                notation: "c/4"
-            },
-            {
-                startingBeatNumber: QUARTER_VALUE + EIGHTH_VALUE,
-                notation: "c/4 "
-            },
-            {
-                startingBeatNumber: QUARTER_VALUE * 2,
-                notation: "c/2"
-            },
-            {
-                startingBeatNumber: QUARTER_VALUE * 2 + EIGHTH_VALUE,
-                notation: "c/2 "
-            },
-            {
-                startingBeatNumber: QUARTER_VALUE * 3,
-                notation: "z"
-            },
-];
+export const NOTES_PER_BAR = 32;
+export const QUARTER_VALUE = NOTES_PER_BAR / 4;
+export const EIGHTH_VALUE = NOTES_PER_BAR / 8;
+export const SIXTEENTH_VALUE = NOTES_PER_BAR / 16;
 
-export const TAPPING_PATTERN = createBeatNotationFromNoteValues([EIGHTH_VALUE, SIXTEENTH_VALUE, SIXTEENTH_VALUE, EIGHTH_VALUE, SIXTEENTH_VALUE, SIXTEENTH_VALUE,EIGHTH_VALUE, SIXTEENTH_VALUE, SIXTEENTH_VALUE, EIGHTH_VALUE, EIGHTH_VALUE]);
+enum RhythmName {
+    Ta,
+    Ti,
+    TiTi,
+    TikaTika,
+    TiTika,
+    Rest,
+    HalfRest,
+    RestTi
+}
 
-function createBeatNotationFromNoteValues(noteValues : number[], baseString: string = "c") : BeatNotation[] {
+export const METRONOME_NOTATION = createBeatNotationFromRhythmNames([RhythmName.Rest, RhythmName.Rest, RhythmName.Rest, RhythmName.Rest]);
+
+export function getResourcePattern(resourceType: ResourceType) : BeatNotation[] {
+    switch (resourceType) {     
+        case ResourceType.Water:
+            return createBeatNotationFromRhythmNames([RhythmName.Ta, RhythmName.Ta, RhythmName.Ta, RhythmName.Ta]);
+        case ResourceType.Seed:
+            return createBeatNotationFromRhythmNames([RhythmName.RestTi, RhythmName.RestTi, RhythmName.RestTi, RhythmName.RestTi]);
+        case ResourceType.Wood:
+            return createBeatNotationFromRhythmNames([RhythmName.TiTi, RhythmName.TiTi, RhythmName.TiTi, RhythmName.TiTi]);
+        case ResourceType.Money:
+            return createBeatNotationFromRhythmNames([RhythmName.TiTi, RhythmName.TiTika, RhythmName.TiTi, RhythmName.Rest]);
+        case ResourceType.Storm:
+        case ResourceType.Smoke:
+            return createBeatNotationFromRhythmNames([RhythmName.TiTika,  RhythmName.TiTika,  RhythmName.TiTika,  RhythmName.TiTi]);
+        case ResourceType.Fire:
+            return createBeatNotationFromRhythmNames([RhythmName.Rest,  RhythmName.Ta,  RhythmName.Rest,  RhythmName.Ta]);
+        default:
+           return createBeatNotationFromRhythmNames([RhythmName.Ta, RhythmName.Ta, RhythmName.Ta, RhythmName.Ta]);
+    }
+}
+
+function createBeatNotationFromRhythmNames(names : RhythmName[]) : BeatNotation[] {
+    const beatNotations : BeatNotation[] = [];
+    let currentOffset = 0;
+    names.forEach(name => {
+        let nameNotation : BeatNotation[];
+        switch (name) {
+            case RhythmName.Ta:
+                nameNotation = createBeatNotationFromNoteValues([QUARTER_VALUE], currentOffset);
+                break;
+            case RhythmName.Ti:
+                nameNotation = createBeatNotationFromNoteValues([EIGHTH_VALUE], currentOffset);
+                break;
+            case RhythmName.TiTi:
+                nameNotation = createBeatNotationFromNoteValues([EIGHTH_VALUE, EIGHTH_VALUE], currentOffset);
+                break;
+            case RhythmName.TiTika:
+                nameNotation = createBeatNotationFromNoteValues([EIGHTH_VALUE, SIXTEENTH_VALUE, SIXTEENTH_VALUE], currentOffset);
+                break;
+            case RhythmName.TikaTika:
+                nameNotation = createBeatNotationFromNoteValues([SIXTEENTH_VALUE, SIXTEENTH_VALUE, SIXTEENTH_VALUE, SIXTEENTH_VALUE], currentOffset);
+                break;
+            case RhythmName.Rest:
+                nameNotation = createBeatNotationFromNoteValues([QUARTER_VALUE], currentOffset, 'z');
+                break;
+            case RhythmName.RestTi:
+                nameNotation = createBeatNotationFromNoteValues([EIGHTH_VALUE], currentOffset, ' z');
+                nameNotation.push(... createBeatNotationFromNoteValues([EIGHTH_VALUE], currentOffset + EIGHTH_VALUE));
+                break;
+            default:
+                nameNotation = createBeatNotationFromNoteValues([QUARTER_VALUE], currentOffset);
+                break;
+        }
+
+        beatNotations.push(...nameNotation);
+        currentOffset += QUARTER_VALUE;
+    })
+
+    return beatNotations;
+}
+
+function createBeatNotationFromNoteValues(noteValues : number[], startingValue: number = 0, baseString: string = "c") : BeatNotation[] {
     const beatNotations : BeatNotation[] = [];
     let previousNote : BeatNotation;
     noteValues.forEach(noteValue => {
@@ -58,7 +99,7 @@ function createBeatNotationFromNoteValues(noteValues : number[], baseString: str
         let newBeatNotation : BeatNotation 
         if (!previousNote) {
             newBeatNotation = {
-                startingBeatNumber: 0,
+                startingBeatNumber: startingValue,
                 notation: targetString
             }
         } else {

@@ -3,7 +3,6 @@ import styles from "./description.module.css";
 interface RescourceDescriptionProps {
     resourceTitle: string;
     resourceDescription: string;
-    resourceNotation: string;
     isResourceCollectable: boolean
 }
 

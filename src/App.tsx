@@ -92,7 +92,7 @@ function resourceReducer(state : AppState, action : GameAction) {
         
         const previousBeat = getPreviousBeat(beat, TEMPO);
         updatedResources.map(data => {
-          const pattern = data.resource.resourceInfo.pattern ?? [];
+          const pattern = data.resource.getPatternNotes();
           if (pattern.includes(previousBeat.noteNumber)) {
             if (data.successNotes.findIndex(x => x.barNumber === previousBeat.barNumber && x.noteNumber === previousBeat.noteNumber) === -1) {
               data.successNotes = data.successNotes.slice(1);
@@ -174,7 +174,7 @@ function resourceReducer(state : AppState, action : GameAction) {
       }
       const resource = resourceData.resource;
       const resourceInfo = resource.resourceInfo;
-      const beatPress = isClickOnPattern(state.audioContext.currentTime, state.scheduledBeat, resourceInfo.pattern ?? [], TEMPO);
+      const beatPress = isClickOnPattern(state.audioContext.currentTime, state.scheduledBeat, resource.getPatternNotes(), TEMPO);
       const alreadyPressedNotes = resourceData.successNotes.find(x => x.barNumber == beatPress.beatInfo.barNumber && x.noteNumber == beatPress.beatInfo.noteNumber);
       if (!beatPress.isOnBeat || alreadyPressedNotes) {
         const updatedResources = state.resources.map(resource => {
@@ -199,13 +199,13 @@ function resourceReducer(state : AppState, action : GameAction) {
       updatedResources.map(data => {
         if (data.resource.isMatchingResourceType(resourceType) && !data.successNotes.includes(beatPress.beatInfo)) {
           data.successNotes.push(beatPress.beatInfo);
-          if (isPatternCompleted(data.successNotes, data.resource.resourceInfo.pattern ?? [])) {
+          if (isPatternCompleted(data.successNotes, data.resource.getPatternNotes())) {
             data.currentAmount += data.resource.resourceInfo.completedBarAmount;
           }
         }
       });
 
-      const resourceCompleted = updatedResources.filter(re => isPatternCompleted(re.successNotes, re.resource.resourceInfo.pattern ?? [])).map(x => x.resource.getResourceType());
+      const resourceCompleted = updatedResources.filter(re => isPatternCompleted(re.successNotes, re.resource.getPatternNotes())).map(x => x.resource.getResourceType());
 
       if (resourceCompleted.length > 1) {
         ResourceHybrids.forEach(hybrid => {
@@ -260,7 +260,7 @@ function resourceReducer(state : AppState, action : GameAction) {
           resourceData.isPreviewed = isPreviewing;
 
           if (isPreviewing) {
-            meternoneNotes = resourceData.resource.resourceInfo.patternNotation;
+            meternoneNotes = resourceData.resource.getPatternNotation();
           }
         }
         return resourceData;
@@ -310,7 +310,7 @@ function visualizeBeats(resources : ResourceData[], note : BeatInfo) {
     if (resource.interactionState !== ResourceState.Clickable) {
       return resource;
     }
-    resource.shouldPress = resource.resource.resourceInfo.pattern?.includes(note.noteNumber);
+    resource.shouldPress = resource.resource.getPatternNotes().includes(note.noteNumber);
   });
 }
 

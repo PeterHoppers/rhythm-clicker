@@ -1,13 +1,4 @@
-import { ResourceCreation, ResourceInfo, ResourceType, QUARTERS_PER_PHRASE, EIGHTH_VALUE, QUARTER_VALUE, SIXTEENTH_VALUE } from "../lib/definitions";
-import { getBeatNumbers } from "../lib/rhythm/beatNotation";
-import { repeatStringArrayIntoArray, repeatStringIntoArray, createNotation, createPatternNotation, getPlayableNotesOnly, UNDER_PRESSURE_NOTATION, TAPPING_PATTERN } from "./patternLibrary";
-
-const everyOther = getBeatNumbers(QUARTERS_PER_PHRASE * 2);
-
-const swung16 = getBeatNumbers(8);
-swung16.push(15);
-
-const underPressureNotes = [0, EIGHTH_VALUE, QUARTER_VALUE, QUARTER_VALUE + SIXTEENTH_VALUE, QUARTER_VALUE + EIGHTH_VALUE, QUARTER_VALUE * 2,  QUARTER_VALUE * 2 + EIGHTH_VALUE];
+import { ResourceCreation, ResourceInfo, ResourceType } from "../lib/definitions";
 
 //a file to define the implementation of each of the resources. This allows easy creation of new resources when needed
 export const ResourceLibrary : ResourceInfo[] = [
@@ -16,9 +7,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_C_HH_2"),
-        description: "A constantly dripping that keeps the world grounded.",
-        pattern: getBeatNumbers(QUARTERS_PER_PHRASE),
-        patternNotation: createPatternNotation(QUARTERS_PER_PHRASE, "c"), //"cccc :|\n",       
+        description: "A constantly dripping that keeps the world grounded.",     
         startingResource: true,
     },
     {
@@ -26,8 +15,6 @@ export const ResourceLibrary : ResourceInfo[] = [
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_S_1"),
-        pattern: getBeatNumbers(QUARTERS_PER_PHRASE, QUARTERS_PER_PHRASE),
-        patternNotation: createNotation(getBeatNumbers(QUARTERS_PER_PHRASE), repeatStringIntoArray('z/2 ', QUARTERS_PER_PHRASE)).concat(createNotation(getBeatNumbers(QUARTERS_PER_PHRASE, QUARTERS_PER_PHRASE), repeatStringIntoArray('c/2 ', QUARTERS_PER_PHRASE))),        
         startingResource: true
     },
     {
@@ -35,8 +22,6 @@ export const ResourceLibrary : ResourceInfo[] = [
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("wood-knock"),
-        patternNotation: createNotation(everyOther, repeatStringArrayIntoArray(['c/2', 'c/2 '], QUARTERS_PER_PHRASE)), //"c/2 c/2 c/2 c/2 c/2 c/2 c/2 c/2 :|\n",
-        pattern: everyOther,
         startingResource: true
     },
     {
@@ -44,8 +29,6 @@ export const ResourceLibrary : ResourceInfo[] = [
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_K_1"),
-        pattern: underPressureNotes,
-        patternNotation: UNDER_PRESSURE_NOTATION,
         startingResource: true
     },
     {
@@ -53,8 +36,6 @@ export const ResourceLibrary : ResourceInfo[] = [
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("Hat_Closed"),
-        pattern: getPlayableNotesOnly(TAPPING_PATTERN),
-        patternNotation: TAPPING_PATTERN,
         startingResource: true
     },
     {
@@ -62,23 +43,18 @@ export const ResourceLibrary : ResourceInfo[] = [
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("Hat_Closed"),
-        pattern: getBeatNumbers(4, 4),
     },    
     {
         resourceType: ResourceType.Fire,
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("Clap_Stack 2"),
-        pattern: getBeatNumbers(4, 4),        
-        patternNotation: createNotation(getBeatNumbers(QUARTERS_PER_PHRASE / 2), repeatStringIntoArray('z', QUARTERS_PER_PHRASE / 2)).concat(createNotation(getBeatNumbers(QUARTERS_PER_PHRASE / 2, 4), repeatStringIntoArray('c', QUARTERS_PER_PHRASE / 2)))//"z c z c :|\n"
     },
     {
         resourceType: ResourceType.Storm,
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_C_HH_8"),
-        pattern: swung16,
-        //patternNotation:  "c z c z | c z c c | c z c z | c z c z:|\n"
     },
 ];
 

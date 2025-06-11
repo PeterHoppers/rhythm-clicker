@@ -1,11 +1,9 @@
 import { BeatInfo, BeatNotation } from "./rhythm/beatNotation";
 import { createDescription } from "../data/resourceLibrary";
+import { getPlayableNotesOnly, getResourcePattern } from "../data/patternLibrary";
 
 export const NOTES_PER_BAR = 32;
 export const QUARTERS_PER_PHRASE = NOTES_PER_BAR / 8;
-export const QUARTER_VALUE = NOTES_PER_BAR / 4;
-export const EIGHTH_VALUE = NOTES_PER_BAR / 8;
-export const SIXTEENTH_VALUE = NOTES_PER_BAR / 16;
 export const RHYTHM_LENIENCY = .175;
 export const INPUT_DELAY = 0.02933;
 
@@ -47,9 +45,7 @@ export type ResourceInfo = {
     collectionAmount: number;
     completedBarAmount: number;
     clickPathSFX: string;
-    description?: string;
-    pattern?: number[];    
-    patternNotation?: BeatNotation[];
+    description?: string;  
     startingResource?: boolean;
 }
 
@@ -110,6 +106,18 @@ export class Resource {
 
     getFullDisplayDescription() {
         return createDescription(this.resourceInfo.description ?? "", this.getResourceType());
+    }
+
+    getPatternNotation() : BeatNotation[] { 
+        return getResourcePattern(this.getResourceType());
+    }
+
+    getPatternNotes() : number[] {
+        if (!this.getPatternNotation()) {
+            return [];
+        }
+
+        return getPlayableNotesOnly(this.getPatternNotation());
     }
 }
 
