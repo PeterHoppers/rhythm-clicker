@@ -67,7 +67,7 @@ export default function ResourceNode(props: ResourceNodeProps) {
     }
 
     let previewClassName : string = "";
-    switch(props.resourceData.shouldPress) {
+    switch(props.resourceData.pressPreviewState) {
         case PressPreviewType.None:
             previewClassName = styles.default;
             break;

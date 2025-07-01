@@ -32,7 +32,8 @@ export enum ActionType {
     OnCollectResource,
     OnSpendResource,
     Upgrade,
-    OnPreviewResource,
+    OnUpdateNotesWithResource,
+    OnPreviewPattern
 }
 
 export enum UpgradeType {
@@ -60,9 +61,9 @@ export type ResourceData = {
     currentAmount: number;
     successNotes: BeatInfo[];
     interactionState: ResourceState;
-    shouldPress?: PressPreviewType;
+    pressPreviewState?: PressPreviewType;
     isPlayed?: boolean;
-    isPreviewed?: boolean;
+    areNotesDisplayed?: boolean;
     clickSFX?: AudioBuffer;
 }
 

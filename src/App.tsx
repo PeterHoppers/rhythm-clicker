@@ -25,6 +25,7 @@ interface AppState {
   audioContext: AudioContext,
   scheduledBeat: BeatInfo,
   bottomRendererNotes?: BeatNotation[]
+  previewingResource?: ResourceType
 }
 
 const initalState : AppState = {
@@ -82,9 +83,16 @@ function resourceReducer(state : AppState, action : GameAction) {
       const updatedResources = state.resources;
       let beat = state.scheduledBeat;
       if (beat && beat.time <= state.audioContext.currentTime) {
-        playMetronone(state.audioContext, sampleSfx, beat); 
-        visualizeBeats(state.resources, beat);
-        previewBeats(state.resources, state.audioContext, beat);
+        visualizeBeats(state.resources, beat, state.previewingResource)
+        if (state.previewingResource) {
+          const targetResource = state.resources.find(x => x.resource.isMatchingResourceType(state.previewingResource));
+
+          if (targetResource) {
+            previewResource(targetResource, state.audioContext, beat);
+          }
+        } else {
+          playMetronone(state.audioContext, sampleSfx, beat); 
+        }
 
         if (beat.noteNumber % NOTES_PER_BAR === 0) {
           resetNotes(state.resources);
@@ -180,13 +188,14 @@ function resourceReducer(state : AppState, action : GameAction) {
         const updatedResources = state.resources.map(resource => {
           if (resource.resource.isMatchingResourceType(resourceType)) {
             resource.successNotes = resource.successNotes.slice(0, -1);
-            resource.isPreviewed = false;
+            resource.areNotesDisplayed = false;
           }
           return resource;
         })
         return {
           ...state,
-          resources: updatedResources
+          resources: updatedResources,
+          previewingResource: undefined
         };
       }
 
@@ -228,7 +237,8 @@ function resourceReducer(state : AppState, action : GameAction) {
 
       return {
         ...state,
-        resources: updatedResources
+        resources: updatedResources,        
+        previewingResource: undefined
       };
     }
 
@@ -246,20 +256,24 @@ function resourceReducer(state : AppState, action : GameAction) {
       };
     }
 
-    case ActionType.OnPreviewResource: {
+    case ActionType.OnUpdateNotesWithResource: {
       const resourceType = action.effect.resourceType;
       if (!resourceType) {
         return state;
       }
 
-      const isPreviewing = action.effect.modifier === 1;
+      if (state.previewingResource) {
+        return state;
+      }
+
+      const isAddingNotes = action.effect.modifier === 1;
       let meternoneNotes = undefined;
 
       const updatedResources = state.resources.map(resourceData => {
         if (resourceData.resource.isMatchingResourceType(resourceType)) {
-          resourceData.isPreviewed = isPreviewing;
+          resourceData.areNotesDisplayed = isAddingNotes;
 
-          if (isPreviewing) {
+          if (isAddingNotes) {
             meternoneNotes = resourceData.resource.getPatternNotation();
           }
         }
@@ -269,6 +283,36 @@ function resourceReducer(state : AppState, action : GameAction) {
       return {
         ...state,
         resources: updatedResources,
+        bottomRendererNotes : meternoneNotes
+      };
+    }
+
+    case ActionType.OnPreviewPattern: {
+      const resourceType = action.effect.resourceType;
+      if (!resourceType) {
+        return state;
+      }
+
+      if (state.previewingResource === resourceType) {
+          return {
+          ...state,
+          previewingResource : undefined,
+          bottomRendererNotes : undefined
+        };
+      }
+
+      const resourceData = state.resources.find(x => x.resource.isMatchingResourceType(resourceType));
+
+      if (!resourceData) {
+        return state;
+      }
+
+      resourceData.areNotesDisplayed = true;
+      const meternoneNotes = resourceData.resource.getPatternNotation();
+
+      return {
+        ...state,
+        previewingResource : resourceType,
         bottomRendererNotes : meternoneNotes
       };
     }
@@ -305,40 +349,47 @@ function playMetronone(audioContext : AudioContext, audioBuffer: AudioBuffer, no
   }
 }
 
-function visualizeBeats(resources : ResourceData[], note : BeatInfo) {
+function visualizeBeats(resources : ResourceData[], note : BeatInfo, previewingBeat: ResourceType | undefined) {
   resources.map(resource => {
     if (resource.interactionState !== ResourceState.Clickable) {
       return resource;
     }
 
-    const pattern = resource.resource.getPatternNotes();
-    if (pattern.includes(note.noteNumber)) {
-      resource.shouldPress = PressPreviewType.NoteIncluded;
+    if (previewingBeat && !resource.resource.isMatchingResourceType(previewingBeat)) {
+      resource.pressPreviewState = PressPreviewType.None;
+      return resource;
+    }
+
+    visualizeBeat(resource, note);
+  });
+}
+
+function visualizeBeat(resource: ResourceData, note: BeatInfo) {
+  const pattern = resource.resource.getPatternNotes();
+  if (pattern.includes(note.noteNumber)) {
+    resource.pressPreviewState = PressPreviewType.NoteIncluded;
+  } else {
+    const nextNote = createNextNote(TEMPO, note);
+    if (pattern.includes(nextNote.noteNumber)) {
+      resource.pressPreviewState = PressPreviewType.NoteBefore;        
     } else {
-      const nextNote = createNextNote(TEMPO, note);
-      if (pattern.includes(nextNote.noteNumber)) {
-        resource.shouldPress = PressPreviewType.NoteBefore;        
-      } else {
-        resource.shouldPress = PressPreviewType.None;
-      }
+      resource.pressPreviewState = PressPreviewType.None;
     }
-  });
+  }
 }
 
-function previewBeats(resources : ResourceData[], audioContext : AudioContext, note : BeatInfo) {
-  resources.forEach(resource => {
-    if (resource.shouldPress && resource.clickSFX && resource.isPreviewed) {
-      //playSFX(audioContext, resource.clickSFX, note.time);
-    }
-  });
+function previewResource(resource : ResourceData, audioContext : AudioContext, note : BeatInfo) {
+  if (resource.pressPreviewState == PressPreviewType.NoteIncluded && resource.clickSFX) {
+    playSFX(audioContext, resource.clickSFX, note.time);
+  }
 }
 
-function toggleResourcePreview(dispatch: React.ActionDispatch<[action: GameAction]>, resourceType: ResourceType, isPreviewing: boolean ) {
+function toggleResourcePreview(dispatch: React.ActionDispatch<[action: GameAction]>, resourceType: ResourceType, isAddingNotes: boolean ) {
   dispatch({
-      type: ActionType.OnPreviewResource,
+      type: ActionType.OnUpdateNotesWithResource,
       effect: {
           resourceType: resourceType,
-          modifier: (isPreviewing) ? 0 : 1
+          modifier: (isAddingNotes) ? 1 : 0
       }                   
   });
 }
@@ -414,7 +465,15 @@ function App() {
           <h2>Resources Collected</h2>
           <div className='resource-dashboard__holder'>
             {gameData.resources.filter(x => x.interactionState !== ResourceState.Hidden).map((data) => {
-              return <ResourceDisplay key={data.resource.resourceInfo.resourceType} resourceData={data} />
+              const resourceType = data.resource.resourceInfo.resourceType;
+              return <ResourceDisplay key={resourceType} resourceData={data} isPreviewing={resourceType === gameData.previewingResource} onClickCallback={() => {
+                dispatch({
+                  type: ActionType.OnPreviewPattern,
+                  effect: {
+                    resourceType: resourceType
+                  }
+                })
+              }}/>
             })}
           </div>        
         </section>
@@ -426,7 +485,7 @@ function App() {
               const resourceType = data.resource.getResourceType();
               //TODO: create field notes that can have resource nodes assigned to them
               return <ResourceNode key={resourceType} resourceData={data} keyCode={(index + 1).toString()} onHoverCallback={(isHover: boolean) => {
-                toggleResourcePreview(dispatch, resourceType, !isHover)
+                toggleResourcePreview(dispatch, resourceType, isHover)
               }}
               onClickCallback = {() => {
                 dispatch({
