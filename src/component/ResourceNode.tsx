@@ -1,4 +1,4 @@
-import { ResourceData, ResourceState } from "../lib/definitions";
+import { PressPreviewType, ResourceData, ResourceState } from "../lib/definitions";
 import styles from "./resourceNode.module.css";
 import { useEffect, useState } from "react";
 import { getResourceDisplay } from "../data/resourceLibrary";
@@ -66,7 +66,20 @@ export default function ResourceNode(props: ResourceNodeProps) {
         setPressed(false);
     }
 
-    const classNames = `${styles.button} ${(isPressed || props.resourceData.isPlayed) ? styles.pressed : styles.unpressed} ${(props.resourceData.shouldPress) ? styles.preview : styles.default}`;
+    let previewClassName : string = "";
+    switch(props.resourceData.shouldPress) {
+        case PressPreviewType.None:
+            previewClassName = styles.default;
+            break;
+        case PressPreviewType.NoteBefore:
+            previewClassName = styles.upcoming;
+            break;
+        case PressPreviewType.NoteIncluded:
+            previewClassName = styles.preview;
+            break;
+    }
+
+    const classNames = `${styles.button} ${(isPressed || props.resourceData.isPlayed) ? styles.pressed : styles.unpressed} ${previewClassName}`;
 
     return (
         <>

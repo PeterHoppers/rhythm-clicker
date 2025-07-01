@@ -8,7 +8,8 @@
     font-size: 4em;
     margin: .25em;
     transition: cubic-bezier(0.075, 0.82, 0.165, 1);
-    border: 2px solid black;
+    transition-duration: .05s;
+    border: 3px solid black;
     padding: .125em;
     border-radius: 10px;
     filter: drop-shadow(2px 2px 4px black);
@@ -36,10 +37,14 @@
     transform: scale(1);
 }
 
+.upcoming {
+    outline: 1px solid pink;
+}
+
 .preview {
-    outline: 3px solid pink;
+    outline: 4px solid pink;
 }
 
 .default {
-    outline: 1px solid black;
+    outline: 0px solid transparent;
 }

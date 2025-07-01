@@ -40,6 +40,12 @@ export enum UpgradeType {
     CollectionIncrease
 }
 
+export enum PressPreviewType {
+    None,
+    NoteBefore,
+    NoteIncluded
+}
+
 export type ResourceInfo = {    
     resourceType: ResourceType;
     collectionAmount: number;
@@ -54,7 +60,7 @@ export type ResourceData = {
     currentAmount: number;
     successNotes: BeatInfo[];
     interactionState: ResourceState;
-    shouldPress?: boolean;
+    shouldPress?: PressPreviewType;
     isPlayed?: boolean;
     isPreviewed?: boolean;
     clickSFX?: AudioBuffer;

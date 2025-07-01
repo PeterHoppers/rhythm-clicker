@@ -2,7 +2,7 @@ import { useEffect, useReducer } from 'react'
 import { ResourceLibrary, ResourceHybrids } from './data/resourceLibrary';
 import { UpgradeLibrary } from './data/upgradeLibrary';
 import './App.css'
-import { ActionType, Resource, GameAction, ResourceData, ResourceType, Upgrade, ResourceTransaction, UpgradeType, ResourceState } from './lib/definitions';
+import { ActionType, Resource, GameAction, ResourceData, ResourceType, Upgrade, ResourceTransaction, UpgradeType, ResourceState, PressPreviewType } from './lib/definitions';
 import ResourceDisplay from './component/ResourceDisplay';
 import { useInterval } from './lib/useInterval';
 import ResourceNode from './component/ResourceNode';
@@ -310,7 +310,18 @@ function visualizeBeats(resources : ResourceData[], note : BeatInfo) {
     if (resource.interactionState !== ResourceState.Clickable) {
       return resource;
     }
-    resource.shouldPress = resource.resource.getPatternNotes().includes(note.noteNumber);
+
+    const pattern = resource.resource.getPatternNotes();
+    if (pattern.includes(note.noteNumber)) {
+      resource.shouldPress = PressPreviewType.NoteIncluded;
+    } else {
+      const nextNote = createNextNote(TEMPO, note);
+      if (pattern.includes(nextNote.noteNumber)) {
+        resource.shouldPress = PressPreviewType.NoteBefore;        
+      } else {
+        resource.shouldPress = PressPreviewType.None;
+      }
+    }
   });
 }
 
