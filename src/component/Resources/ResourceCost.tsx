@@ -1,7 +1,7 @@
 import { ResourceTransaction } from "../../lib/definitions";
 import { getResourceDisplay } from "../../data/resourceLibrary";
 
-import styles from "./Cost.module.css";
+import styles from "./cost.module.css";
 
 interface UpgradeNodeProps {
     upgradeTitle: string;
