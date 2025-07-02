@@ -4,6 +4,8 @@ import { Tooltip } from "react-tooltip";
 import ResourceDescription from "./Resources/ResourceDescription";
 import ProgressBar from "./ProgressBar/ProgressBar";
 
+const TOOLTIP_HIDE_DELAY_IN_MS = 100;
+
 import styles from "./resourceDisplay.module.css";
 
 //this takes the resource data and provides the UI elements to display them in the dashboard
@@ -22,7 +24,7 @@ export default function ResourceDisplay(props: ResourceDisplayProps) {
             className={styles.holder}
             data-tooltip-id={tooltipId}
             data-tooltip-place="bottom"
-            data-tooltip-delay-hide={100}    
+            data-tooltip-delay-hide={TOOLTIP_HIDE_DELAY_IN_MS}    
         >
             <div className={styles.info}>
                 <div className={styles.icon}>                    

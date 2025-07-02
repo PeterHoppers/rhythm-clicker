@@ -3,9 +3,6 @@ import styles from "./upgrade.module.css";
 import { Tooltip } from "react-tooltip";
 import ResourceCost from "./Resources/ResourceCost";
 
-const TOOLTIP_SHOW_DELAY_IN_MS = 250;
-const TOOLTIP_HIDE_DELAY_IN_MS = 400;
-
 //this handles the rendering of each of the upgrade buttons, which is a button along with a tooltip to explain what the upgrade does
 interface UpgradeNodeProps {
     upgrade: Upgrade,
