@@ -96,6 +96,33 @@ export type GameEffect = {
     upgradeType?: UpgradeType,
 }
 
+export class ResourceDictionary {
+    resourceDatas : Partial<Record<ResourceType, ResourceData>>;
+
+    constructor() {
+        this.resourceDatas = {};
+    }    
+
+    getData(type: ResourceType) : ResourceData | undefined {
+        const data = this.resourceDatas[type];
+        return data;
+    }
+
+    getAllData() : ResourceData[] {
+        return Object.values(this.resourceDatas);
+    }
+
+    setData(type: ResourceType, data: ResourceData) {
+        this.resourceDatas[type] = data;
+    }
+
+    setAllData(datas: ResourceData[]) {
+        datas.forEach(data => {
+            this.setData(data.resource.getResourceType(), data);
+        }) 
+    }
+}
+
 export class Resource {
     resourceInfo: ResourceInfo;
 
