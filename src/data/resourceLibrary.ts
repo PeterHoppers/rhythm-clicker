@@ -15,28 +15,24 @@ export const ResourceLibrary : ResourceInfo[] = [
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_S_1"),
-        startingResource: true
     },
     {
         resourceType: ResourceType.Wood,
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("wood-knock"),
-        startingResource: true
     },
     {
         resourceType: ResourceType.Money,
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_K_1"),
-        startingResource: true
     },
     {
         resourceType: ResourceType.Smoke,
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("Hat_Closed"),
-        startingResource: true
     },
     {
         resourceType: ResourceType.Steam,
