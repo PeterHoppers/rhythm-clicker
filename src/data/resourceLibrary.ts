@@ -15,42 +15,49 @@ export const ResourceLibrary : ResourceInfo[] = [
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_S_1"),
+        startingResource: true,
     },
     {
         resourceType: ResourceType.Wood,
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("wood-knock"),
+        startingResource: true,
     },
     {
         resourceType: ResourceType.Money,
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_K_1"),
+        startingResource: true,
     },
     {
         resourceType: ResourceType.Smoke,
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("Hat_Closed"),
+        startingResource: true,
     },
     {
         resourceType: ResourceType.Steam,
         collectionAmount: 1,
         completedBarAmount: 10,
-        clickPathSFX: createFilePath("Hat_Closed"),
+        clickPathSFX: createFilePath("RD_C_HH_8"),
+        startingResource: true,
     },    
     {
         resourceType: ResourceType.Fire,
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("Clap_Stack 2"),
+        startingResource: true,
     },
     {
         resourceType: ResourceType.Storm,
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RD_C_HH_8"),
+        startingResource: true,
     },
 ];
 
@@ -79,7 +86,7 @@ export const ResourceHybrids : ResourceCreation[] = [
 ]
 
 function createFilePath(fileName: string) : string {
-    return `sfx/${fileName}.wav`;
+    return `/rhythm-clicker/sfx/${fileName}.wav`;
 }
 
 export function createDescription(startingDescription: string, resourceType : ResourceType) : string {
