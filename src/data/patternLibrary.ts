@@ -11,6 +11,7 @@ enum RhythmName {
     Taaa,
     Ti,
     TiTi,
+    Tika,
     TikaTika,
     TiTika,
     Rest,
@@ -37,6 +38,8 @@ export function getResourcePattern(resourceType: ResourceType) : BeatNotation[] 
             return createBeatNotationFromRhythmNames([RhythmName.Rest,  RhythmName.Ta,  RhythmName.Rest,  RhythmName.Ta]);
         case ResourceType.Steam:
             return createBeatNotationFromRhythmNames([RhythmName.Taaa, RhythmName.Ti, RhythmName.Ta,  RhythmName.Ta]);
+        case ResourceType.Brick:
+            return createBeatNotationFromRhythmNames([RhythmName.HalfRest, RhythmName.Tika, RhythmName.HalfRest, RhythmName.Tika, RhythmName.HalfRest, RhythmName.Tika, RhythmName.HalfRest, RhythmName.Ti]);
         default:
            return createBeatNotationFromRhythmNames([RhythmName.Ta, RhythmName.Ta, RhythmName.Ta, RhythmName.Ta]);
     }
@@ -65,6 +68,10 @@ function createBeatNotationFromRhythmNames(names : RhythmName[]) : BeatNotation[
                 break;
             case RhythmName.TiTika:
                 nameNotation = createBeatNotationFromNoteValues([EIGHTH_VALUE, SIXTEENTH_VALUE, SIXTEENTH_VALUE], currentOffset);
+                break;
+            case RhythmName.Tika:
+                nameNotation = createBeatNotationFromNoteValues([SIXTEENTH_VALUE, SIXTEENTH_VALUE], currentOffset);
+                offsetAmount = EIGHTH_VALUE;
                 break;
             case RhythmName.TikaTika:
                 nameNotation = createBeatNotationFromNoteValues([SIXTEENTH_VALUE, SIXTEENTH_VALUE, SIXTEENTH_VALUE, SIXTEENTH_VALUE], currentOffset);

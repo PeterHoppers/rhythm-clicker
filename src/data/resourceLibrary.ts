@@ -59,6 +59,13 @@ export const ResourceLibrary : ResourceInfo[] = [
         clickPathSFX: createFilePath("RD_C_HH_8"),
         startingResource: true,
     },
+    {
+        resourceType: ResourceType.Brick,
+        collectionAmount: 1,
+        completedBarAmount: 10,
+        clickPathSFX: createFilePath("RD_C_HH_9"),
+        startingResource: true,
+    },
 ];
 
 export const ResourceHybrids : ResourceCreation[] = [
