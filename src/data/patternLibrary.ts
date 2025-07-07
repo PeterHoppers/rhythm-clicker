@@ -28,7 +28,7 @@ export function getResourcePattern(resourceType: ResourceType) : BeatNotation[] 
         case ResourceType.Water:
             return createBeatNotationFromRhythmNames([RhythmName.Ta, RhythmName.Ta, RhythmName.Ta, RhythmName.Ta]);
         case ResourceType.Seed:
-            return createBeatNotationFromRhythmNames([RhythmName.RestTi, RhythmName.RestTi, RhythmName.RestTi, RhythmName.RestTi]);
+            return createBeatNotationFromRhythmNames([RhythmName.TiTi, RhythmName.TiTi, RhythmName.TiTi, RhythmName.TiTi]);
         case ResourceType.Wood:
             return createBeatNotationFromRhythmNames([RhythmName.Ta, RhythmName.Ta, RhythmName.Ta, RhythmName.TiTi]);
         case ResourceType.Money:
