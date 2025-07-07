@@ -42,7 +42,7 @@ export function getResourcePattern(resourceType: ResourceType) : BeatNotation[] 
         case ResourceType.Brick:
             return createBeatNotationFromRhythmNames([RhythmName.HalfRest, RhythmName.Tika, RhythmName.HalfRest, RhythmName.Tika, RhythmName.HalfRest, RhythmName.Tika, RhythmName.HalfRest, RhythmName.Ti]);        
         case ResourceType.Storm:
-            return createBeatNotationFromRhythmNames([RhythmName.TimKa, RhythmName.TimKa, RhythmName.TimKa, RhythmName.TiTika]);
+            return createBeatNotationFromRhythmNames([RhythmName.TimKa, RhythmName.Ta, RhythmName.TimKa, RhythmName.Ta]);
         default:
            return createBeatNotationFromRhythmNames([RhythmName.Ta, RhythmName.Ta, RhythmName.Ta, RhythmName.Ta]);
     }
