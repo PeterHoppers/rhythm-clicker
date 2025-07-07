@@ -82,6 +82,7 @@ function createBeatNotationFromRhythmNames(names : RhythmName[]) : BeatNotation[
 function createBeatNotationFromNoteValues(noteValues : number[], startingValue: number = 0, baseString: string = "c") : BeatNotation[] {
     const beatNotations : BeatNotation[] = [];
     let previousNote : BeatNotation;
+    let previousLength : number;
     noteValues.forEach(noteValue => {
         let targetString = "";
         switch (noteValue) {
@@ -108,12 +109,13 @@ function createBeatNotationFromNoteValues(noteValues : number[], startingValue: 
             }
 
             newBeatNotation = {
-                startingBeatNumber: previousNote.startingBeatNumber + noteValue,
+                startingBeatNumber: previousNote.startingBeatNumber + previousLength,
                 notation: targetString
             }
         }
 
         beatNotations.push(newBeatNotation);
+        previousLength = noteValue;
         previousNote = newBeatNotation;
     });
 
