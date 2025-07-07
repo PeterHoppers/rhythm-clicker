@@ -56,7 +56,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         resourceType: ResourceType.Storm,
         collectionAmount: 1,
         completedBarAmount: 10,
-        clickPathSFX: createFilePath("RD_C_HH_8"),
+        clickPathSFX: createFilePath("RD_C_HH_10"),
         startingResource: true,
     },
     {

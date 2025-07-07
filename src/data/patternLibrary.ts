@@ -8,12 +8,14 @@ export const SIXTEENTH_VALUE = NOTES_PER_BAR / 16;
 
 enum RhythmName {
     Ta,
-    Taaa,
+    Tum,
     Ti,
     TiTi,
+    TumTi,
     Tika,
     TikaTika,
     TiTika,
+    TimKa,
     Rest,
     HalfRest,
     RestTi
@@ -28,18 +30,19 @@ export function getResourcePattern(resourceType: ResourceType) : BeatNotation[] 
         case ResourceType.Seed:
             return createBeatNotationFromRhythmNames([RhythmName.RestTi, RhythmName.RestTi, RhythmName.RestTi, RhythmName.RestTi]);
         case ResourceType.Wood:
-            return createBeatNotationFromRhythmNames([RhythmName.TiTi, RhythmName.TiTi, RhythmName.TiTi, RhythmName.TiTi]);
+            return createBeatNotationFromRhythmNames([RhythmName.Ta, RhythmName.Ta, RhythmName.Ta, RhythmName.TiTi]);
         case ResourceType.Money:
-            return createBeatNotationFromRhythmNames([RhythmName.TiTi, RhythmName.TiTika, RhythmName.TiTi, RhythmName.Rest]);
-        case ResourceType.Storm:
+            return createBeatNotationFromRhythmNames([RhythmName.TiTika, RhythmName.Ta, RhythmName.Rest, RhythmName.Rest]);
         case ResourceType.Smoke:
             return createBeatNotationFromRhythmNames([RhythmName.TiTika,  RhythmName.TiTika,  RhythmName.TiTika,  RhythmName.TiTi]);
         case ResourceType.Fire:
             return createBeatNotationFromRhythmNames([RhythmName.Rest,  RhythmName.Ta,  RhythmName.Rest,  RhythmName.Ta]);
         case ResourceType.Steam:
-            return createBeatNotationFromRhythmNames([RhythmName.Taaa, RhythmName.Ti, RhythmName.Ta,  RhythmName.Ta]);
+            return createBeatNotationFromRhythmNames([RhythmName.Tum, RhythmName.Ti, RhythmName.Tum, RhythmName.Ti]);
         case ResourceType.Brick:
-            return createBeatNotationFromRhythmNames([RhythmName.HalfRest, RhythmName.Tika, RhythmName.HalfRest, RhythmName.Tika, RhythmName.HalfRest, RhythmName.Tika, RhythmName.HalfRest, RhythmName.Ti]);
+            return createBeatNotationFromRhythmNames([RhythmName.HalfRest, RhythmName.Tika, RhythmName.HalfRest, RhythmName.Tika, RhythmName.HalfRest, RhythmName.Tika, RhythmName.HalfRest, RhythmName.Ti]);        
+        case ResourceType.Storm:
+            return createBeatNotationFromRhythmNames([RhythmName.TimKa, RhythmName.TimKa, RhythmName.TimKa, RhythmName.TiTika]);
         default:
            return createBeatNotationFromRhythmNames([RhythmName.Ta, RhythmName.Ta, RhythmName.Ta, RhythmName.Ta]);
     }
@@ -55,7 +58,7 @@ function createBeatNotationFromRhythmNames(names : RhythmName[]) : BeatNotation[
             case RhythmName.Ta:
                 nameNotation = createBeatNotationFromNoteValues([QUARTER_VALUE], currentOffset);
                 break;
-            case RhythmName.Taaa:
+            case RhythmName.Tum:
                 nameNotation = createBeatNotationFromNoteValues([QUARTER_VALUE + EIGHTH_VALUE], currentOffset);
                 offsetAmount = QUARTER_VALUE + EIGHTH_VALUE;
                 break;
@@ -66,8 +69,17 @@ function createBeatNotationFromRhythmNames(names : RhythmName[]) : BeatNotation[
             case RhythmName.TiTi:
                 nameNotation = createBeatNotationFromNoteValues([EIGHTH_VALUE, EIGHTH_VALUE], currentOffset);
                 break;
+             case RhythmName.TumTi:
+                nameNotation = createBeatNotationFromNoteValues([QUARTER_VALUE + EIGHTH_VALUE, EIGHTH_VALUE], currentOffset);
+                offsetAmount = QUARTER_VALUE + QUARTER_VALUE;
+                break;
             case RhythmName.TiTika:
                 nameNotation = createBeatNotationFromNoteValues([EIGHTH_VALUE, SIXTEENTH_VALUE, SIXTEENTH_VALUE], currentOffset);
+                console.log(nameNotation);
+                break;
+            case RhythmName.TimKa:
+                nameNotation = createBeatNotationFromNoteValues([EIGHTH_VALUE + SIXTEENTH_VALUE, SIXTEENTH_VALUE], currentOffset);
+                offsetAmount = QUARTER_VALUE;
                 break;
             case RhythmName.Tika:
                 nameNotation = createBeatNotationFromNoteValues([SIXTEENTH_VALUE, SIXTEENTH_VALUE], currentOffset);
@@ -108,11 +120,14 @@ function createBeatNotationFromNoteValues(noteValues : number[], startingValue: 
             case QUARTER_VALUE:
                 targetString = `${baseString}`;
                 break;
-             case QUARTER_VALUE + EIGHTH_VALUE:
+            case QUARTER_VALUE + EIGHTH_VALUE:
                 targetString = `${baseString}3/2`;
                 break;
             case EIGHTH_VALUE:
                 targetString = `${baseString}/2`;
+                break;
+            case SIXTEENTH_VALUE + EIGHTH_VALUE:
+                targetString = `${baseString}3/4`;
                 break;
             case SIXTEENTH_VALUE:
                 targetString = `${baseString}/4`;
