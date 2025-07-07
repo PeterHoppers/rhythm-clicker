@@ -6,7 +6,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         resourceType: ResourceType.Water,
         collectionAmount: 1,
         completedBarAmount: 10,
-        clickPathSFX: createFilePath("RD_C_HH_2"),
+        clickPathSFX: createFilePath("CH"),
         description: "A constantly dripping that keeps the world grounded.",     
         startingResource: true,
     },
@@ -14,43 +14,57 @@ export const ResourceLibrary : ResourceInfo[] = [
         resourceType: ResourceType.Seed,
         collectionAmount: 1,
         completedBarAmount: 10,
-        clickPathSFX: createFilePath("RD_S_1"),
+        clickPathSFX: createFilePath("HC25"),
+        startingResource: true,
     },
     {
         resourceType: ResourceType.Wood,
         collectionAmount: 1,
         completedBarAmount: 10,
-        clickPathSFX: createFilePath("wood-knock"),
+        clickPathSFX: createFilePath("RS"),
+        startingResource: true,
     },
     {
         resourceType: ResourceType.Money,
         collectionAmount: 1,
         completedBarAmount: 10,
-        clickPathSFX: createFilePath("RD_K_1"),
+        clickPathSFX: createFilePath("MC25"),
+        startingResource: true,
     },
     {
         resourceType: ResourceType.Smoke,
         collectionAmount: 1,
         completedBarAmount: 10,
-        clickPathSFX: createFilePath("Hat_Closed"),
+        clickPathSFX: createFilePath("HC25"),
+        startingResource: true,
     },
     {
         resourceType: ResourceType.Steam,
         collectionAmount: 1,
         completedBarAmount: 10,
-        clickPathSFX: createFilePath("Hat_Closed"),
+        clickPathSFX: createFilePath("HT25"),
+        startingResource: true,
     },    
     {
         resourceType: ResourceType.Fire,
         collectionAmount: 1,
         completedBarAmount: 10,
-        clickPathSFX: createFilePath("Clap_Stack 2"),
+        clickPathSFX: createFilePath("CP"),
+        startingResource: true,
     },
     {
         resourceType: ResourceType.Storm,
         collectionAmount: 1,
         completedBarAmount: 10,
-        clickPathSFX: createFilePath("RD_C_HH_8"),
+        clickPathSFX: createFilePath("MA"),
+        startingResource: true,
+    },
+    {
+        resourceType: ResourceType.Brick,
+        collectionAmount: 1,
+        completedBarAmount: 10,
+        clickPathSFX: createFilePath("LC25"),
+        startingResource: true,
     },
 ];
 
@@ -79,7 +93,7 @@ export const ResourceHybrids : ResourceCreation[] = [
 ]
 
 function createFilePath(fileName: string) : string {
-    return `sfx/${fileName}.wav`;
+    return `/rhythm-clicker/sfx/${fileName}.WAV`;
 }
 
 export function createDescription(startingDescription: string, resourceType : ResourceType) : string {
