@@ -125,9 +125,15 @@ export class ResourceDictionary {
 
 export class Resource {
     resourceInfo: ResourceInfo;
+    patternNotation:  BeatNotation[];
+    playableNotation: number[];
+    description: string;
 
     constructor(resourceInfo: ResourceInfo) {
         this.resourceInfo = resourceInfo;
+        this.patternNotation = getResourcePattern(this.getResourceType());
+        this.playableNotation = getPlayableNotesOnly(this.getPatternNotation());
+        this.description = createDescription(this.resourceInfo.description ?? "", this.getResourceType());
     }
 
     isMatchingResourceType(resourceType : ResourceType | undefined) : boolean {
@@ -139,11 +145,11 @@ export class Resource {
     }
 
     getFullDisplayDescription() {
-        return createDescription(this.resourceInfo.description ?? "", this.getResourceType());
+        return this.description;
     }
 
     getPatternNotation() : BeatNotation[] { 
-        return getResourcePattern(this.getResourceType());
+        return this.patternNotation;
     }
 
     getPatternNotes() : number[] {
@@ -151,7 +157,7 @@ export class Resource {
             return [];
         }
 
-        return getPlayableNotesOnly(this.getPatternNotation());
+        return this.playableNotation;
     }
 }
 
