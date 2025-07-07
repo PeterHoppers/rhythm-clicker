@@ -15,7 +15,7 @@ import MetronomeVisual from './component/Notation/MetronomeVisual';
 const TICK_CHECK = 25;
 const TEMPO = 125 * QUARTERS_PER_PHRASE; //TODO: be able to change this
 const AUDIO_BEATS = getBeatNumbers(QUARTERS_PER_PHRASE);
-const CLICK_PATH = "rhythm-clicker/metronone.wav";
+const CLICK_PATH = `${window.location.href}/metronone.wav`;
 
 let sampleSfx : AudioBuffer;
 

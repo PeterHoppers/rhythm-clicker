@@ -93,7 +93,7 @@ export const ResourceHybrids : ResourceCreation[] = [
 ]
 
 function createFilePath(fileName: string) : string {
-    return `/rhythm-clicker/sfx/${fileName}.WAV`;
+    return `${window.location.href}/sfx/${fileName}.WAV`;
 }
 
 export function createDescription(startingDescription: string, resourceType : ResourceType) : string {
