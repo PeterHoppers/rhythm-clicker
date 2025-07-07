@@ -75,7 +75,6 @@ function createBeatNotationFromRhythmNames(names : RhythmName[]) : BeatNotation[
                 break;
             case RhythmName.TiTika:
                 nameNotation = createBeatNotationFromNoteValues([EIGHTH_VALUE, SIXTEENTH_VALUE, SIXTEENTH_VALUE], currentOffset);
-                console.log(nameNotation);
                 break;
             case RhythmName.TimKa:
                 nameNotation = createBeatNotationFromNoteValues([EIGHTH_VALUE + SIXTEENTH_VALUE, SIXTEENTH_VALUE], currentOffset);
