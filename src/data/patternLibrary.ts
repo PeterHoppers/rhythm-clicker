@@ -30,18 +30,20 @@ export function getResourcePattern(resourceType: ResourceType) : BeatNotation[] 
         case ResourceType.Seed:
             return createBeatNotationFromRhythmNames([RhythmName.TiTi, RhythmName.TiTi, RhythmName.TiTi, RhythmName.TiTi]);
         case ResourceType.Wood:
-            return createBeatNotationFromRhythmNames([RhythmName.Ta, RhythmName.Ta, RhythmName.Ta, RhythmName.TiTi]);
+            return createBeatNotationFromRhythmNames([RhythmName.Ta, RhythmName.Ta, RhythmName.TiTi, RhythmName.Ta]);
         case ResourceType.Money:
             return createBeatNotationFromRhythmNames([RhythmName.TiTika, RhythmName.Ta, RhythmName.Rest, RhythmName.Rest]);
-        case ResourceType.Smoke:
-            return createBeatNotationFromRhythmNames([RhythmName.TiTika,  RhythmName.TiTika,  RhythmName.TiTika,  RhythmName.TiTi]);
+        case ResourceType.Park:
+            return createBeatNotationFromRhythmNames([RhythmName.TikaTika,  RhythmName.Ta,  RhythmName.TikaTika,  RhythmName.Ta]);
         case ResourceType.Fire:
             return createBeatNotationFromRhythmNames([RhythmName.Rest,  RhythmName.Ta,  RhythmName.Rest,  RhythmName.Ta]);
-        case ResourceType.Steam:
+        case ResourceType.Energy:
             return createBeatNotationFromRhythmNames([RhythmName.Tum, RhythmName.Ti, RhythmName.Tum, RhythmName.Ti]);
         case ResourceType.Brick:
             return createBeatNotationFromRhythmNames([RhythmName.HalfRest, RhythmName.Tika, RhythmName.HalfRest, RhythmName.Tika, RhythmName.HalfRest, RhythmName.Tika, RhythmName.HalfRest, RhythmName.Ti]);        
         case ResourceType.Storm:
+            return createBeatNotationFromRhythmNames([RhythmName.TimKa, RhythmName.Ta, RhythmName.TimKa, RhythmName.Ta]);
+        case ResourceType.Heart:
             return createBeatNotationFromRhythmNames([RhythmName.TimKa, RhythmName.Ta, RhythmName.TimKa, RhythmName.Ta]);
         default:
            return createBeatNotationFromRhythmNames([RhythmName.Ta, RhythmName.Ta, RhythmName.Ta, RhythmName.Ta]);

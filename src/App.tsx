@@ -13,7 +13,7 @@ import { setupSFX, SFXInfo, playSFX } from './lib/rhythm/playback';
 import MetronomeVisual from './component/Notation/MetronomeVisual';
 
 const TICK_CHECK = 25;
-const TEMPO = 125 * QUARTERS_PER_PHRASE; //TODO: be able to change this
+const TEMPO = 150 * QUARTERS_PER_PHRASE; //TODO: be able to change this
 const AUDIO_BEATS = getBeatNumbers(QUARTERS_PER_PHRASE);
 const CLICK_PATH = `${window.location.href}/metronone.wav`;
 
@@ -322,7 +322,7 @@ function playMetronone(audioContext : AudioContext, audioBuffer: AudioBuffer, no
   const isNewBar = (note.noteNumber === 0);
 
   if (AUDIO_BEATS.includes(note.noteNumber)) {
-    const noteVolume = (isNewBar) ? 2 : .5;
+    const noteVolume = (isNewBar) ? .75 : .25;
     playSFX(audioContext, audioBuffer, note.time, noteVolume);
   }
 }

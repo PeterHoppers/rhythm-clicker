@@ -84,11 +84,11 @@ export const UpgradeLibrary : UpgradeInfo[] = [
         cost: [
         {
             resourceAmount: 3,
-            resourceType: ResourceType.Steam
+            resourceType: ResourceType.Energy
         },        
         {
             resourceAmount: 3,
-            resourceType: ResourceType.Smoke,
+            resourceType: ResourceType.Park,
         },
         {
             resourceAmount: 150,
