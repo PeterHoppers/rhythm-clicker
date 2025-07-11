@@ -40,7 +40,11 @@ function createInitialResources() : ResourceDictionary {
   {ResourceLibrary.forEach(resourceInfo => {
     let startingState : ResourceState;
     if (resourceInfo.startingResource) {
-      startingState = ResourceState.Clickable;
+      if (resourceInfo.isCollectable) {
+        startingState = ResourceState.Clickable;
+      } else {
+        startingState = ResourceState.Gainable;
+      }
     } else {
       startingState = ResourceState.Hidden;
     }
@@ -473,7 +477,7 @@ function App() {
         <section className='currency-section'>
           <h2 className='resource-title'>Resource Field</h2>
           <div className='currency-section__holder'>
-            {gameData.resources.getAllData().map((data, index) => {
+            {gameData.resources.getAllData().filter(x => x.resource.resourceInfo.isCollectable).map((data, index) => {
               const resourceType = data.resource.getResourceType();
               //TODO: create field notes that can have resource nodes assigned to them
               return <ResourceNode key={resourceType} resourceData={data} keyCode={(index + 1).toString()} onHoverCallback={(isHover: boolean) => {

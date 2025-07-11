@@ -55,6 +55,7 @@ export type ResourceInfo = {
     clickPathSFX: string;
     description?: string;  
     startingResource?: boolean;
+    isCollectable: boolean;
 }
 
 export type ResourceData = {

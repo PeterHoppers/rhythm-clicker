@@ -9,6 +9,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         clickPathSFX: createFilePath("MC00"),
         description: "A constantly dripping that keeps the world grounded.",     
         startingResource: true,
+        isCollectable: true
     },
     {
         resourceType: ResourceType.Seed,
@@ -16,6 +17,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         completedBarAmount: 10,
         clickPathSFX: createFilePath("CH"),
         startingResource: true,
+        isCollectable: true
     },
     {
         resourceType: ResourceType.Wood,
@@ -23,6 +25,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RS"),
         startingResource: true,
+        isCollectable: true
     },
     {
         resourceType: ResourceType.Fire,
@@ -30,6 +33,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         completedBarAmount: 10,
         clickPathSFX: createFilePath("CP"),
         startingResource: true,
+        isCollectable: true
     },    
     {
         resourceType: ResourceType.Park,
@@ -37,6 +41,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         completedBarAmount: 10,
         clickPathSFX: createFilePath("MA"),
         startingResource: true,
+        isCollectable: true
     },
     {
         resourceType: ResourceType.Energy,
@@ -44,6 +49,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         completedBarAmount: 10,
         clickPathSFX: createFilePath("OH50"),
         startingResource: true,
+        isCollectable: true
     },    
     {
         resourceType: ResourceType.Heart,
@@ -51,6 +57,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         completedBarAmount: 10,
         clickPathSFX: createFilePath("HT25"),
         startingResource: true,
+        isCollectable: true
     },
     {
         resourceType: ResourceType.Money,
@@ -58,6 +65,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         completedBarAmount: 10,
         clickPathSFX: createFilePath("MC25"),
         startingResource: true,
+        isCollectable: false
     },
     {
         resourceType: ResourceType.Storm,
@@ -65,6 +73,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         completedBarAmount: 10,
         clickPathSFX: createFilePath("MA"),
         startingResource: true,
+        isCollectable: false
     },
     {
         resourceType: ResourceType.Brick,
@@ -72,6 +81,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         completedBarAmount: 10,
         clickPathSFX: createFilePath("LC25"),
         startingResource: true,
+        isCollectable: false
     },
 ];
 
