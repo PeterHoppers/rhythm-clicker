@@ -104,7 +104,7 @@ export function createDescription(startingDescription: string, resourceType : Re
 export function getResourceDisplay(resourceType: ResourceType) : string {
     switch (resourceType) {
         case ResourceType.Coal:        
-            return "🪨";
+            return "💨";
         case ResourceType.Tree:
             return "🌳";
         case ResourceType.Storm:
@@ -123,6 +123,8 @@ export function getResourceDisplay(resourceType: ResourceType) : string {
             return "🏞️";
         case ResourceType.Heart:
             return "❤️";
+        case ResourceType.Steam:
+            return "♨️";
         default:
             return "🙃";
     }

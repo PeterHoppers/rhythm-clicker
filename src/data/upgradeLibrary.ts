@@ -12,7 +12,7 @@ export const UpgradeLibrary : UpgradeInfo[] = [
         displayName: "Seedlings",
         cost: [
         {
-            resourceAmount: 10,
+            resourceAmount: 5,
             resourceType: ResourceType.Water
         },        
         ]
@@ -21,13 +21,13 @@ export const UpgradeLibrary : UpgradeInfo[] = [
         effect: {
             upgradeType: UpgradeType.CollectionIncrease,
             resourceType: ResourceType.Tree,
-            modifier: 5
+            modifier: 3
         },
         displayIcon: "🪓",
         displayName: "Axe",
         cost: [
         {
-            resourceAmount: 3,
+            resourceAmount: 1,
             resourceType: ResourceType.Tree
         },               
         ]
@@ -55,23 +55,57 @@ export const UpgradeLibrary : UpgradeInfo[] = [
         displayName: "Forest Fire",
         cost: [
         {
-            resourceAmount: 100,
+            resourceAmount: 50,
             resourceType: ResourceType.Tree
         },        
+        {
+            resourceAmount: 10,
+            resourceType: ResourceType.Seed
+        }
         ]
     },
     {
         effect: {
             upgradeType: UpgradeType.NewResource,
-            resourceType: ResourceType.Money,
+            resourceType: ResourceType.Park,
         },
-        displayIcon: getResourceDisplay(ResourceType.Money),
-        displayName: "Bank Time",
+        displayIcon: getResourceDisplay(ResourceType.Park),
+        displayName: "Park Reservation",
         cost: [
         {
-            resourceAmount: 100,
-            resourceType: ResourceType.Fire
+            resourceAmount: 3,
+            resourceType: ResourceType.Park
         },        
+        {
+             resourceAmount: 20,
+            resourceType: ResourceType.Tree
+        },
+        {
+             resourceAmount: 20,
+            resourceType: ResourceType.Seed
+        },
+        ]
+    },
+    {
+        effect: {
+            upgradeType: UpgradeType.NewResource,
+            resourceType: ResourceType.Energy,
+        },
+        displayIcon: getResourceDisplay(ResourceType.Energy),
+        displayName: "Energy Production",
+        cost: [
+        {
+            resourceAmount: 10,
+            resourceType: ResourceType.Coal
+        },        
+        {
+            resourceAmount: 10,
+            resourceType: ResourceType.Steam
+        },
+        {
+            resourceAmount: 35,
+            resourceType: ResourceType.Fire
+        }
         ]
     },
     {
