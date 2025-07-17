@@ -6,57 +6,73 @@ export const ResourceLibrary : ResourceInfo[] = [
         resourceType: ResourceType.Water,
         collectionAmount: 1,
         completedBarAmount: 10,
-        clickPathSFX: createFilePath("CH"),
+        clickPathSFX: createFilePath("MC00"),
         description: "A constantly dripping that keeps the world grounded.",     
         startingResource: true,
+        isCollectable: true
     },
     {
         resourceType: ResourceType.Seed,
         collectionAmount: 1,
         completedBarAmount: 10,
-        clickPathSFX: createFilePath("HC25"),
+        clickPathSFX: createFilePath("CH"),
+        isCollectable: true
     },
     {
         resourceType: ResourceType.Wood,
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RS"),
+        isCollectable: true
+    },
+    {
+        resourceType: ResourceType.Fire,
+        collectionAmount: 1,
+        completedBarAmount: 10,
+        clickPathSFX: createFilePath("CP"),
+        isCollectable: true
+    },    
+    {
+        resourceType: ResourceType.Park,
+        collectionAmount: 1,
+        completedBarAmount: 10,
+        clickPathSFX: createFilePath("MA"),
+        isCollectable: true
+    },
+    {
+        resourceType: ResourceType.Energy,
+        collectionAmount: 1,
+        completedBarAmount: 10,
+        clickPathSFX: createFilePath("OH50"),
+        isCollectable: true
+    },    
+    {
+        resourceType: ResourceType.Heart,
+        collectionAmount: 1,
+        completedBarAmount: 10,
+        clickPathSFX: createFilePath("HT25"),
+        isCollectable: true
     },
     {
         resourceType: ResourceType.Money,
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("MC25"),
-    },
-    {
-        resourceType: ResourceType.Smoke,
-        collectionAmount: 1,
-        completedBarAmount: 10,
-        clickPathSFX: createFilePath("HC25"),
-    },
-    {
-        resourceType: ResourceType.Steam,
-        collectionAmount: 1,
-        completedBarAmount: 10,
-        clickPathSFX: createFilePath("HT25"),
-    },    
-    {
-        resourceType: ResourceType.Fire,
-        collectionAmount: 1,
-        completedBarAmount: 10,
-        clickPathSFX: createFilePath("CP"),
+        isCollectable: false
     },
     {
         resourceType: ResourceType.Storm,
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("MA"),
+        isCollectable: false
     },
     {
         resourceType: ResourceType.Brick,
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("LC25"),
+        isCollectable: false
     },
 ];
 
@@ -73,14 +89,14 @@ export const ResourceHybrids : ResourceCreation[] = [
             ResourceType.Wood,
             ResourceType.Fire
         ],
-        made: ResourceType.Smoke
+        made: ResourceType.Park
     },
     {
         completed: [
             ResourceType.Water,
             ResourceType.Fire
         ],
-        made: ResourceType.Steam
+        made: ResourceType.Energy
     },    
 ]
 
@@ -120,16 +136,18 @@ export function getResourceDisplay(resourceType: ResourceType) : string {
             return "⛈️";
         case ResourceType.Money:
             return "💰";
-        case ResourceType.Steam:
-            return "☁️";
+        case ResourceType.Energy:
+            return "⚡";
         case ResourceType.Seed:
             return "🌱";
         case ResourceType.Water:
             return "💧";
         case ResourceType.Fire:
             return "🔥";
-        case ResourceType.Smoke:
-            return "🌫️";
+        case ResourceType.Park:
+            return "🏞️";
+        case ResourceType.Heart:
+            return "❤️";
         default:
             return "🙃";
     }

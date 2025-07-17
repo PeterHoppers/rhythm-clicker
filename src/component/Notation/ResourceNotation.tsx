@@ -3,6 +3,8 @@ import { useEffect } from "react";
 
 import styles from "./resourceNotation.module.css";
 
+const NOTATION_WIDTH = 250;
+
 interface ResourceNotationProps {
     notationName: string;
     notationString : string;
@@ -10,7 +12,7 @@ interface ResourceNotationProps {
 
 export default function ResourceNotation(props : ResourceNotationProps) {
     useEffect(() => {
-        renderNotes(props.notationName, props.notationString, {width: 250});
+        renderNotes(props.notationName, props.notationString, {width: NOTATION_WIDTH});
     }, [props.notationName, props.notationString]);
 
     return (

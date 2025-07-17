@@ -13,12 +13,13 @@ export enum ResourceType {
     Wood = "Wood",
     Brick = "Brick",
     Fire = "Fire",
-    Smoke = "Smoke",
+    Park = "Smoke",
     Storm = "Storm",
     Swing = "Swing",
     Clap = "Clap",
-    Steam = "Steam",
-    Money = "Money"
+    Energy = "Steam",
+    Money = "Money",
+    Heart = "Heart"
 }
 
 export enum ResourceState {
@@ -54,6 +55,7 @@ export type ResourceInfo = {
     clickPathSFX: string;
     description?: string;  
     startingResource?: boolean;
+    isCollectable: boolean;
 }
 
 export type ResourceData = {

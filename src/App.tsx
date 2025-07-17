@@ -13,7 +13,7 @@ import { setupSFX, SFXInfo, playSFX } from './lib/rhythm/playback';
 import MetronomeVisual from './component/Notation/MetronomeVisual';
 
 const TICK_CHECK = 25;
-const TEMPO = 125 * QUARTERS_PER_PHRASE; //TODO: be able to change this
+const TEMPO = 150 * QUARTERS_PER_PHRASE; //TODO: be able to change this
 const AUDIO_BEATS = getBeatNumbers(QUARTERS_PER_PHRASE);
 const CLICK_PATH = `${window.location.href}/metronone.wav`;
 
@@ -40,7 +40,11 @@ function createInitialResources() : ResourceDictionary {
   {ResourceLibrary.forEach(resourceInfo => {
     let startingState : ResourceState;
     if (resourceInfo.startingResource) {
-      startingState = ResourceState.Clickable;
+      if (resourceInfo.isCollectable) {
+        startingState = ResourceState.Clickable;
+      } else {
+        startingState = ResourceState.Gainable;
+      }
     } else {
       startingState = ResourceState.Hidden;
     }
@@ -322,7 +326,7 @@ function playMetronone(audioContext : AudioContext, audioBuffer: AudioBuffer, no
   const isNewBar = (note.noteNumber === 0);
 
   if (AUDIO_BEATS.includes(note.noteNumber)) {
-    const noteVolume = (isNewBar) ? 2 : .5;
+    const noteVolume = (isNewBar) ? .75 : .25;
     playSFX(audioContext, audioBuffer, note.time, noteVolume);
   }
 }
@@ -473,7 +477,7 @@ function App() {
         <section className='currency-section'>
           <h2 className='resource-title'>Resource Field</h2>
           <div className='currency-section__holder'>
-            {gameData.resources.getAllData().map((data, index) => {
+            {gameData.resources.getAllData().filter(x => x.resource.resourceInfo.isCollectable).map((data, index) => {
               const resourceType = data.resource.getResourceType();
               //TODO: create field notes that can have resource nodes assigned to them
               return <ResourceNode key={resourceType} resourceData={data} keyCode={(index + 1).toString()} onHoverCallback={(isHover: boolean) => {
