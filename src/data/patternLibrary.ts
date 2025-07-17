@@ -29,7 +29,7 @@ export function getResourcePattern(resourceType: ResourceType) : BeatNotation[] 
             return createBeatNotationFromRhythmNames([RhythmName.Ta, RhythmName.Ta, RhythmName.Ta, RhythmName.Ta]);
         case ResourceType.Seed:
             return createBeatNotationFromRhythmNames([RhythmName.TiTi, RhythmName.TiTi, RhythmName.TiTi, RhythmName.TiTi]);
-        case ResourceType.Wood:
+        case ResourceType.Tree:
             return createBeatNotationFromRhythmNames([RhythmName.Ta, RhythmName.Ta, RhythmName.TiTi, RhythmName.Ta]);
         case ResourceType.Money:
             return createBeatNotationFromRhythmNames([RhythmName.TiTika, RhythmName.Ta, RhythmName.Rest, RhythmName.Rest]);
@@ -39,7 +39,7 @@ export function getResourcePattern(resourceType: ResourceType) : BeatNotation[] 
             return createBeatNotationFromRhythmNames([RhythmName.Rest,  RhythmName.Ta,  RhythmName.Rest,  RhythmName.Ta]);
         case ResourceType.Energy:
             return createBeatNotationFromRhythmNames([RhythmName.Tum, RhythmName.Ti, RhythmName.Tum, RhythmName.Ti]);
-        case ResourceType.Brick:
+        case ResourceType.Coal:
             return createBeatNotationFromRhythmNames([RhythmName.HalfRest, RhythmName.Tika, RhythmName.HalfRest, RhythmName.Tika, RhythmName.HalfRest, RhythmName.Tika, RhythmName.HalfRest, RhythmName.Ti]);        
         case ResourceType.Storm:
             return createBeatNotationFromRhythmNames([RhythmName.TimKa, RhythmName.Ta, RhythmName.TimKa, RhythmName.Ta]);

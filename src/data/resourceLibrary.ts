@@ -4,8 +4,6 @@ import { ResourceCreation, ResourceInfo, ResourceType } from "../lib/definitions
 export const ResourceLibrary : ResourceInfo[] = [
     {
         resourceType: ResourceType.Water,
-        collectionAmount: 1,
-        completedBarAmount: 10,
         clickPathSFX: createFilePath("MC00"),
         description: "A constantly dripping that keeps the world grounded.",     
         startingResource: true,
@@ -13,65 +11,44 @@ export const ResourceLibrary : ResourceInfo[] = [
     },
     {
         resourceType: ResourceType.Seed,
-        collectionAmount: 1,
-        completedBarAmount: 10,
         clickPathSFX: createFilePath("CH"),
         isCollectable: true
     },
     {
-        resourceType: ResourceType.Wood,
-        collectionAmount: 1,
-        completedBarAmount: 10,
+        resourceType: ResourceType.Tree,
         clickPathSFX: createFilePath("RS"),
         isCollectable: true
     },
     {
         resourceType: ResourceType.Fire,
-        collectionAmount: 1,
-        completedBarAmount: 10,
         clickPathSFX: createFilePath("CP"),
         isCollectable: true
     },    
     {
         resourceType: ResourceType.Park,
-        collectionAmount: 1,
-        completedBarAmount: 10,
         clickPathSFX: createFilePath("MA"),
         isCollectable: true
     },
     {
         resourceType: ResourceType.Energy,
-        collectionAmount: 1,
-        completedBarAmount: 10,
         clickPathSFX: createFilePath("OH50"),
         isCollectable: true
     },    
     {
         resourceType: ResourceType.Heart,
-        collectionAmount: 1,
-        completedBarAmount: 10,
         clickPathSFX: createFilePath("HT25"),
         isCollectable: true
     },
     {
         resourceType: ResourceType.Money,
-        collectionAmount: 1,
-        completedBarAmount: 10,
-        clickPathSFX: createFilePath("MC25"),
         isCollectable: false
     },
     {
         resourceType: ResourceType.Storm,
-        collectionAmount: 1,
-        completedBarAmount: 10,
-        clickPathSFX: createFilePath("MA"),
         isCollectable: false
     },
     {
-        resourceType: ResourceType.Brick,
-        collectionAmount: 1,
-        completedBarAmount: 10,
-        clickPathSFX: createFilePath("LC25"),
+        resourceType: ResourceType.Coal,
         isCollectable: false
     },
 ];
@@ -82,11 +59,11 @@ export const ResourceHybrids : ResourceCreation[] = [
             ResourceType.Seed,
             ResourceType.Water
         ],
-        made: ResourceType.Wood
+        made: ResourceType.Tree
     },
     {
         completed: [
-            ResourceType.Wood,
+            ResourceType.Tree,
             ResourceType.Fire
         ],
         made: ResourceType.Park
@@ -126,11 +103,9 @@ export function createDescription(startingDescription: string, resourceType : Re
 
 export function getResourceDisplay(resourceType: ResourceType) : string {
     switch (resourceType) {
-        case ResourceType.Brick:        
-            return "🧱";
-        case ResourceType.Clap:
-            return "👏";
-        case ResourceType.Wood:
+        case ResourceType.Coal:        
+            return "🪨";
+        case ResourceType.Tree:
             return "🌳";
         case ResourceType.Storm:
             return "⛈️";

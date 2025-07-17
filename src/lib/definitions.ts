@@ -10,14 +10,13 @@ export const INPUT_DELAY = 0.02933;
 export enum ResourceType {
     Seed = "Seed",
     Water = "Water",
-    Wood = "Wood",
-    Brick = "Brick",
+    Tree = "Tree",
     Fire = "Fire",
-    Park = "Smoke",
+    Park = "Park",
+    Coal = "Coal",
+    Steam = "Steam",
     Storm = "Storm",
-    Swing = "Swing",
-    Clap = "Clap",
-    Energy = "Steam",
+    Energy = "Energy",
     Money = "Money",
     Heart = "Heart"
 }
@@ -50,9 +49,9 @@ export enum PressPreviewType {
 
 export type ResourceInfo = {    
     resourceType: ResourceType;
-    collectionAmount: number;
-    completedBarAmount: number;
-    clickPathSFX: string;
+    collectionAmount?: number;
+    completedBarAmount?: number;
+    clickPathSFX?: string;
     description?: string;  
     startingResource?: boolean;
     isCollectable: boolean;
@@ -131,6 +130,9 @@ export class Resource {
     playableNotation: number[];
     description: string;
 
+    readonly DEFAULT_COLLECTION_AMOUNT = 0;
+    readonly DEFAULT_COMPLETED_AMOUNT = 1;
+
     constructor(resourceInfo: ResourceInfo) {
         this.resourceInfo = resourceInfo;
         this.patternNotation = getResourcePattern(this.getResourceType());
@@ -145,7 +147,7 @@ export class Resource {
     getResourceType() {
         return this.resourceInfo.resourceType;
     }
-
+   
     getFullDisplayDescription() {
         return this.description;
     }
@@ -160,6 +162,14 @@ export class Resource {
         }
 
         return this.playableNotation;
+    }
+
+    getCollectionAmount() {
+        return this.resourceInfo.collectionAmount ?? this.DEFAULT_COLLECTION_AMOUNT;
+    }
+
+    getCompletedPatternAmount() {
+        return this.resourceInfo.completedBarAmount ?? this.DEFAULT_COMPLETED_AMOUNT;
     }
 }
 

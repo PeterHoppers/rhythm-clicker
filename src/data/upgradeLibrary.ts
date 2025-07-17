@@ -20,7 +20,7 @@ export const UpgradeLibrary : UpgradeInfo[] = [
     {
         effect: {
             upgradeType: UpgradeType.CollectionIncrease,
-            resourceType: ResourceType.Wood,
+            resourceType: ResourceType.Tree,
             modifier: 5
         },
         displayIcon: "🪓",
@@ -28,21 +28,21 @@ export const UpgradeLibrary : UpgradeInfo[] = [
         cost: [
         {
             resourceAmount: 3,
-            resourceType: ResourceType.Wood
+            resourceType: ResourceType.Tree
         },               
         ]
     },
     {
         effect: {
             upgradeType: UpgradeType.NewResource,
-            resourceType: ResourceType.Wood,
+            resourceType: ResourceType.Tree,
         },
-        displayIcon: getResourceDisplay(ResourceType.Wood),
+        displayIcon: getResourceDisplay(ResourceType.Tree),
         displayName: "Forestery",
         cost: [
         {
             resourceAmount: 10,
-            resourceType: ResourceType.Wood
+            resourceType: ResourceType.Tree
         },        
         ]
     },    
@@ -56,7 +56,7 @@ export const UpgradeLibrary : UpgradeInfo[] = [
         cost: [
         {
             resourceAmount: 100,
-            resourceType: ResourceType.Wood
+            resourceType: ResourceType.Tree
         },        
         ]
     },

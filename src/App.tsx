@@ -154,7 +154,14 @@ function resourceReducer(state : AppState, action : GameAction) {
           break;
         }
         case UpgradeType.CollectionIncrease: {
+          if (!resourceData.resource.resourceInfo.collectionAmount) {
+            resourceData.resource.resourceInfo.collectionAmount = 0;
+          }
           resourceData.resource.resourceInfo.collectionAmount += upgrade.modifier ?? 0;
+
+          if (!resourceData.resource.resourceInfo.completedBarAmount) {
+            resourceData.resource.resourceInfo.completedBarAmount = 0;
+          }
           resourceData.resource.resourceInfo.completedBarAmount += upgrade.modifier ?? 0;
           break;
         }
@@ -199,8 +206,7 @@ function resourceReducer(state : AppState, action : GameAction) {
         };
       }
 
-      const resourceInfo = resource.resourceInfo;
-      resourceData = modifiyResource(resourceData, resourceInfo.collectionAmount ?? 0);
+      resourceData = modifiyResource(resourceData, resource.getCollectionAmount());
       
       if (resourceData.clickSFX) {
         playSFX(state.audioContext, resourceData.clickSFX, state.audioContext.currentTime);        
@@ -209,7 +215,7 @@ function resourceReducer(state : AppState, action : GameAction) {
       if (!resourceData.successNotes.includes(beatPress.beatInfo)) {
         resourceData.successNotes.push(beatPress.beatInfo);
         if (isPatternCompleted(resourceData.successNotes, resourceData.resource.getPatternNotes())) {
-          resourceData.currentAmount += resourceData.resource.resourceInfo.completedBarAmount;
+          resourceData.currentAmount += resourceData.resource.getCompletedPatternAmount();
         }
       }      
 
@@ -393,7 +399,7 @@ function updateCompletedPatterns(resources : ResourceData[]) : ResourceData[]{
               data.interactionState = ResourceState.Gainable;
             }
   
-            data.currentAmount += data.resource.resourceInfo.collectionAmount;
+            data.currentAmount += data.resource.getCompletedPatternAmount();
           }
   
           return data;
@@ -429,7 +435,7 @@ function App() {
       const path = resource.resource.resourceInfo.clickPathSFX;
 
       if (path && path !== "") {
-        promises.push(setupSFX(gameData.audioContext, resource.resource.resourceInfo.clickPathSFX));
+        promises.push(setupSFX(gameData.audioContext, path));
       }
     });
 
