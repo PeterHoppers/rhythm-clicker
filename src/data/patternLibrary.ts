@@ -143,7 +143,7 @@ function createBeatNotationFromNoteValues(noteValues : number[], startingValue: 
                 notation: targetString
             }
         } else {
-            if (targetString == previousNote.notation) {
+            if (targetString == previousNote.notation && noteValue !== SIXTEENTH_VALUE) {
                 targetString += " ";
             }
 

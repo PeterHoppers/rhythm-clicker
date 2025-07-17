@@ -1,5 +1,5 @@
 .abcjs-active-note {
-    /*filter: drop-shadow( 1px 1px 1px rgba(14, 14, 15, 0.5));*/
+    filter: drop-shadow( 1px 1px 1px rgba(14, 14, 15, 0.4));
     stroke: rgba(10, 10, 10, 0.45);
     stroke-width: 1px;
 }
