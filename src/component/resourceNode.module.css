@@ -48,3 +48,15 @@
 .default {
     outline: 0px solid transparent;
 }
+
+.text {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -10px;
+    z-index: -1;
+    font-size: 1.75em;
+    opacity: .25;
+     -webkit-text-stroke: 1px black;
+    pointer-events: none;
+}
