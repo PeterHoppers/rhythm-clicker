@@ -16,7 +16,6 @@ export const ResourceLibrary : ResourceInfo[] = [
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("CH"),
-        startingResource: true,
         isCollectable: true
     },
     {
@@ -24,7 +23,6 @@ export const ResourceLibrary : ResourceInfo[] = [
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("RS"),
-        startingResource: true,
         isCollectable: true
     },
     {
@@ -32,7 +30,6 @@ export const ResourceLibrary : ResourceInfo[] = [
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("CP"),
-        startingResource: true,
         isCollectable: true
     },    
     {
@@ -40,7 +37,6 @@ export const ResourceLibrary : ResourceInfo[] = [
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("MA"),
-        startingResource: true,
         isCollectable: true
     },
     {
@@ -48,7 +44,6 @@ export const ResourceLibrary : ResourceInfo[] = [
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("OH50"),
-        startingResource: true,
         isCollectable: true
     },    
     {
@@ -56,7 +51,6 @@ export const ResourceLibrary : ResourceInfo[] = [
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("HT25"),
-        startingResource: true,
         isCollectable: true
     },
     {
@@ -64,7 +58,6 @@ export const ResourceLibrary : ResourceInfo[] = [
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("MC25"),
-        startingResource: true,
         isCollectable: false
     },
     {
@@ -72,7 +65,6 @@ export const ResourceLibrary : ResourceInfo[] = [
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("MA"),
-        startingResource: true,
         isCollectable: false
     },
     {
@@ -80,7 +72,6 @@ export const ResourceLibrary : ResourceInfo[] = [
         collectionAmount: 1,
         completedBarAmount: 10,
         clickPathSFX: createFilePath("LC25"),
-        startingResource: true,
         isCollectable: false
     },
 ];
