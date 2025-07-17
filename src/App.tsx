@@ -464,7 +464,7 @@ function App() {
       <h1 className='resource-title'>Rhythm Clicker</h1>
       <main className='resource-main'>        
         <section className='resource-dashboard'>
-          <h2>Resources Collected</h2>
+          <h2 className='resource-subtitle'>Resources Collected</h2>
           <div className='resource-dashboard__holder'>
             {gameData.resources.getAllData().filter(x => x.interactionState !== ResourceState.Hidden).map((data) => {
               const resourceType = data.resource.resourceInfo.resourceType;
@@ -481,7 +481,7 @@ function App() {
         </section>
 
         <section className='currency-section'>
-          <h2 className='resource-title'>Resource Field</h2>
+          <h2 className='resource-subtitle'>Resource Field</h2>
           <div className='currency-section__holder'>
             {gameData.resources.getAllData().filter(x => x.resource.resourceInfo.isCollectable).map((data, index) => {
               const resourceType = data.resource.getResourceType();

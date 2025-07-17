@@ -4,13 +4,29 @@ body {
   height: 100vh;
 }
 
+#root {
+  height: 100vh;
+}
+
 .resource-app {
   display: grid;
   grid-template-columns: 3fr 1fr;
+  height: 100%;
 }
 
 .resource-title {
   display: none;
+}
+
+.resource-subtitle {
+  display: none;
+}
+
+@media screen and (min-height: 768px) {
+  .resource-subtitle {
+    display: initial;
+    margin-bottom: 0;
+  }
 }
 
 /* Needs some rewriting for sure. SCSS would work better with this rough BEM naming convention*/
@@ -37,9 +53,10 @@ body {
 }
 
 .currency-section {
+  display: flex;
+  flex-direction: column;
   width: 100%; 
   text-align: center;
-  padding-bottom: 1em;
   flex-grow: 1;
 }
 
@@ -48,6 +65,8 @@ body {
   flex-wrap: wrap-reverse;
   width: 450px;
   margin: auto;
+  justify-content: center;
+  gap: 1em;
 }
 
 .upgrade-section {

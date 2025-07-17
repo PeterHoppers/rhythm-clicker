@@ -7,3 +7,7 @@
 .abcjs-note_selected {
     fill: currentColor;
 }
+
+.abcjs-container {
+    margin-top: -3rem;
+}
