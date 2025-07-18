@@ -11,8 +11,8 @@ export const INPUT_DELAY = 0.02933;
 export const URL_ROOT = window.location.href;
 
 export enum ResourceType {
-    Seed = "Seed",
     Water = "Water",
+    Seed = "Seed",
     Tree = "Tree",
     Fire = "Fire",
     Earth = "Earth",
@@ -22,10 +22,13 @@ export enum ResourceType {
     Energy = "Energy",
     Volcano = "Volcano",
     Sun = "Sun",
+    Wind = "Wind",
     Firework = "Firework",
     Lake = "Lake",
     Heart = "Heart",
-    Lightbulb = "Lightbulb"
+    Lightbulb = "Lightbulb",
+    Gem = "Gem",
+    Crown = "Crown"
 }
 
 export enum ResourceState {
@@ -61,7 +64,7 @@ export type ResourceInfo = {
     clickPathSFX?: string;
     description?: string;  
     startingResource?: boolean;
-    isCollectable: boolean;
+    isCollectable?: boolean;
 }
 
 export type ResourceData = {

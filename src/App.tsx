@@ -37,25 +37,34 @@ const initalState : AppState = {
 
 function createInitialResources() : ResourceDictionary {
   const resources : ResourceDictionary = new ResourceDictionary();
-  {ResourceLibrary.forEach(resourceInfo => {
-    let startingState : ResourceState;
-    if (resourceInfo.startingResource) {
-      if (resourceInfo.isCollectable) {
+  let type : keyof typeof ResourceType;
+  for (type in ResourceType) {
+    let startingState : ResourceState = ResourceState.Hidden;
+    let targetResourceInfo = ResourceLibrary.find(x => x.resourceType === type);
+    if (!targetResourceInfo) {
+      targetResourceInfo = {
+        resourceType: ResourceType[type],
+        isCollectable: false
+      }
+    } else {
+      targetResourceInfo.isCollectable = true;
+    }
+
+    if (targetResourceInfo.startingResource) {
+      if (targetResourceInfo.isCollectable) {
         startingState = ResourceState.Clickable;
       } else {
         startingState = ResourceState.Gainable;
-      }
-    } else {
-      startingState = ResourceState.Hidden;
+      }      
     }
 
-    resources.setData(resourceInfo.resourceType, {
-      resource: new Resource(resourceInfo),
+    resources.setData(ResourceType[type], {
+      resource: new Resource(targetResourceInfo),
       currentAmount: 0,
       successNotes: [],
       interactionState: startingState
     });
-  })}
+  }
 
   return resources;
 }

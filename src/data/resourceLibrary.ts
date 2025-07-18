@@ -8,50 +8,39 @@ export const ResourceLibrary : ResourceInfo[] = [
         clickPathSFX: createFilePath("MC00"),
         description: "A constantly dripping that keeps the world grounded.",     
         startingResource: true,
-        isCollectable: true
     },
     {
         resourceType: ResourceType.Seed,
-        clickPathSFX: createFilePath("CH"),
-        isCollectable: true
+        clickPathSFX: createFilePath("CH"), 
     },
     {
         resourceType: ResourceType.Tree,
-        clickPathSFX: createFilePath("RS"),
-        isCollectable: true
+        clickPathSFX: createFilePath("RS"),   
     },
     {
         resourceType: ResourceType.Fire,
-        clickPathSFX: createFilePath("CP"),
-        isCollectable: true
+        clickPathSFX: createFilePath("CP"), 
     },    
     {
         resourceType: ResourceType.Earth,
-        clickPathSFX: createFilePath("MA"),
-        isCollectable: true
+        clickPathSFX: createFilePath("MA"), 
     },
     {
         resourceType: ResourceType.Energy,
-        clickPathSFX: createFilePath("OH50"),
-        isCollectable: true
-    },    
+        clickPathSFX: createFilePath("OH50"), 
+    },      
+    {
+        resourceType: ResourceType.Wind,
+        clickPathSFX: createFilePath("HC75"),
+    },         
+    {
+        resourceType: ResourceType.Gem,
+        clickPathSFX: createFilePath("SD5000"),
+    }, 
     {
         resourceType: ResourceType.Heart,
-        clickPathSFX: createFilePath("HT25"),
-        isCollectable: true
-    },
-    {
-        resourceType: ResourceType.Volcano,
-        isCollectable: false
-    },
-    {
-        resourceType: ResourceType.Storm,
-        isCollectable: false
-    },
-    {
-        resourceType: ResourceType.Coal,
-        isCollectable: false
-    },
+        clickPathSFX: createFilePath("HT25"),   
+    },     
 ];
 
 export function getResourceDisplay(resourceType: ResourceType) : string {
@@ -78,6 +67,8 @@ export function getResourceDisplay(resourceType: ResourceType) : string {
             return "💡";
         case ResourceType.Sun:
             return "☀️";
+        case ResourceType.Gem:
+            return "💎";        
         default:
             return "";
     }
@@ -105,6 +96,62 @@ export const ResourceHybrids : ResourceCreation[] = [
         ],
         made: ResourceType.Steam
     },    
+    {
+        completed: [
+            ResourceType.Seed,
+            ResourceType.Tree
+        ],
+        made: ResourceType.Earth
+    },    
+    {
+        completed: [
+            ResourceType.Energy,
+            ResourceType.Seed
+        ],
+        made: ResourceType.Sun
+    },  
+    {
+        completed: [
+            ResourceType.Energy,
+            ResourceType.Fire
+        ],
+        made: ResourceType.Firework
+    },    
+    {
+        completed: [
+            ResourceType.Energy,
+            ResourceType.Water
+        ],
+        made: ResourceType.Storm
+    },  
+    {
+        completed: [
+            ResourceType.Energy,
+            ResourceType.Tree
+        ],
+        made: ResourceType.Lightbulb
+    },  
+    {
+        completed: [
+            ResourceType.Water,
+            ResourceType.Earth
+        ],
+        made: ResourceType.Lake
+    },  
+    {
+        completed: [
+            ResourceType.Fire,
+            ResourceType.Earth
+        ],
+        made: ResourceType.Volcano
+    },  
+     {
+        completed: [
+            ResourceType.Gem,
+            ResourceType.Fire
+        ],
+        made: ResourceType.Crown
+    },  
 ];
 
 function createFilePath(fileName: string) : string {

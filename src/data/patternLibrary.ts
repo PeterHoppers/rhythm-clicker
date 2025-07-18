@@ -24,30 +24,40 @@ enum RhythmName {
 export const METRONOME_NOTATION = createBeatNotationFromRhythmNames([RhythmName.Rest, RhythmName.Rest, RhythmName.Rest, RhythmName.Rest]);
 
 export function getResourcePattern(resourceType: ResourceType) : BeatNotation[] {
+    let targetNotation : RhythmName[] = [RhythmName.Rest, RhythmName.Rest, RhythmName.Rest, RhythmName.Rest];
     switch (resourceType) {     
         case ResourceType.Water:
-            return createBeatNotationFromRhythmNames([RhythmName.Ta, RhythmName.Ta, RhythmName.Ta, RhythmName.Ta]);
+            targetNotation = [RhythmName.Ta, RhythmName.Ta, RhythmName.Ta, RhythmName.Ta];
+            break;
         case ResourceType.Seed:
-            return createBeatNotationFromRhythmNames([RhythmName.TiTi, RhythmName.TiTi, RhythmName.TiTi, RhythmName.TiTi]);
+            targetNotation = [RhythmName.TiTi, RhythmName.TiTi, RhythmName.TiTi, RhythmName.TiTi];
+            break;
         case ResourceType.Tree:
-            return createBeatNotationFromRhythmNames([RhythmName.Ta, RhythmName.Ta, RhythmName.TiTi, RhythmName.Ta]);
-        case ResourceType.Volcano:
-            return createBeatNotationFromRhythmNames([RhythmName.TiTika, RhythmName.Ta, RhythmName.Rest, RhythmName.Rest]);
-        case ResourceType.Earth:
-            return createBeatNotationFromRhythmNames([RhythmName.TikaTika,  RhythmName.Ta,  RhythmName.TikaTika,  RhythmName.Ta]);
+            targetNotation = [RhythmName.Ta, RhythmName.Ta, RhythmName.TiTi, RhythmName.Ta];
+            break;
         case ResourceType.Fire:
-            return createBeatNotationFromRhythmNames([RhythmName.Rest,  RhythmName.Ta,  RhythmName.Rest,  RhythmName.Ta]);
+            targetNotation = [RhythmName.Rest,  RhythmName.Ta,  RhythmName.Rest,  RhythmName.Ta];
+            break;
+        case ResourceType.Earth:
+            targetNotation = [RhythmName.TikaTika,  RhythmName.Ta,  RhythmName.TikaTika,  RhythmName.Ta];
+            break;
         case ResourceType.Energy:
-            return createBeatNotationFromRhythmNames([RhythmName.Tum, RhythmName.Ti, RhythmName.Tum, RhythmName.Ti]);
-        case ResourceType.Coal:
-            return createBeatNotationFromRhythmNames([RhythmName.HalfRest, RhythmName.Tika, RhythmName.HalfRest, RhythmName.Tika, RhythmName.HalfRest, RhythmName.Tika, RhythmName.HalfRest, RhythmName.Ti]);        
-        case ResourceType.Storm:
-            return createBeatNotationFromRhythmNames([RhythmName.TimKa, RhythmName.Ta, RhythmName.TimKa, RhythmName.Ta]);
+            targetNotation = [RhythmName.Tum, RhythmName.Ti, RhythmName.Tum, RhythmName.Ti];
+            break;
+        case ResourceType.Wind:
+            targetNotation = [RhythmName.HalfRest, RhythmName.Ti, RhythmName.HalfRest, RhythmName.Ti, RhythmName.HalfRest, RhythmName.Ti, RhythmName.HalfRest, RhythmName.Ti];
+            break;
+        case ResourceType.Gem:
+            targetNotation = [RhythmName.TiTi, RhythmName.Rest, RhythmName.TiTi, RhythmName.Rest];
+            break;
         case ResourceType.Heart:
-            return createBeatNotationFromRhythmNames([RhythmName.TimKa, RhythmName.Ta, RhythmName.TimKa, RhythmName.Ta]);
+            targetNotation = [RhythmName.TimKa, RhythmName.Ta, RhythmName.TimKa, RhythmName.Ta];
+            break;
         default:
-           return createBeatNotationFromRhythmNames([RhythmName.Ta, RhythmName.Ta, RhythmName.Ta, RhythmName.Ta]);
+            break;
     }
+
+    return createBeatNotationFromRhythmNames(targetNotation);
 }
 
 function createBeatNotationFromRhythmNames(names : RhythmName[]) : BeatNotation[] {
@@ -138,6 +148,9 @@ function createBeatNotationFromNoteValues(noteValues : number[], startingValue: 
         
         let newBeatNotation : BeatNotation 
         if (!previousNote) {
+            if (noteValues.length === 1) {
+                targetString += " ";
+            }
             newBeatNotation = {
                 startingBeatNumber: startingValue,
                 notation: targetString

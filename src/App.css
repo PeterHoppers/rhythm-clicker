@@ -10,7 +10,7 @@ body {
 
 .resource-app {
   display: grid;
-  grid-template-columns: 3fr 1fr;
+  grid-template-columns: 75% 1fr;
   height: 100%;
 }
 
@@ -35,6 +35,10 @@ body {
   flex-direction: column;
 }
 
+.resource-side {
+  overflow: auto;
+}
+
 .resource-dashboard {
   width: 100%;
   text-align: center;
@@ -46,10 +50,10 @@ body {
 
 .resource-dashboard__holder {
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
   gap: 1em;
   margin: auto;
+  overflow: auto;
+  max-width: calc(100% - 4em);
 }
 
 .currency-section {
@@ -73,6 +77,7 @@ body {
 .upgrade-section {
   border-left: 1px solid black;
   text-align: center;
+  padding: 1em 0;
 }
 
 .upgrade-section__holder {

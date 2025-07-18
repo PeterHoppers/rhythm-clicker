@@ -108,24 +108,68 @@ export const UpgradeLibrary : UpgradeInfo[] = [
         ]
     },
     {
-        id: ResourceType.Storm,
+        id: ResourceType.Wind,
         effect: {
             upgradeType: UpgradeType.NewResource,
-            resourceType: ResourceType.Storm,
+            resourceType: ResourceType.Wind,
         },
-        displayName: "A Storm Brewing",
+        displayName: "Atmospheric Winds",
         cost: [
         {
-            resourceAmount: 3,
-            resourceType: ResourceType.Energy
+            resourceAmount: 10,
+            resourceType: ResourceType.Sun
         },        
         {
-            resourceAmount: 3,
-            resourceType: ResourceType.Earth,
+            resourceAmount: 40,
+            resourceType: ResourceType.Water,
         },
         {
-            resourceAmount: 150,
-            resourceType: ResourceType.Water
+            resourceAmount: 10,
+            resourceType: ResourceType.Steam
+        }
+        ]
+    },
+    {
+        id: ResourceType.Gem,
+        effect: {
+            upgradeType: UpgradeType.NewResource,
+            resourceType: ResourceType.Gem,
+        },
+        displayName: "Pressure and Age",
+        cost: [
+        {
+            resourceAmount: 10,
+            resourceType: ResourceType.Coal
+        },        
+        {
+            resourceAmount: 10,
+            resourceType: ResourceType.Storm,
+        },
+        {
+            resourceAmount: 10,
+            resourceType: ResourceType.Volcano
+        }
+        ]
+    },
+    {
+        id: ResourceType.Heart,
+        effect: {
+            upgradeType: UpgradeType.NewResource,
+            resourceType: ResourceType.Heart,
+        },
+        displayName: "Feel It Beating Fast",
+        cost: [
+        {
+            resourceAmount: 10,
+            resourceType: ResourceType.Lake
+        },        
+        {
+            resourceAmount: 20,
+            resourceType: ResourceType.Firework,
+        },
+        {
+            resourceAmount: 5,
+            resourceType: ResourceType.Gem
         }
         ]
     },
