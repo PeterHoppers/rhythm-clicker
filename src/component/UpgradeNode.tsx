@@ -1,6 +1,5 @@
 import { Upgrade, ActionType, GameAction, ResourceTransaction} from "../lib/definitions";
 import styles from "./upgrade.module.css";
-import { Tooltip } from "react-tooltip";
 import ResourceCost from "./Resources/ResourceCost";
 
 //this handles the rendering of each of the upgrade buttons, which is a button along with a tooltip to explain what the upgrade does
