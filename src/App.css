@@ -67,6 +67,7 @@ body {
   margin: auto;
   justify-content: center;
   gap: 1em;
+  
 }
 
 .upgrade-section {
@@ -78,5 +79,7 @@ body {
   display: flex;
   gap: 1em;
   justify-content: center;
-  padding-bottom: 2em;
+  flex-wrap: wrap;
+  flex-direction: column;
+  padding: 0 1em;
 }

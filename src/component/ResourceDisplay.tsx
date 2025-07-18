@@ -1,5 +1,5 @@
 import { ResourceData, ResourceState } from "../lib/definitions";
-import { getResourceDisplay } from "../data/resourceLibrary";
+import { getHTMLForResourceDisplay } from "../data/resourceLibrary";
 import { Tooltip } from "react-tooltip";
 import ResourceDescription from "./Resources/ResourceDescription";
 import ProgressBar from "./ProgressBar/ProgressBar";
@@ -27,8 +27,11 @@ export default function ResourceDisplay(props: ResourceDisplayProps) {
             data-tooltip-delay-hide={TOOLTIP_HIDE_DELAY_IN_MS}    
         >
             <div className={styles.info}>
-                <div className={styles.icon}>                    
-                    <span>{getResourceDisplay(info.resourceType)}</span>
+                <div className={styles.icon}>                
+                    <div className={styles.displayContainer}>
+                        {getHTMLForResourceDisplay(info.resourceType, styles.display)}
+                    </div>    
+                    
                     <span>{props.resourceData.currentAmount}</span>
                     {props.resourceData.interactionState === ResourceState.Clickable &&
                         <>
@@ -38,10 +41,10 @@ export default function ResourceDisplay(props: ResourceDisplayProps) {
                     }                    
                 </div>                
             </div>                        
-            <Tooltip id={tooltipId} className={styles.tooltip}>
+            <Tooltip id={tooltipId} className={styles.tooltip} >
                 <ResourceDescription 
                     resourceTitle={info.resourceType} 
-                    resourceDescription={props.resourceData.resource.getFullDisplayDescription()}
+                    resourceDescription={props.resourceData.resource.getFullDisplayDescription(styles.nodes)}
                     isResourceCollectable={props.resourceData.interactionState === ResourceState.Clickable} />
             </Tooltip>
         </div>

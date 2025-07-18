@@ -1,8 +1,21 @@
 .button {    
-    font-size: 1.5em;
     transition: cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.button:disabled {
+    color: inherit;
+    opacity: .5;
+}
+
+.button:not([disabled]):hover {
+    cursor: pointer;
 }
 
 .button:not([disabled]):active {
     transform: scale(.9);
+}
+
+.titleDisplay {
+    position: relative;
+    z-index: -1;
 }

@@ -1,11 +1,14 @@
 import { BeatInfo, BeatNotation } from "./rhythm/beatNotation";
 import { createDescription } from "../data/resourceLibrary";
 import { getPlayableNotesOnly, getResourcePattern } from "../data/patternLibrary";
+import { ReactElement } from "react";
 
 export const NOTES_PER_BAR = 32;
 export const QUARTERS_PER_PHRASE = NOTES_PER_BAR / 8;
 export const RHYTHM_LENIENCY = .175;
 export const INPUT_DELAY = 0.02933;
+
+export const URL_ROOT = window.location.href;
 
 export enum ResourceType {
     Seed = "Seed",
@@ -69,9 +72,9 @@ export type ResourceData = {
 }
 
 export type UpgradeInfo = {    
+    id: ResourceType | string;
     effect: GameEffect,
     displayName: string;
-    displayIcon: string;
     cost: ResourceTransaction[];
 }
 
@@ -128,7 +131,7 @@ export class Resource {
     resourceInfo: ResourceInfo;
     patternNotation:  BeatNotation[];
     playableNotation: number[];
-    description: string;
+    description: ReactElement | undefined;
 
     readonly DEFAULT_COLLECTION_AMOUNT = 0;
     readonly DEFAULT_COMPLETED_AMOUNT = 1;
@@ -137,7 +140,6 @@ export class Resource {
         this.resourceInfo = resourceInfo;
         this.patternNotation = getResourcePattern(this.getResourceType());
         this.playableNotation = getPlayableNotesOnly(this.getPatternNotation());
-        this.description = createDescription(this.resourceInfo.description ?? "", this.getResourceType());
     }
 
     isMatchingResourceType(resourceType : ResourceType | undefined) : boolean {
@@ -148,7 +150,10 @@ export class Resource {
         return this.resourceInfo.resourceType;
     }
    
-    getFullDisplayDescription() {
+    getFullDisplayDescription(className: string) {
+        if (!this.description) {
+            this.description = createDescription(this.resourceInfo.description ?? "", this.getResourceType(), className)
+        }
         return this.description;
     }
 

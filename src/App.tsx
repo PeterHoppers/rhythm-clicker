@@ -2,7 +2,7 @@ import { useEffect, useReducer } from 'react'
 import { ResourceLibrary, ResourceHybrids } from './data/resourceLibrary';
 import { UpgradeLibrary } from './data/upgradeLibrary';
 import './App.css'
-import { ActionType, Resource, GameAction, ResourceData, ResourceType, Upgrade, ResourceTransaction, UpgradeType, ResourceState, PressPreviewType } from './lib/definitions';
+import { ActionType, Resource, GameAction, ResourceData, ResourceType, Upgrade, ResourceTransaction, UpgradeType, ResourceState, PressPreviewType, URL_ROOT } from './lib/definitions';
 import ResourceDisplay from './component/ResourceDisplay';
 import { useInterval } from './lib/useInterval';
 import ResourceNode from './component/ResourceNode';
@@ -15,7 +15,7 @@ import MetronomeVisual from './component/Notation/MetronomeVisual';
 const TICK_CHECK = 25;
 const TEMPO = 150 * QUARTERS_PER_PHRASE; //TODO: be able to change this
 const AUDIO_BEATS = getBeatNumbers(QUARTERS_PER_PHRASE);
-const CLICK_PATH = `${window.location.href}/metronone.wav`;
+const CLICK_PATH = `${URL_ROOT}/metronone.wav`;
 
 let sampleSfx : AudioBuffer;
 
@@ -154,11 +154,6 @@ function resourceReducer(state : AppState, action : GameAction) {
           break;
         }
         case UpgradeType.CollectionIncrease: {
-          if (!resourceData.resource.resourceInfo.collectionAmount) {
-            resourceData.resource.resourceInfo.collectionAmount = 0;
-          }
-          resourceData.resource.resourceInfo.collectionAmount += upgrade.modifier ?? 0;
-
           if (!resourceData.resource.resourceInfo.completedBarAmount) {
             resourceData.resource.resourceInfo.completedBarAmount = 0;
           }

@@ -1,4 +1,4 @@
-import { Upgrade, ActionType, GameAction, ResourceTransaction } from "../lib/definitions";
+import { Upgrade, ActionType, GameAction, ResourceTransaction} from "../lib/definitions";
 import styles from "./upgrade.module.css";
 import { Tooltip } from "react-tooltip";
 import ResourceCost from "./Resources/ResourceCost";
@@ -28,7 +28,7 @@ export default function UpgradeNode(props: UpgradeNodeProps) {
     const tooltipId = `tooltip-${props.upgrade.upgradeInfo.displayName}`;
 
     return (
-        <span>
+        <>
             <button 
                 data-tooltip-id={tooltipId}
                 data-tooltip-place="top"
@@ -49,11 +49,8 @@ export default function UpgradeNode(props: UpgradeNodeProps) {
                     });     
                 });                       
             }}>
-                {info.displayIcon}
+                <ResourceCost upgradeId={info.id} upgradeTitle={info.displayName} upgradeEffect={props.upgrade.displayInfo()} upgradeCosts={info.cost}/>
             </button>
-            <Tooltip id={tooltipId}>
-                <ResourceCost upgradeTitle={info.displayName} upgradeEffect={props.upgrade.displayInfo()} upgradeCosts={info.cost}/>
-            </Tooltip>
-        </span>            
+        </>            
     )
 }

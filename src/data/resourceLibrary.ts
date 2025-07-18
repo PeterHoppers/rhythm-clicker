@@ -1,4 +1,5 @@
-import { ResourceCreation, ResourceInfo, ResourceType } from "../lib/definitions";
+import { ReactElement, createElement } from "react";
+import { ResourceCreation, ResourceInfo, ResourceType, URL_ROOT } from "../lib/definitions";
 
 //a file to define the implementation of each of the resources. This allows easy creation of new resources when needed
 export const ResourceLibrary : ResourceInfo[] = [
@@ -66,14 +67,14 @@ export const ResourceHybrids : ResourceCreation[] = [
             ResourceType.Tree,
             ResourceType.Fire
         ],
-        made: ResourceType.Park
+        made: ResourceType.Coal
     },
     {
         completed: [
             ResourceType.Water,
             ResourceType.Fire
         ],
-        made: ResourceType.Energy
+        made: ResourceType.Steam
     },    
 ]
 
@@ -81,30 +82,32 @@ function createFilePath(fileName: string) : string {
     return `${window.location.href}/sfx/${fileName}.WAV`;
 }
 
-export function createDescription(startingDescription: string, resourceType : ResourceType) : string {
-    const description = startingDescription;
+export function createDescription(startingDescription: string, resourceType : ResourceType, resourceNodeclassName: string) : ReactElement {
+    const descriptionClass = "node-description";
+    const description = createHTMLForString(startingDescription, descriptionClass);
     const resourceCreation = ResourceHybrids.find(x => x.made === resourceType);
 
     if (!resourceCreation) {
         return description;
     }
 
-    let creationDescription = "Can be made by collecting a full bar of";
+    const creationDescription = "\nCan be made by collecting a full bar of";
+    const startingHTML = createHTMLForString(creationDescription, descriptionClass);
     const appender = " & ";
+    const descriptionHTML : ReactElement[] = [];
     resourceCreation.completed.forEach(element => {
-        creationDescription += ` ${getResourceDisplay(element)}${appender}`;
+        descriptionHTML.push(getHTMLForResourceDisplay(element, resourceNodeclassName));
+        descriptionHTML.push(createHTMLForString(appender, descriptionClass));
     });
 
-    creationDescription = creationDescription.slice(0, appender.length * -1);
-    creationDescription += ".";
+    descriptionHTML.pop();
+    descriptionHTML.push(createHTMLForString("."));
 
-    return `${description}\n${creationDescription}`;
+    return createElement("span", {}, [description, startingHTML, ...descriptionHTML]);
 }
 
 export function getResourceDisplay(resourceType: ResourceType) : string {
     switch (resourceType) {
-        case ResourceType.Coal:        
-            return "💨";
         case ResourceType.Tree:
             return "🌳";
         case ResourceType.Storm:
@@ -123,9 +126,27 @@ export function getResourceDisplay(resourceType: ResourceType) : string {
             return "🏞️";
         case ResourceType.Heart:
             return "❤️";
-        case ResourceType.Steam:
-            return "♨️";
         default:
-            return "🙃";
+            return "";
     }
+}
+
+export function getFilePathName(resourceType: ResourceType) : string { 
+    return `${URL_ROOT}/images/${resourceType.toLocaleLowerCase()}.png`;
+}
+
+export function getHTMLForResourceDisplay(resourceType: ResourceType, className?: string) : ReactElement {
+    const targetEmoji = getResourceDisplay(resourceType);
+    if (targetEmoji) {         
+        return createHTMLForString(targetEmoji, className);
+    }
+
+    const targetURL = getFilePathName(resourceType);
+    const imageElement = createElement("img", {src: targetURL, className: `${className}`});
+    return imageElement;
+}
+
+export function createHTMLForString(emoji: string, className?: string) : ReactElement{
+    const span = createElement("span", {className: `${className}`}, emoji);
+    return span;
 }

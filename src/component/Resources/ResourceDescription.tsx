@@ -1,8 +1,9 @@
+import { ReactElement } from "react";
 import styles from "./description.module.css";
 
 interface RescourceDescriptionProps {
     resourceTitle: string;
-    resourceDescription: string;
+    resourceDescription: ReactElement;
     isResourceCollectable: boolean
 }
 

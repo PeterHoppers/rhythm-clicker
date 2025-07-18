@@ -1,14 +1,13 @@
 import { ResourceType, UpgradeInfo, UpgradeType } from "../lib/definitions";
-import { getResourceDisplay } from "./resourceLibrary";
 
 //a file to define the implementation of each of the upgrades. Keeps the definition of all of them in one spot
 export const UpgradeLibrary : UpgradeInfo[] = [
     {
+        id: ResourceType.Seed,
         effect: {
             upgradeType: UpgradeType.NewResource,
             resourceType: ResourceType.Seed,
         },
-        displayIcon: getResourceDisplay(ResourceType.Seed),
         displayName: "Seedlings",
         cost: [
         {
@@ -18,12 +17,12 @@ export const UpgradeLibrary : UpgradeInfo[] = [
         ]
     },
     {
+        id: "🪓",
         effect: {
             upgradeType: UpgradeType.CollectionIncrease,
             resourceType: ResourceType.Tree,
             modifier: 3
         },
-        displayIcon: "🪓",
         displayName: "Axe",
         cost: [
         {
@@ -33,11 +32,11 @@ export const UpgradeLibrary : UpgradeInfo[] = [
         ]
     },
     {
+        id: ResourceType.Tree,
         effect: {
             upgradeType: UpgradeType.NewResource,
             resourceType: ResourceType.Tree,
         },
-        displayIcon: getResourceDisplay(ResourceType.Tree),
         displayName: "Forestery",
         cost: [
         {
@@ -47,11 +46,11 @@ export const UpgradeLibrary : UpgradeInfo[] = [
         ]
     },    
     {
+        id: ResourceType.Fire,
         effect: {
             upgradeType: UpgradeType.NewResource,
             resourceType: ResourceType.Fire,
         },
-        displayIcon: getResourceDisplay(ResourceType.Fire),
         displayName: "Forest Fire",
         cost: [
         {
@@ -65,11 +64,11 @@ export const UpgradeLibrary : UpgradeInfo[] = [
         ]
     },
     {
+        id: ResourceType.Park,
         effect: {
             upgradeType: UpgradeType.NewResource,
             resourceType: ResourceType.Park,
         },
-        displayIcon: getResourceDisplay(ResourceType.Park),
         displayName: "Park Reservation",
         cost: [
         {
@@ -87,11 +86,11 @@ export const UpgradeLibrary : UpgradeInfo[] = [
         ]
     },
     {
+        id: ResourceType.Energy,
         effect: {
             upgradeType: UpgradeType.NewResource,
             resourceType: ResourceType.Energy,
         },
-        displayIcon: getResourceDisplay(ResourceType.Energy),
         displayName: "Energy Production",
         cost: [
         {
@@ -109,11 +108,11 @@ export const UpgradeLibrary : UpgradeInfo[] = [
         ]
     },
     {
+        id: ResourceType.Storm,
         effect: {
             upgradeType: UpgradeType.NewResource,
             resourceType: ResourceType.Storm,
         },
-        displayIcon: getResourceDisplay(ResourceType.Storm),
         displayName: "A Storm Brewing",
         cost: [
         {
