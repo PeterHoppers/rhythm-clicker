@@ -33,7 +33,7 @@ export function getResourcePattern(resourceType: ResourceType) : BeatNotation[] 
             return createBeatNotationFromRhythmNames([RhythmName.Ta, RhythmName.Ta, RhythmName.TiTi, RhythmName.Ta]);
         case ResourceType.Money:
             return createBeatNotationFromRhythmNames([RhythmName.TiTika, RhythmName.Ta, RhythmName.Rest, RhythmName.Rest]);
-        case ResourceType.Park:
+        case ResourceType.Earth:
             return createBeatNotationFromRhythmNames([RhythmName.TikaTika,  RhythmName.Ta,  RhythmName.TikaTika,  RhythmName.Ta]);
         case ResourceType.Fire:
             return createBeatNotationFromRhythmNames([RhythmName.Rest,  RhythmName.Ta,  RhythmName.Rest,  RhythmName.Ta]);

@@ -459,7 +459,7 @@ function App() {
       <h1 className='resource-title'>Rhythm Clicker</h1>
       <main className='resource-main'>        
         <section className='resource-dashboard'>
-          <h2 className='resource-subtitle'>Resources Collected</h2>
+          <h2 className='resource-subtitle'>Resource Inventory</h2>
           <div className='resource-dashboard__holder'>
             {gameData.resources.getAllData().filter(x => x.interactionState !== ResourceState.Hidden).map((data) => {
               const resourceType = data.resource.resourceInfo.resourceType;

@@ -35,9 +35,9 @@ export default function ResourceCost(props: UpgradeNodeProps) {
                             return <li className={styles.costItem} key={cost.resourceType}>{getHTMLForResourceDisplay(cost.resourceType, styles.costResource)} : {cost.resourceAmount}</li>
                         })}
                     </ul>
+                    <span>{props.upgradeEffect}</span>
                 </section>        
-            </div>
-            <span>{props.upgradeEffect}</span>
+            </div>            
         </>
     );
 }

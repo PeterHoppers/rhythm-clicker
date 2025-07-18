@@ -15,7 +15,7 @@ export enum ResourceType {
     Water = "Water",
     Tree = "Tree",
     Fire = "Fire",
-    Park = "Park",
+    Earth = "Earth",
     Coal = "Coal",
     Steam = "Steam",
     Storm = "Storm",
@@ -190,10 +190,10 @@ export class Upgrade {
         let upgradeEffectDescription = "";
         switch(this.upgradeInfo.effect.upgradeType) {   
             case UpgradeType.NewResource:
-                upgradeEffectDescription = `This upgrade unlocks the ability to collect ${this.upgradeInfo.effect.resourceType} resource.`;
+                upgradeEffectDescription = `Unlock the ability to collect ${this.upgradeInfo.effect.resourceType} resource.`;
                 break;
             case UpgradeType.CollectionIncrease:
-                upgradeEffectDescription = `This upgrade increased the amount of ${this.upgradeInfo.effect.resourceType} resource collected by ${this.upgradeInfo.effect.modifier}.`;
+                upgradeEffectDescription = `Increase the amount of ${this.upgradeInfo.effect.resourceType} resource collected by ${this.upgradeInfo.effect.modifier}.`;
                 break;
             default:
                 upgradeEffectDescription = `Need to define new upgrade description.`;

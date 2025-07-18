@@ -64,16 +64,16 @@ export const UpgradeLibrary : UpgradeInfo[] = [
         ]
     },
     {
-        id: ResourceType.Park,
+        id: ResourceType.Earth,
         effect: {
             upgradeType: UpgradeType.NewResource,
-            resourceType: ResourceType.Park,
+            resourceType: ResourceType.Earth,
         },
-        displayName: "Park Reservation",
+        displayName: "Earth Renewal",
         cost: [
         {
             resourceAmount: 3,
-            resourceType: ResourceType.Park
+            resourceType: ResourceType.Earth
         },        
         {
              resourceAmount: 20,
@@ -121,7 +121,7 @@ export const UpgradeLibrary : UpgradeInfo[] = [
         },        
         {
             resourceAmount: 3,
-            resourceType: ResourceType.Park,
+            resourceType: ResourceType.Earth,
         },
         {
             resourceAmount: 150,

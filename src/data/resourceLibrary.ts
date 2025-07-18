@@ -26,7 +26,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         isCollectable: true
     },    
     {
-        resourceType: ResourceType.Park,
+        resourceType: ResourceType.Earth,
         clickPathSFX: createFilePath("MA"),
         isCollectable: true
     },
@@ -122,8 +122,6 @@ export function getResourceDisplay(resourceType: ResourceType) : string {
             return "💧";
         case ResourceType.Fire:
             return "🔥";
-        case ResourceType.Park:
-            return "🏞️";
         case ResourceType.Heart:
             return "❤️";
         default:
