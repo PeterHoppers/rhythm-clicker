@@ -102,7 +102,7 @@ export const UpgradeLibrary : UpgradeInfo[] = [
             resourceType: ResourceType.Steam
         },
         {
-            resourceAmount: 35,
+            resourceAmount: 15,
             resourceType: ResourceType.Fire
         }
         ]
