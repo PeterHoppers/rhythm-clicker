@@ -41,7 +41,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         isCollectable: true
     },
     {
-        resourceType: ResourceType.Money,
+        resourceType: ResourceType.Volcano,
         isCollectable: false
     },
     {
@@ -53,6 +53,35 @@ export const ResourceLibrary : ResourceInfo[] = [
         isCollectable: false
     },
 ];
+
+export function getResourceDisplay(resourceType: ResourceType) : string {
+    switch (resourceType) {
+        case ResourceType.Tree:
+            return "🌳";
+        case ResourceType.Storm:
+            return "⛈️";
+        case ResourceType.Volcano:
+            return "🌋";
+        case ResourceType.Energy:
+            return "⚡";
+        case ResourceType.Seed:
+            return "🌱";
+        case ResourceType.Water:
+            return "💧";
+        case ResourceType.Fire:
+            return "🔥";
+        case ResourceType.Heart:
+            return "❤️";
+        case ResourceType.Firework:
+            return "🎆";
+        case ResourceType.Lightbulb:
+            return "💡";
+        case ResourceType.Sun:
+            return "☀️";
+        default:
+            return "";
+    }
+}
 
 export const ResourceHybrids : ResourceCreation[] = [
     {
@@ -76,7 +105,7 @@ export const ResourceHybrids : ResourceCreation[] = [
         ],
         made: ResourceType.Steam
     },    
-]
+];
 
 function createFilePath(fileName: string) : string {
     return `${window.location.href}/sfx/${fileName}.WAV`;
@@ -104,29 +133,6 @@ export function createDescription(startingDescription: string, resourceType : Re
     descriptionHTML.push(createHTMLForString("."));
 
     return createElement("span", {}, [description, startingHTML, ...descriptionHTML]);
-}
-
-export function getResourceDisplay(resourceType: ResourceType) : string {
-    switch (resourceType) {
-        case ResourceType.Tree:
-            return "🌳";
-        case ResourceType.Storm:
-            return "⛈️";
-        case ResourceType.Money:
-            return "💰";
-        case ResourceType.Energy:
-            return "⚡";
-        case ResourceType.Seed:
-            return "🌱";
-        case ResourceType.Water:
-            return "💧";
-        case ResourceType.Fire:
-            return "🔥";
-        case ResourceType.Heart:
-            return "❤️";
-        default:
-            return "";
-    }
 }
 
 export function getFilePathName(resourceType: ResourceType) : string { 

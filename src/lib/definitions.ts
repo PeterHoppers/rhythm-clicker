@@ -20,8 +20,12 @@ export enum ResourceType {
     Steam = "Steam",
     Storm = "Storm",
     Energy = "Energy",
-    Money = "Money",
-    Heart = "Heart"
+    Volcano = "Volcano",
+    Sun = "Sun",
+    Firework = "Firework",
+    Lake = "Lake",
+    Heart = "Heart",
+    Lightbulb = "Lightbulb"
 }
 
 export enum ResourceState {
