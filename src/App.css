@@ -89,6 +89,7 @@ body {
 .beat-holder {
   padding: 0 150px;
   height: 150px;
+  margin-bottom: 3rem;
 }
 
 @media screen and (height <= 768px) {
