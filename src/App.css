@@ -1,5 +1,5 @@
 :root {
-  --full-height: 100vh;
+  --full-height: 100svh;
   --main-columns: 65% 1fr;
   overflow: hidden;
 }

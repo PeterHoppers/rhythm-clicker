@@ -58,6 +58,7 @@
     opacity: .25;
      -webkit-text-stroke: 1px black;
     pointer-events: none;
+    touch-action: none;
 }
 
 .image {    
@@ -65,6 +66,7 @@
     aspect-ratio: 1/1;
     display: block;
     pointer-events: none;
+    touch-action: none;
 }
 
 [disabled] .image {
