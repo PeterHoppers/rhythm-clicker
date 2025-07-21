@@ -1,16 +1,24 @@
+:root {
+  --full-height: 100vh;
+  --main-columns: 65% 1fr;
+  overflow: hidden;
+}
+
+
 body {
   user-select: none; /* keeps the user from accidently highlighting text when performing all the clicks */
   margin: 0;
-  height: 100vh;
+  height: var(--full-height);
+  width: 100vw;
 }
 
 #root {
-  height: 100vh;
+  height:  var(--full-height);
 }
 
 .resource-app {
   display: grid;
-  grid-template-columns: 75% 1fr;
+  grid-template-columns: var(--main-columns);
   height: 100%;
 }
 
@@ -22,21 +30,10 @@ body {
   display: none;
 }
 
-@media screen and (min-height: 768px) {
-  .resource-subtitle {
-    display: initial;
-    margin-bottom: 0;
-  }
-}
-
 /* Needs some rewriting for sure. SCSS would work better with this rough BEM naming convention*/
 .resource-main {
   display: flex;
   flex-direction: column;
-}
-
-.resource-side {
-  overflow: auto;
 }
 
 .resource-dashboard {
@@ -67,17 +64,17 @@ body {
 .currency-section__holder {
   display: flex;
   flex-wrap: wrap-reverse;
-  width: 450px;
+  width: min(450px, 100%);
   margin: auto;
   justify-content: center;
-  gap: 1em;
-  
+  gap: 1em;  
 }
 
 .upgrade-section {
   border-left: 1px solid black;
   text-align: center;
-  padding: 1em 0;
+  overflow: auto;
+  max-height: var(--full-height);
 }
 
 .upgrade-section__holder {
@@ -86,5 +83,12 @@ body {
   justify-content: center;
   flex-wrap: wrap;
   flex-direction: column;
-  padding: 0 1em;
+  padding: 1em;
+}
+
+@media screen and (height <= 768px) {
+  .resource-subtitle {
+    display: initial;
+    margin-bottom: 0;
+  }
 }

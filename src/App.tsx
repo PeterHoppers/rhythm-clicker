@@ -11,6 +11,7 @@ import { QUARTERS_PER_PHRASE, ResourceDictionary } from './lib/definitions';
 import { getBeatNumbers, BeatInfo, BeatNotation, createNextNote, isClickOnPattern, getPreviousBeatNumber, getPreviousBeat } from './lib/rhythm/beatNotation';
 import { setupSFX, SFXInfo, playSFX } from './lib/rhythm/playback';
 import MetronomeVisual from './component/Notation/MetronomeVisual';
+import Sidebar from './component/Sidebar/Sidebar';
 
 const TICK_CHECK = 25;
 const TEMPO = 150 * QUARTERS_PER_PHRASE; //TODO: be able to change this
@@ -505,8 +506,8 @@ function App() {
           </div>
           <MetronomeVisual beatToRender={getPreviousBeatNumber(gameData.scheduledBeat.noteNumber)} notesToDisplay={gameData.bottomRendererNotes}/>
         </section>       
-      </main>
-      <div className='resource-side'>   
+      </main> 
+      <Sidebar>
         <section className='upgrade-section'>
           <h2>Upgrades</h2>
           <div className='upgrade-section__holder'>
@@ -515,7 +516,7 @@ function App() {
             })}
           </div>
         </section>
-      </div>
+      </Sidebar>    
     </div>    
   )
 }
