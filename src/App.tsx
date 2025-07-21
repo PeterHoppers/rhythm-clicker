@@ -12,7 +12,6 @@ import { getBeatNumbers, BeatInfo, BeatNotation, createNextNote, isClickOnPatter
 import { setupSFX, SFXInfo, playSFX } from './lib/rhythm/playback';
 import MetronomeVisual from './component/Notation/MetronomeVisual';
 import Sidebar from './component/Sidebar/Sidebar';
-import { LogInfo } from './lib/logger';
 
 const TICK_CHECK = 25;
 const TEMPO = 150 * QUARTERS_PER_PHRASE; //TODO: be able to change this
@@ -200,7 +199,6 @@ function resourceReducer(state : AppState, action : GameAction) {
 
       const resource = resourceData.resource;
       const beatPress = isClickOnPattern(state.audioContext.currentTime, state.scheduledBeat, resource.getPatternNotes(), TEMPO);
-      LogInfo(`${beatPress.beatInfo.time} for ${resource.getResourceType()}`);
       const alreadyPressedNotes = resourceData.successNotes.find(x => x.barNumber == beatPress.beatInfo.barNumber && x.noteNumber == beatPress.beatInfo.noteNumber);
       if (!beatPress.isOnBeat || alreadyPressedNotes) {
         resourceData.successNotes = resourceData.successNotes.slice(0, -1);

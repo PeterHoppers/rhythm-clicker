@@ -13,7 +13,7 @@ export default function Sidebar(props: SidebarProps) {
     }
 
     const stateClassName = (isSidebarOpen) ? styles.open : styles.close;
-    const toggleEmoji = (isSidebarOpen) ? "➡️" : "⬅️";
+    const toggleEmoji = (isSidebarOpen) ? "→" : "←";
     
     return (
         <div 
