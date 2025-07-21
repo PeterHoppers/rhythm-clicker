@@ -86,9 +86,21 @@ body {
   padding: 1em;
 }
 
+.beat-holder {
+  padding: 0 150px;
+  height: 150px;
+}
+
 @media screen and (height <= 768px) {
   .resource-subtitle {
     display: initial;
     margin-bottom: 0;
+  }
+}
+
+@media screen and (width <= 768px) {
+  .beat-holder {
+    padding: 0;
+    height: 50px;
   }
 }
