@@ -83,7 +83,7 @@ export default function ResourceNode(props: ResourceNodeProps) {
 
     return (
         <>
-            <button className={classNames} onMouseDown={onPressedButton} onMouseLeave={onReleaseButton} onMouseUp={onReleaseButton} onTouchStart={onPressedButton} onTouchEnd={onReleaseButton} onTouchCancel={onReleaseButton} disabled={!isEnabled} onMouseEnter={() => onButtonHover(true)} onMouseOut={() => onButtonHover(false)}>
+            <button className={classNames} onPointerDown={onPressedButton} onPointerUp={onReleaseButton} onPointerCancel={onReleaseButton} disabled={!isEnabled} onMouseEnter={() => onButtonHover(true)} onMouseOut={() => onButtonHover(false)}>
                 {getHTMLForResourceDisplay(info.resourceType, styles.image)}
                 <span className={styles.text}>{props.keyCode}</span>
             </button>         
