@@ -25,19 +25,23 @@
     bottom: 0;
   }
 
+   .toggler {
+    display: block;
+    position: absolute;
+    left: calc(var(--toggler-size) * -1);
+  }
+
   .close {
     left: 100%;
     width: 0;
   }
 
   .open {
-    left: var(--toggler-size);
+    left: 0;
     right: 0;
-  }
 
-  .toggler {
-    display: block;
-    position: absolute;
-    left: calc(var(--toggler-size) * -1);
+    .toggler {      
+      left: 1px;
+    }
   }
 }
