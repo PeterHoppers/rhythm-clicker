@@ -14,7 +14,7 @@ export const ResourceLibrary : ResourceInfo[] = [
         clickPathSFX: createFilePath("CH"), 
     },
     {
-        resourceType: ResourceType.Tree,
+        resourceType: ResourceType.Wood,
         clickPathSFX: createFilePath("RS"),   
     },
     {
@@ -52,9 +52,11 @@ export function getResourceDisplay(resourceType: ResourceType) : string {
         case ResourceType.Volcano:
             return "🌋";
         case ResourceType.Energy:
-            return "⚡";
+            return "🔋";
         case ResourceType.Seed:
             return "🌱";
+        case ResourceType.Garden:
+            return "🏡";
         case ResourceType.Water:
             return "💧";
         case ResourceType.Fire:
@@ -101,7 +103,7 @@ export const ResourceHybrids : ResourceCreation[] = [
             ResourceType.Seed,
             ResourceType.Tree
         ],
-        made: ResourceType.Earth
+        made: ResourceType.Garden
     },    
     {
         completed: [

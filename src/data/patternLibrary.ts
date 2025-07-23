@@ -32,7 +32,7 @@ export function getResourcePattern(resourceType: ResourceType) : BeatNotation[] 
         case ResourceType.Seed:
             targetNotation = [RhythmName.TiTi, RhythmName.TiTi, RhythmName.TiTi, RhythmName.TiTi];
             break;
-        case ResourceType.Tree:
+        case ResourceType.Wood:
             targetNotation = [RhythmName.Ta, RhythmName.Ta, RhythmName.TiTi, RhythmName.Ta];
             break;
         case ResourceType.Fire:
