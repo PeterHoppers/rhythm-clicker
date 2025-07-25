@@ -8,7 +8,7 @@ import { useInterval } from './lib/useInterval';
 import ResourceNode from './component/ResourceNode';
 import UpgradeNode from './component/UpgradeNode';
 import { QUARTERS_PER_PHRASE, ResourceDictionary } from './lib/definitions';
-import { getBeatNumbers, BeatInfo, BeatNotation, createNextNote, isClickOnPattern, getPreviousBeatNumber, getPreviousBeat } from './lib/rhythm/beatNotation';
+import { getBeatNumbers, BeatInfo, BeatNotation, getNextBeat, isClickOnPattern, getPreviousBeatNumber, getPreviousBeat } from './lib/rhythm/beatNotation';
 import { setupSFX, SFXInfo, playSFX } from './lib/rhythm/playback';
 import MetronomeVisual from './component/Notation/MetronomeVisual';
 import Sidebar from './component/Sidebar/Sidebar';
@@ -101,7 +101,7 @@ function resourceReducer(state : AppState, action : GameAction) {
       }
 
       const previewingResource = state.previewingResource;
-      const nextBeat = createNextNote(TEMPO, beat);
+      const nextBeat = getNextBeat(beat, TEMPO);
       visualizeBeats(currentResource, beat, previewingResource);
       if (previewingResource) {
         const targetResource = state.resources.getData(previewingResource);
@@ -199,8 +199,8 @@ function resourceReducer(state : AppState, action : GameAction) {
 
       const resource = resourceData.resource;
       const beatPress = isClickOnPattern(state.audioContext.currentTime, state.scheduledBeat, resource.getPatternNotes(), TEMPO);
-      const alreadyPressedNotes = resourceData.successNotes.find(x => x.barNumber == beatPress.beatInfo.barNumber && x.noteNumber == beatPress.beatInfo.noteNumber);
-      if (!beatPress.isOnBeat || alreadyPressedNotes) {
+      const alreadyPressedNotes = (beatPress) ? resourceData.successNotes.find(x => x.barNumber == beatPress.barNumber && x.noteNumber == beatPress.noteNumber) : true;
+      if (!beatPress || alreadyPressedNotes) {
         resourceData.successNotes = resourceData.successNotes.slice(0, -1);
         resourceData.areNotesDisplayed = false;
         
@@ -217,12 +217,10 @@ function resourceReducer(state : AppState, action : GameAction) {
         playSFX(state.audioContext, resourceData.clickSFX, state.audioContext.currentTime);        
       }    
 
-      if (!resourceData.successNotes.includes(beatPress.beatInfo)) {
-        resourceData.successNotes.push(beatPress.beatInfo);
-        if (isPatternCompleted(resourceData.successNotes, resourceData.resource.getPatternNotes())) {
-          resourceData.currentAmount += resourceData.resource.getCompletedPatternAmount();
-        }
-      }      
+      resourceData.successNotes.push(beatPress);
+      if (isPatternCompleted(resourceData.successNotes, resourceData.resource.getPatternNotes())) {
+        resourceData.currentAmount += resourceData.resource.getCompletedPatternAmount();
+      }     
 
       state.resources.setData(resourceType, resourceData);    
       const updatedResources = updateCompletedPatterns(state.resources.getAllData());
@@ -363,7 +361,7 @@ function visualizeBeat(resource: ResourceData, note: BeatInfo) {
   if (pattern.includes(note.noteNumber)) {
     resource.pressPreviewState = PressPreviewType.NoteIncluded;
   } else {
-    const nextNote = createNextNote(TEMPO, note);
+    const nextNote = getNextBeat(note, TEMPO);
     if (pattern.includes(nextNote.noteNumber)) {
       resource.pressPreviewState = PressPreviewType.NoteBefore;        
     } else {

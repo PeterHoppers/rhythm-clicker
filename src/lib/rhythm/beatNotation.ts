@@ -6,11 +6,6 @@ export type BeatInfo = {
     time: number
 }  
 
-export type BeatPress = {
-  isOnBeat: boolean,
-  beatInfo: BeatInfo
-}
-
 export type BeatNotation = {
   notation: string,
   startingBeatNumber: number
@@ -35,44 +30,50 @@ export function getBeatNumbers(numberOfBeats : number, offset? : number) : numbe
     return noteNumbers;
 }
 
-export function isClickOnPattern(clickTime: number, upcomingBeat: BeatInfo, possibleBeatNumbers: number[], tempo : number) : BeatPress {
+export function isClickOnPattern(clickTime: number, upcomingBeat: BeatInfo, possibleBeatNumbers: number[], tempo : number) : BeatInfo | undefined {
   const pressTime = clickTime - INPUT_DELAY;
-  const previousBeat = getPreviousBeat(upcomingBeat, tempo);
- 
+  const minTime = pressTime - RHYTHM_LENIENCY;
+  const maxTime = pressTime + RHYTHM_LENIENCY;
 
-  //determine which note was trying to be hit by looking to see if eitehr of them are valid notes
-  const isPreviousValid = possibleBeatNumbers.includes(previousBeat.noteNumber);
-  const isUpcomingValid = possibleBeatNumbers.includes(upcomingBeat.noteNumber);
-
-  let targetBeat : BeatInfo;
-  if (isPreviousValid && !isUpcomingValid) {
-    targetBeat = previousBeat;
-  } else if (!isPreviousValid && isUpcomingValid) {
-    targetBeat = upcomingBeat;
-  } else if (isPreviousValid && isUpcomingValid) {
-    targetBeat = (Math.abs(upcomingBeat.time - pressTime) < Math.abs(pressTime - previousBeat.time)) ? upcomingBeat : previousBeat;
-  } else {
-    return {
-      isOnBeat: false,
-      beatInfo: upcomingBeat
-    };
+  const possibleBeats : BeatInfo[] = [];
+  if (upcomingBeat.time > minTime && upcomingBeat.time < maxTime) {
+    possibleBeats.push(upcomingBeat);
   }
 
-  const isOnBeat = (Math.abs(targetBeat.time - pressTime) <= RHYTHM_LENIENCY);  
-  return {
-    isOnBeat: isOnBeat,
-    beatInfo: targetBeat
-  };
+  let possibleBeat = getPreviousBeat(upcomingBeat, tempo);
+  while (possibleBeat.time > minTime) {
+    possibleBeats.push(possibleBeat);
+    possibleBeat = getPreviousBeat(possibleBeat, tempo); 
+  }
+
+  possibleBeat = getNextBeat(upcomingBeat, tempo);
+  while (possibleBeat.time < maxTime) {
+    possibleBeats.push(possibleBeat);
+    possibleBeat = getNextBeat(possibleBeat, tempo); 
+  }
+
+  const beatsInPattern = possibleBeats.filter(x => possibleBeatNumbers.includes(x.noteNumber));
+
+  if (beatsInPattern.length === 0) {
+    return undefined;
+  }
+
+  if (beatsInPattern.length === 1) {
+    return beatsInPattern[0];
+  }
+
+  const possibleBeatsSortedByClosest = beatsInPattern.sort((a, b) => Math.abs(pressTime - a.time) - Math.abs(pressTime - b.time));
+
+  return possibleBeatsSortedByClosest[0];
 }
 
-export function createNextNote(tempo : number, currentBeat: BeatInfo) : BeatInfo {
-    const nextNoteTime = getGapToNextTime(tempo) + currentBeat.time;
+export function getNextBeat(currentBeat: BeatInfo, tempo : number) : BeatInfo {
     const note = (currentBeat.noteNumber + 1) % NOTES_PER_BAR;
     const barNumber = (note === 0) ? currentBeat.barNumber + 1 : currentBeat.barNumber;
 
     return {
+        time:  getGapToNextTime(tempo) + currentBeat.time,
         noteNumber: note,
-        time: nextNoteTime,
         barNumber: barNumber
     }
 }
@@ -81,13 +82,11 @@ export function getPreviousBeat(upcomingBeat: BeatInfo, tempo : number) {
   const previousBeatNumber = getPreviousBeatNumber(upcomingBeat.noteNumber);
   const previousBarNumber = (previousBeatNumber === NOTES_PER_BAR - 1) ? upcomingBeat.barNumber - 1 : upcomingBeat.barNumber;
 
-  const previousBeat : BeatInfo = {
+  return {
     time: upcomingBeat.time - getGapToNextTime(tempo),
     noteNumber: previousBeatNumber,
     barNumber: previousBarNumber
-  }  
-
-  return previousBeat;
+  } 
 }
 
 export function getPreviousBeatNumber(currentBeatNumber : number) {
