@@ -307,7 +307,11 @@ function resourceReducer(state : AppState, action : GameAction) {
 
       let targetIndex = newBottomDisplayInfo.findIndex(x => !x.resourceAssigned);
       if (targetIndex < 0) {
-        targetIndex = (newBottomDisplayInfo[0].timeAssigned < newBottomDisplayInfo[1].timeAssigned) ? 0 : 1;
+        if (newBottomDisplayInfo.length > 1) {
+          targetIndex = (newBottomDisplayInfo[0].timeAssigned < newBottomDisplayInfo[1].timeAssigned) ? 0 : 1;
+        } else {
+          targetIndex = 0;
+        }        
       }
 
       newBottomDisplayInfo[targetIndex] = {
@@ -546,7 +550,14 @@ function App() {
                   effect: {
                     resourceType: resourceType
                   }
-                })
+                }); 
+                dispatch({
+                  type: ActionType.OnUpdateNotesWithResource,
+                  effect: {
+                    resourceType: resourceType,
+                    modifier: 1
+                  }
+                })                
               }}/>
             })}      
           </div>
