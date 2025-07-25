@@ -12,6 +12,7 @@ import { getBeatNumbers, BeatInfo, BeatNotation, getNextBeat, isClickOnPattern, 
 import { setupSFX, SFXInfo, playSFX } from './lib/rhythm/playback';
 import MetronomeVisual from './component/Notation/MetronomeVisual';
 import Sidebar from './component/Sidebar/Sidebar';
+import { METRONOME_NOTATION } from './data/patternLibrary';
 
 const TICK_CHECK = 25;
 const TEMPO = 150 * QUARTERS_PER_PHRASE; //TODO: be able to change this
@@ -20,20 +21,27 @@ const CLICK_PATH = `${URL_ROOT}/metronone.wav`;
 
 let sampleSfx : AudioBuffer;
 
+interface BottomNotation {
+  notes: BeatNotation[],
+  resourceAssigned: ResourceType | undefined,
+  timeAssigned: number
+}
+
 interface AppState {
   resources: ResourceDictionary,
   upgrades: Upgrade[],
   audioContext: AudioContext,
   scheduledBeat: BeatInfo,
-  bottomRendererNotes?: BeatNotation[]
-  previewingResource?: ResourceType
+  previewingResource?: ResourceType,
+  noteVisuals: BottomNotation[],
 }
 
 const initalState : AppState = {
   resources : createInitialResources(),
   upgrades : createUpgrades(), 
   audioContext: new AudioContext(),
-  scheduledBeat: {time: 0, noteNumber: 0, barNumber: 0}
+  scheduledBeat: {time: 0, noteNumber: 0, barNumber: 0},
+  noteVisuals: [createInitialNoteVisual(0)]
 }
 
 function createInitialResources() : ResourceDictionary {
@@ -77,6 +85,10 @@ function createUpgrades() : Upgrade[] {
   ))}
 
   return upgrades;
+}
+
+function createInitialNoteVisual(currentTime: number) : BottomNotation {
+  return {notes: METRONOME_NOTATION, resourceAssigned: undefined, timeAssigned: currentTime};
 }
 
 /**
@@ -158,9 +170,11 @@ function resourceReducer(state : AppState, action : GameAction) {
       }
 
       switch (upgrade.upgradeType) {
+        case UpgradeType.IncreaseRhythmCapacity:
+          state.noteVisuals?.push(createInitialNoteVisual(0));
+          break;
         case UpgradeType.NewResource: {
           resourceData.interactionState = ResourceState.Clickable;
-          newUpgrades = state.upgrades.filter(x => x.upgradeInfo.effect.resourceType !== upgrade.resourceType);
           break;
         }
         case UpgradeType.CollectionIncrease: {
@@ -174,6 +188,7 @@ function resourceReducer(state : AppState, action : GameAction) {
           break;
       }
 
+      newUpgrades = state.upgrades.filter(x => x.upgradeInfo.effect !== upgrade);
       state.resources.setData(resourceType, resourceData);
       return {
         ...state,
@@ -274,18 +289,37 @@ function resourceReducer(state : AppState, action : GameAction) {
       }
 
       const isAddingNotes = action.effect.modifier === 1;
-      let meternoneNotes = undefined;     
+      let patternNotes = undefined;     
 
       targetResource.areNotesDisplayed = isAddingNotes;
       if (isAddingNotes) {
-        meternoneNotes = targetResource.resource.getPatternNotation();
+        patternNotes = targetResource.resource.getPatternNotation();
+      }
+
+      const newBottomDisplayInfo = state.noteVisuals;
+      const isAlreadyDisplayed = (newBottomDisplayInfo.findIndex(x => x.resourceAssigned === resourceType) !== -1)
+      if (!patternNotes || isAlreadyDisplayed) {
+        return {
+          ...state,
+          bottomRendererNotes : newBottomDisplayInfo
+        };
+      }
+
+      let targetIndex = newBottomDisplayInfo.findIndex(x => !x.resourceAssigned);
+      if (targetIndex < 0) {
+        targetIndex = (newBottomDisplayInfo[0].timeAssigned < newBottomDisplayInfo[1].timeAssigned) ? 0 : 1;
+      }
+
+      newBottomDisplayInfo[targetIndex] = {
+        notes: patternNotes,
+        timeAssigned: state.audioContext.currentTime,
+        resourceAssigned: resourceType
       }
 
       state.resources.setData(resourceType, targetResource);
-
       return {
         ...state,
-        bottomRendererNotes : meternoneNotes
+        bottomRendererNotes : newBottomDisplayInfo
       };
     }
 
@@ -299,7 +333,6 @@ function resourceReducer(state : AppState, action : GameAction) {
           return {
           ...state,
           previewingResource : undefined,
-          bottomRendererNotes : undefined
         };
       }
 
@@ -309,13 +342,21 @@ function resourceReducer(state : AppState, action : GameAction) {
       }
 
       resourceData.areNotesDisplayed = true;
-      const meternoneNotes = resourceData.resource.getPatternNotation();
+      const previewNotation : BottomNotation = {
+        notes: resourceData.resource.getPatternNotation(),
+        timeAssigned: 0,
+        resourceAssigned: resourceType
+      }
+
+      state.noteVisuals[0] = previewNotation;
+      if (state.noteVisuals.length > 1) {
+        state.noteVisuals[1] = createInitialNoteVisual(0);
+      }
       state.resources.setData(resourceType, resourceData);
 
       return {
         ...state,
         previewingResource : resourceType,
-        bottomRendererNotes : meternoneNotes
       };
     }
     default: {
@@ -510,7 +551,9 @@ function App() {
             })}      
           </div>
           <div className='beat-holder'>
-            <MetronomeVisual idAppend='_top' beatToRender={getPreviousBeatNumber(gameData.scheduledBeat.noteNumber)} notesToDisplay={gameData.bottomRendererNotes}/>
+            {gameData.noteVisuals?.map((value, index) => {
+              return <MetronomeVisual key={`metronome_${index}`} idAppend={index.toString()} beatToRender={getPreviousBeatNumber(gameData.scheduledBeat.noteNumber)} notesToDisplay={value.notes}/> 
+            })}                       
           </div>
         </section>       
       </main> 
