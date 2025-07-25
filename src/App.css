@@ -95,9 +95,12 @@ body {
 }
 
 .beat-holder {
-  padding: 0 150px;
-  height: 150px;
-  margin-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
+  padding: 0 50px;
+  height: 200px;
+  margin: 0 3rem;
+  justify-content: center;
 }
 
 @media screen and (height <= 768px) {
@@ -110,6 +113,6 @@ body {
 @media screen and (width <= 768px) {
   .beat-holder {
     padding: 0;
-    height: 50px;
+    height: 100px;
   }
 }

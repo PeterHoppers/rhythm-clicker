@@ -510,7 +510,7 @@ function App() {
             })}      
           </div>
           <div className='beat-holder'>
-            <MetronomeVisual beatToRender={getPreviousBeatNumber(gameData.scheduledBeat.noteNumber)} notesToDisplay={gameData.bottomRendererNotes}/>
+            <MetronomeVisual idAppend='_top' beatToRender={getPreviousBeatNumber(gameData.scheduledBeat.noteNumber)} notesToDisplay={gameData.bottomRendererNotes}/>
           </div>
         </section>       
       </main> 

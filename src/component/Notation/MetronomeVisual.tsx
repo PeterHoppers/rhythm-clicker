@@ -6,6 +6,7 @@ import { METRONOME_NOTATION } from "../../data/patternLibrary";
 const METRONOME_DISPLAY_ID = "metronome_display"; 
 
 interface MetronomeVisualProps {
+    idAppend: string
     beatToRender: number;
     notesToDisplay?: BeatNotation[];
 } 
@@ -13,6 +14,7 @@ interface MetronomeVisualProps {
 export default function MetronomeVisual(props : MetronomeVisualProps) {
     const targetNotation = (props.notesToDisplay) ? props.notesToDisplay.sort(compareBeatNotations) : METRONOME_NOTATION;
     const notation = getNotationFromBeatNotation(targetNotation); 
+    const idName = METRONOME_DISPLAY_ID + props.idAppend;
     let activeBeatIndex = 0;
 
     for (let index = 0; index < targetNotation.length; index++) {
@@ -24,14 +26,14 @@ export default function MetronomeVisual(props : MetronomeVisualProps) {
     }
     
     useEffect(() => {
-        renderNotes(METRONOME_DISPLAY_ID, notation, {
+        renderNotes(idName, notation, {
             activeNoteNumber: Math.floor(activeBeatIndex),
             isResponsive: true
         });
-    }, [props.beatToRender, props.notesToDisplay, notation, activeBeatIndex]);
+    }, [idName, props.beatToRender, props.notesToDisplay, notation, activeBeatIndex]);
 
     return (
-        <div id={METRONOME_DISPLAY_ID}>
+        <div id={idName}>
         </div>
     )
 }
