@@ -48,7 +48,7 @@ export function isClickOnPattern(clickTime: number, upcomingBeat: BeatInfo, poss
   if (isPreviousValid && !isUpcomingValid) {
     targetBeat = previousBeat;
   } else if (!isPreviousValid && isUpcomingValid) {
-    targetBeat = upcomingBeat
+    targetBeat = upcomingBeat;
   } else if (isPreviousValid && isUpcomingValid) {
     targetBeat = (Math.abs(upcomingBeat.time - pressTime) < Math.abs(pressTime - previousBeat.time)) ? upcomingBeat : previousBeat;
   } else {

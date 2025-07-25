@@ -338,7 +338,8 @@ function playMetronone(audioContext : AudioContext, audioBuffer: AudioBuffer, no
 
   if (AUDIO_BEATS.includes(note.noteNumber)) {
     const noteVolume = (isNewBar) ? .75 : .25;
-    playSFX(audioContext, audioBuffer, note.time, noteVolume);
+    const pitch = (isNewBar) ? 1.65 : 1;
+    playSFX(audioContext, audioBuffer, note.time, noteVolume, pitch);
   }
 }
 

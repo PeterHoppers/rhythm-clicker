@@ -122,7 +122,7 @@ function createBeatNotationFromRhythmNames(names : RhythmName[]) : BeatNotation[
     return beatNotations;
 }
 
-function createBeatNotationFromNoteValues(noteValues : number[], startingValue: number = 0, baseString: string = "c") : BeatNotation[] {
+function createBeatNotationFromNoteValues(noteValues : number[], startingValue: number = 0, baseString: string = "B") : BeatNotation[] {
     const beatNotations : BeatNotation[] = [];
     let previousNote : BeatNotation;
     let previousLength : number;

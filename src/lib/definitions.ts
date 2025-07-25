@@ -5,7 +5,7 @@ import { ReactElement } from "react";
 
 export const NOTES_PER_BAR = 32;
 export const QUARTERS_PER_PHRASE = NOTES_PER_BAR / 8;
-export const RHYTHM_LENIENCY = .175;
+export const RHYTHM_LENIENCY = .275;
 export const INPUT_DELAY = 0.02933;
 
 export const URL_ROOT = window.location.href;

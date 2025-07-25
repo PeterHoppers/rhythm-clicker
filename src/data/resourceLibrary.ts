@@ -11,23 +11,23 @@ export const ResourceLibrary : ResourceInfo[] = [
     },
     {
         resourceType: ResourceType.Seed,
-        clickPathSFX: createFilePath("CH"), 
+        clickPathSFX: createFilePath("CH"),    
     },
     {
         resourceType: ResourceType.Wood,
-        clickPathSFX: createFilePath("RS"),   
+        clickPathSFX: createFilePath("RS"), 
     },
     {
         resourceType: ResourceType.Fire,
-        clickPathSFX: createFilePath("CP"), 
+        clickPathSFX: createFilePath("CP"),
     },    
     {
         resourceType: ResourceType.Earth,
-        clickPathSFX: createFilePath("MA"), 
+        clickPathSFX: createFilePath("MA"),
     },
     {
         resourceType: ResourceType.Energy,
-        clickPathSFX: createFilePath("OH50"), 
+        clickPathSFX: createFilePath("OH50"),
     },      
     {
         resourceType: ResourceType.Wind,
@@ -39,7 +39,7 @@ export const ResourceLibrary : ResourceInfo[] = [
     }, 
     {
         resourceType: ResourceType.Heart,
-        clickPathSFX: createFilePath("HT25"),   
+        clickPathSFX: createFilePath("HT25"),
     },     
 ];
 
@@ -86,7 +86,7 @@ export const ResourceHybrids : ResourceCreation[] = [
     },
     {
         completed: [
-            ResourceType.Tree,
+            ResourceType.Wood,
             ResourceType.Fire
         ],
         made: ResourceType.Coal
@@ -101,7 +101,7 @@ export const ResourceHybrids : ResourceCreation[] = [
     {
         completed: [
             ResourceType.Seed,
-            ResourceType.Tree
+            ResourceType.Wood
         ],
         made: ResourceType.Garden
     },    
@@ -129,7 +129,7 @@ export const ResourceHybrids : ResourceCreation[] = [
     {
         completed: [
             ResourceType.Energy,
-            ResourceType.Tree
+            ResourceType.Wood
         ],
         made: ResourceType.Lightbulb
     },  

@@ -21,7 +21,7 @@ export async function getFile(audioContext : AudioContext, filepath : string) {
   return audioInfo;
 }
 
-export function playSFX(audioContext : AudioContext, audioBuffer: AudioBuffer, time : number, volume?: number) {
+export function playSFX(audioContext : AudioContext, audioBuffer: AudioBuffer, time : number, volume?: number, pitch? : number) {
   const sampleSource = new AudioBufferSourceNode(audioContext, {
     buffer: audioBuffer,
     playbackRate: 1,
@@ -33,6 +33,10 @@ export function playSFX(audioContext : AudioContext, audioBuffer: AudioBuffer, t
     gainNode.gain.value = volume;
   } else {
     sampleSource.connect(audioContext.destination);
+  }
+
+  if (pitch) {    
+    sampleSource.playbackRate.value = pitch;
   }
 
   sampleSource.start(time);
