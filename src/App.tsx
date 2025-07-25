@@ -198,10 +198,21 @@ function resourceReducer(state : AppState, action : GameAction) {
       }
 
       const resource = resourceData.resource;
-      const beatPress = isClickOnPattern(state.audioContext.currentTime, state.scheduledBeat, resource.getPatternNotes(), TEMPO);
+      const pattern = resource.getPatternNotes();
+      const beatPress = isClickOnPattern(state.audioContext.currentTime, state.scheduledBeat, pattern, TEMPO);
       const alreadyPressedNotes = (beatPress) ? resourceData.successNotes.find(x => x.barNumber == beatPress.barNumber && x.noteNumber == beatPress.noteNumber) : true;
-      if (!beatPress || alreadyPressedNotes) {
-        resourceData.successNotes = resourceData.successNotes.slice(0, -1);
+      const isInvalid = !beatPress || alreadyPressedNotes;
+
+      if (resourceData.clickSFX) {
+        const pitch = (isInvalid) ? 2 : 1;
+        const noteVolume = (isInvalid) ? .025: 1;
+        playSFX(state.audioContext, resourceData.clickSFX, state.audioContext.currentTime, noteVolume, pitch);        
+      }
+      
+      if (isInvalid) {
+        const isCompleted = isPatternCompleted(resourceData.successNotes, pattern);
+        const missedPenalty = (isCompleted) ? -2 : -1;
+        resourceData.successNotes = resourceData.successNotes.slice(0, missedPenalty);
         resourceData.areNotesDisplayed = false;
         
         state.resources.setData(resourceType, resourceData);
@@ -212,10 +223,6 @@ function resourceReducer(state : AppState, action : GameAction) {
       }
 
       resourceData = modifiyResource(resourceData, resource.getCollectionAmount());
-      
-      if (resourceData.clickSFX) {
-        playSFX(state.audioContext, resourceData.clickSFX, state.audioContext.currentTime);        
-      }    
 
       resourceData.successNotes.push(beatPress);
       if (isPatternCompleted(resourceData.successNotes, resourceData.resource.getPatternNotes())) {
