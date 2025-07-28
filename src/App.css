@@ -73,7 +73,7 @@ body {
   display: flex;
   flex-wrap: wrap-reverse;
   width: min(450px, 100%);
-  margin: 1rem auto;
+  margin: auto;
   justify-content: center;
   gap: 1em;  
 }
@@ -101,14 +101,6 @@ body {
   height: 250px;
   margin: 0 3rem;
   justify-content: center;
-  padding-top: 3rem;
-}
-
-@media screen and (height <= 768px) {
-  .resource-subtitle {
-    display: initial;
-    margin-bottom: 0;
-  }
 }
 
 @media screen and (width <= 768px) {
@@ -116,6 +108,6 @@ body {
     padding: 0;
     margin: 0;
     height: auto;
-    flex-grow: 1;
+    min-height: 125px;
   }
 }
