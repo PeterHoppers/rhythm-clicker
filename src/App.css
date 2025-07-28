@@ -114,6 +114,8 @@ body {
 @media screen and (width <= 768px) {
   .beat-holder {
     padding: 0;
-    height: 100px;
+    margin: 0;
+    height: auto;
+    flex-grow: 1;
   }
 }
