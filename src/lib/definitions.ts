@@ -50,7 +50,8 @@ export enum ActionType {
 
 export enum UpgradeType {
     NewResource,
-    CollectionIncrease
+    CollectionIncrease,
+    IncreaseRhythmCapacity,
 }
 
 export enum PressPreviewType {

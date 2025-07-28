@@ -73,7 +73,7 @@ body {
   display: flex;
   flex-wrap: wrap-reverse;
   width: min(450px, 100%);
-  margin: auto;
+  margin: 1rem auto;
   justify-content: center;
   gap: 1em;  
 }
@@ -95,9 +95,13 @@ body {
 }
 
 .beat-holder {
-  padding: 0 150px;
-  height: 150px;
-  margin-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
+  padding: 0 50px;
+  height: 250px;
+  margin: 0 3rem;
+  justify-content: center;
+  padding-top: 3rem;
 }
 
 @media screen and (height <= 768px) {
@@ -110,6 +114,8 @@ body {
 @media screen and (width <= 768px) {
   .beat-holder {
     padding: 0;
-    height: 50px;
+    margin: 0;
+    height: auto;
+    flex-grow: 1;
   }
 }

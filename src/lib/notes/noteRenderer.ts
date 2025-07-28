@@ -15,6 +15,7 @@ export function renderNotes(elementID: string, noteString : string, settings : N
         responsive: responsive,
         staffwidth: width,
         expandToWidest: true,
+        paddingbottom: 0,
         timeBasedLayout: {
             minPadding: 0,
             minWidth: width,

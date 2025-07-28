@@ -17,6 +17,24 @@ export const UpgradeLibrary : UpgradeInfo[] = [
         ]
     },
     {
+        id: "🎵",
+        effect: {
+            upgradeType: UpgradeType.IncreaseRhythmCapacity,
+            resourceType: ResourceType.Gem,
+        },
+        displayName: "Notation Expanse",
+        cost: [
+        {
+            resourceAmount: 5,
+            resourceType: ResourceType.Water,
+        }, 
+        {
+            resourceAmount: 5,
+            resourceType: ResourceType.Seed,
+        },       
+        ]
+    },
+    {
         id: ResourceType.Wood,
         effect: {
             upgradeType: UpgradeType.NewResource,
